@@ -359,6 +359,10 @@
             background: #e5e7eb;
         }
 
+        .collapsible-title {
+            flex: 1;
+        }
+
         .collapsible-toggle {
             font-size: 1.2em;
             transition: transform var(--transition);
@@ -525,12 +529,18 @@
         <form id="promptForm">
             <!-- Section 1: Persona Definition -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">1</span>
-                    Persona Definition
-                </h2>
-                <p class="section-description">Define the AI's role and expertise</p>
+                <div class="collapsible-header" id="personaHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">1</span>
+                            Persona Definition
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define the AI's role and expertise</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
                 
+                <div class="collapsible-content" id="personaContent">
                 <label for="persona">Select Persona:</label>
                 <select id="persona" aria-label="Persona selection">
                     <option value="">None (no persona)</option>
@@ -552,6 +562,7 @@
                     <label for="personaCustom" style="margin-top: 16px;">Custom Persona:</label>
                     <textarea id="personaCustom" placeholder="e.g., You are an experienced Python developer with 10 years of experience..." aria-label="Custom persona description"></textarea>
                 </div>
+                </div>
             </section>
 
             <!-- Section 2: Instructions -->
@@ -570,51 +581,78 @@
 
             <!-- Section 3: Input Data -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">3</span>
-                    Input Data
-                </h2>
-                <p class="section-description">Provide data/content to be processed</p>
+                <div class="collapsible-header" id="inputDataHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">3</span>
+                            Input Data
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Provide data/content to be processed</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
                 
+                <div class="collapsible-content" id="inputDataContent">
                 <label for="inputData">Input Data:</label>
                 <textarea id="inputData" placeholder="Paste your code, data, or content here. Use XML tags to structure:&#10;<code>your code</code>&#10;<document>your text</document>" aria-label="Input data"></textarea>
                 <small class="helper-text">Use XML tags like &lt;code&gt;, &lt;document&gt;, &lt;data&gt; to delimit different types of input</small>
+                </div>
             </section>
 
             <!-- Section 4: Output Format -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">4</span>
-                    Output Format
-                </h2>
-                <p class="section-description">Specify desired response structure</p>
+                <div class="collapsible-header" id="outputFormatHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">4</span>
+                            Output Format
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Specify desired response structure</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
                 
+                <div class="collapsible-content" id="outputFormatContent">
                 <label for="outputFormat">Output Format:</label>
                 <textarea id="outputFormat" placeholder="Specify how you want the response structured:&#10;1. Summary&#10;2. Detailed analysis&#10;3. Code example&#10;4. Recommendations" aria-label="Output format"></textarea>
                 <small class="helper-text">Define the structure and format you want</small>
+                </div>
             </section>
 
             <!-- Section 5: Additional Context -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">5</span>
-                    Additional Context
-                </h2>
-                <p class="section-description">Provide constraints, requirements, or background</p>
+                <div class="collapsible-header" id="additionalContextHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">5</span>
+                            Additional Context
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Provide constraints, requirements, or background</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
                 
+                <div class="collapsible-content" id="additionalContextContent">
                 <label for="additionalContext">Additional Context:</label>
                 <textarea id="additionalContext" placeholder="E.g., Using React 18, Performance critical, Must support mobile browsers, Target Python 3.9+..." aria-label="Additional context"></textarea>
                 <small class="helper-text">Any constraints, requirements, or background information</small>
+                </div>
             </section>
 
-            <!-- Section 5a: System Constraints -->
+            <!-- Section 6: System Constraints -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">5a</span>
-                    System Constraints
-                </h2>
-                <p class="section-description">Define response parameters and style preferences</p>
+                <div class="collapsible-header" id="systemConstraintsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">6</span>
+                            System Constraints
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define response parameters and style preferences</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
                 
+                <div class="collapsible-content" id="systemConstraintsContent">
                 <label for="responseLength">Response Length:</label>
                 <select id="responseLength" aria-label="Response length preference">
                     <option value="">No preference</option>
@@ -638,27 +676,35 @@
                 <label for="formatPreferences" style="margin-top: 16px;">Format Preferences:</label>
                 <textarea id="formatPreferences" placeholder="E.g., Use tables for comparisons, Include code snippets, Provide diagrams/visualizations" aria-label="Format preferences"></textarea>
                 <small class="helper-text">Specify formatting requirements (tables, code blocks, lists, etc.)</small>
+                </div>
             </section>
 
-            <!-- Section 5b: Negative Prompting -->
+            <!-- Section 7: Negative Prompting -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">5b</span>
-                    Negative Prompting
-                </h2>
-                <p class="section-description">Specify what the AI should NOT do (optional)</p>
+                <div class="collapsible-header" id="negativePromptingHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">7</span>
+                            Negative Prompting
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Specify what the AI should NOT do (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
                 
+                <div class="collapsible-content" id="negativePromptingContent">
                 <label for="negativePrompts">Do NOT:</label>
                 <textarea id="negativePrompts" placeholder="E.g.,&#10;- Include code without explanation&#10;- Use deprecated methods&#10;- Make assumptions about user's environment&#10;- Provide solutions without testing" aria-label="Negative prompts"></textarea>
                 <small class="helper-text">List specific things to avoid in the response</small>
+                </div>
             </section>
 
-            <!-- Section 5c: Code-Specific Options -->
+            <!-- Section 8: Code-Specific Options -->
             <section class="form-section">
                 <div class="collapsible-header" id="codeOptionsHeader">
-                    <div>
+                    <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">5c</span>
+                            <span class="section-number">8</span>
                             Code-Specific Options
                         </h2>
                         <p class="section-description" style="margin: 0;">Configure code generation preferences (optional)</p>
@@ -668,45 +714,11 @@
                 
                 <div class="collapsible-content" id="codeOptionsContent">
                     <label for="programmingLanguage">Programming Language:</label>
-                    <select id="programmingLanguage" aria-label="Programming language">
-                        <option value="">Not specified</option>
-                        <option value="Python">Python</option>
-                        <option value="JavaScript">JavaScript</option>
-                        <option value="TypeScript">TypeScript</option>
-                        <option value="Java">Java</option>
-                        <option value="C#">C#</option>
-                        <option value="C++">C++</option>
-                        <option value="C">C</option>
-                        <option value="Go">Go</option>
-                        <option value="Rust">Rust</option>
-                        <option value="Ruby">Ruby</option>
-                        <option value="PHP">PHP</option>
-                        <option value="Swift">Swift</option>
-                        <option value="Kotlin">Kotlin</option>
-                        <option value="Scala">Scala</option>
-                        <option value="R">R</option>
-                        <option value="MATLAB">MATLAB</option>
-                        <option value="SQL">SQL</option>
-                        <option value="Shell/Bash">Shell/Bash</option>
-                        <option value="PowerShell">PowerShell</option>
-                        <option value="Dart">Dart</option>
-                    </select>
+                    <input type="text" id="programmingLanguage" placeholder="E.g., Python, JavaScript, Java, Go, Rust" aria-label="Programming language">
 
                     <label for="frameworkLibrary" style="margin-top: 16px;">Framework/Library:</label>
                     <input type="text" id="frameworkLibrary" placeholder="E.g., React, Django, Spring Boot, .NET Core" aria-label="Framework or library">
                     <small class="helper-text">Specify the tech stack or framework to use</small>
-
-                    <label for="codeStyle" style="margin-top: 16px;">Code Style:</label>
-                    <select id="codeStyle" aria-label="Code style guide">
-                        <option value="">Default</option>
-                        <option value="PEP 8 (Python)">PEP 8 (Python)</option>
-                        <option value="Google Style Guide">Google Style Guide</option>
-                        <option value="Airbnb Style Guide">Airbnb Style Guide</option>
-                        <option value="Standard JS">Standard JS</option>
-                        <option value="PSR-12 (PHP)">PSR-12 (PHP)</option>
-                        <option value="Oracle Java Style">Oracle Java Style</option>
-                        <option value="Microsoft C# Conventions">Microsoft C# Conventions</option>
-                    </select>
 
                     <div class="checkbox-option" style="margin-top: 16px;">
                         <input type="checkbox" id="includeTests">
@@ -729,12 +741,12 @@
                 </div>
             </section>
 
-            <!-- Section 5d: Safety & Ethics Guidelines -->
+            <!-- Section 9: Safety & Ethics Guidelines -->
             <section class="form-section">
                 <div class="collapsible-header" id="safetyEthicsHeader">
-                    <div>
+                    <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">5d</span>
+                            <span class="section-number">9</span>
                             Safety & Ethics Guidelines
                         </h2>
                         <p class="section-description" style="margin: 0;">Enable ethical and safety considerations (optional)</p>
@@ -777,14 +789,20 @@
                 </div>
             </section>
 
-            <!-- Section 6: Reasoning Method -->
+            <!-- Section 10: Reasoning Method -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">6</span>
-                    Reasoning Method
-                </h2>
-                <p class="section-description">Choose how the AI should approach the problem</p>
+                <div class="collapsible-header" id="reasoningMethodHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">10</span>
+                            Reasoning Method
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Choose how the AI should approach the problem</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
                 
+                <div class="collapsible-content" id="reasoningMethodContent">
                 <div class="radio-group" role="radiogroup" aria-label="Reasoning method">
                     <div class="radio-option">
                         <input type="radio" id="zeroShot" name="reasoning" value="zero-shot" checked>
@@ -827,16 +845,23 @@
                         <label for="cotXmlTags">Use XML tags for thinking process</label>
                     </div>
                 </div>
+                </div>
             </section>
 
-            <!-- Section 7: Audience -->
+            <!-- Section 11: Audience -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">7</span>
-                    Audience
-                </h2>
-                <p class="section-description">Define who will read the output</p>
+                <div class="collapsible-header" id="audienceHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">11</span>
+                            Audience
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define who will read the output</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
                 
+                <div class="collapsible-content" id="audienceContent">
                 <label for="audience">Target Audience:</label>
                 <select id="audience" aria-label="Target audience selection">
                     <option value="">General (not specified)</option>
@@ -860,16 +885,23 @@
                     <label for="audienceCustom" style="margin-top: 16px;">Custom Audience:</label>
                     <textarea id="audienceCustom" placeholder="e.g., Medical professionals with basic technical knowledge..." aria-label="Custom audience description"></textarea>
                 </div>
+                </div>
             </section>
 
-            <!-- Section 8: Quality Controls -->
+            <!-- Section 12: Quality Controls -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">8</span>
-                    Quality Controls
-                </h2>
-                <p class="section-description">Enable quality assurance features</p>
+                <div class="collapsible-header" id="qualityControlsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">12</span>
+                            Quality Controls
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Enable quality assurance features</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
                 
+                <div class="collapsible-content" id="qualityControlsContent">
                 <div class="checkbox-group">
                     <div class="checkbox-option">
                         <input type="checkbox" id="selfReflection" checked>
@@ -886,12 +918,35 @@
                         </label>
                     </div>
                 </div>
+                </div>
             </section>
 
-            <!-- Section 9: Generation & Output -->
+            <!-- Section 13: Validation/Verification Conditions -->
+            <section class="form-section">
+                <div class="collapsible-header" id="validationConditionsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">13</span>
+                            Validation/Verification Conditions
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define success criteria for the AI output (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="validationConditionsContent">
+                    <p class="section-description">Add conditions to measure success of the AI's response</p>
+                    
+                    <div id="validationsContainer"></div>
+                    
+                    <button type="button" id="addValidationBtn" class="btn-secondary btn-small">+ Add Validation Condition</button>
+                </div>
+            </section>
+
+            <!-- Section 14: Generate Prompt -->
             <section class="form-section">
                 <h2 class="section-header">
-                    <span class="section-number">9</span>
+                    <span class="section-number">14</span>
                     Generate Prompt
                 </h2>
                 <p class="section-description">Generate and display the final prompt</p>
@@ -922,28 +977,6 @@
                     <button type="button" id="generateBtn" class="btn-primary">Generate Prompt</button>
                     <button type="button" id="exportBtn" class="btn-success">Export to REQUIREMENTS.md</button>
                     <button type="button" id="clearBtn" class="btn-secondary">Clear All</button>
-                </div>
-            </section>
-
-            <!-- Section 10: Validation/Verification Conditions -->
-            <section class="form-section">
-                <div class="collapsible-header" id="validationConditionsHeader">
-                    <div>
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">10</span>
-                            Validation/Verification Conditions
-                        </h2>
-                        <p class="section-description" style="margin: 0;">Define success criteria for the AI output (optional)</p>
-                    </div>
-                    <span class="collapsible-toggle">▶</span>
-                </div>
-                
-                <div class="collapsible-content" id="validationConditionsContent">
-                    <p class="section-description">Add conditions to measure success of the AI's response</p>
-                    
-                    <div id="validationsContainer"></div>
-                    
-                    <button type="button" id="addValidationBtn" class="btn-secondary btn-small">+ Add Validation Condition</button>
                 </div>
             </section>
         </form>
@@ -1034,7 +1067,6 @@
         const codeOptionsContent = document.getElementById('codeOptionsContent');
         const programmingLanguage = document.getElementById('programmingLanguage');
         const frameworkLibrary = document.getElementById('frameworkLibrary');
-        const codeStyle = document.getElementById('codeStyle');
         const includeTests = document.getElementById('includeTests');
         const includeDocumentation = document.getElementById('includeDocumentation');
         const testFramework = document.getElementById('testFramework');
@@ -1088,16 +1120,43 @@
         selfReflection.addEventListener('change', updateLiveTokenCount);
         antiHallucination.addEventListener('change', updateLiveTokenCount);
 
-        // Phase 2 Event Listeners
+        // Collapsible sections event listeners
+        const personaHeader = document.getElementById('personaHeader');
+        const personaContent = document.getElementById('personaContent');
+        const inputDataHeader = document.getElementById('inputDataHeader');
+        const inputDataContent = document.getElementById('inputDataContent');
+        const outputFormatHeader = document.getElementById('outputFormatHeader');
+        const outputFormatContent = document.getElementById('outputFormatContent');
+        const additionalContextHeader = document.getElementById('additionalContextHeader');
+        const additionalContextContent = document.getElementById('additionalContextContent');
+        const systemConstraintsHeader = document.getElementById('systemConstraintsHeader');
+        const systemConstraintsContent = document.getElementById('systemConstraintsContent');
+        const negativePromptingHeader = document.getElementById('negativePromptingHeader');
+        const negativePromptingContent = document.getElementById('negativePromptingContent');
+        const reasoningMethodHeader = document.getElementById('reasoningMethodHeader');
+        const reasoningMethodContent = document.getElementById('reasoningMethodContent');
+        const audienceHeader = document.getElementById('audienceHeader');
+        const audienceContent = document.getElementById('audienceContent');
+        const qualityControlsHeader = document.getElementById('qualityControlsHeader');
+        const qualityControlsContent = document.getElementById('qualityControlsContent');
+
+        personaHeader.addEventListener('click', () => toggleCollapsible(personaHeader, personaContent));
+        inputDataHeader.addEventListener('click', () => toggleCollapsible(inputDataHeader, inputDataContent));
+        outputFormatHeader.addEventListener('click', () => toggleCollapsible(outputFormatHeader, outputFormatContent));
+        additionalContextHeader.addEventListener('click', () => toggleCollapsible(additionalContextHeader, additionalContextContent));
+        systemConstraintsHeader.addEventListener('click', () => toggleCollapsible(systemConstraintsHeader, systemConstraintsContent));
+        negativePromptingHeader.addEventListener('click', () => toggleCollapsible(negativePromptingHeader, negativePromptingContent));
         codeOptionsHeader.addEventListener('click', () => toggleCollapsible(codeOptionsHeader, codeOptionsContent));
         safetyEthicsHeader.addEventListener('click', () => toggleCollapsible(safetyEthicsHeader, safetyEthicsContent));
+        reasoningMethodHeader.addEventListener('click', () => toggleCollapsible(reasoningMethodHeader, reasoningMethodContent));
+        audienceHeader.addEventListener('click', () => toggleCollapsible(audienceHeader, audienceContent));
+        qualityControlsHeader.addEventListener('click', () => toggleCollapsible(qualityControlsHeader, qualityControlsContent));
         validationConditionsHeader.addEventListener('click', () => toggleCollapsible(validationConditionsHeader, validationConditionsContent));
         addValidationBtn.addEventListener('click', addValidationCondition);
 
         // Live token count for Phase 2 fields
-        programmingLanguage.addEventListener('change', updateLiveTokenCount);
+        programmingLanguage.addEventListener('input', updateLiveTokenCount);
         frameworkLibrary.addEventListener('input', updateLiveTokenCount);
-        codeStyle.addEventListener('change', updateLiveTokenCount);
         includeTests.addEventListener('change', updateLiveTokenCount);
         includeDocumentation.addEventListener('change', updateLiveTokenCount);
         testFramework.addEventListener('input', updateLiveTokenCount);
@@ -1463,14 +1522,13 @@
             }
 
             // Code-Specific Options
-            const progLang = programmingLanguage.value;
+            const progLang = programmingLanguage.value.trim();
             const framework = frameworkLibrary.value.trim();
-            const style = codeStyle.value;
             const tests = includeTests.checked;
             const docs = includeDocumentation.checked;
             const testFw = testFramework.value.trim();
             
-            if (progLang || framework || style || tests || docs) {
+            if (progLang || framework || tests || docs) {
                 let codeSection = 'Code-Specific Requirements:';
                 
                 if (progLang) {
@@ -1479,10 +1537,6 @@
                 
                 if (framework) {
                     codeSection += '\n- Framework/Library: ' + framework;
-                }
-                
-                if (style) {
-                    codeSection += '\n- Code Style: ' + style;
                 }
                 
                 if (tests) {
