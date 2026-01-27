@@ -941,10 +941,202 @@
                 </div>
             </section>
 
-            <!-- Section 14: Generate Prompt -->
+            <!-- Section 14: Multi-Step Workflows -->
+            <section class="form-section">
+                <div class="collapsible-header" id="multiStepHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">14</span>
+                            Multi-Step Workflows
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define a step-by-step process for the AI to follow (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="multiStepContent">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="enableMultiStep">
+                        <label for="enableMultiStep">
+                            <strong>Enable multi-step workflow</strong>
+                            <small class="helper-text">Break down the task into sequential steps</small>
+                        </label>
+                    </div>
+                    
+                    <div id="multiStepContainer" class="hidden" style="margin-top: 16px;">
+                        <div id="stepsContainer"></div>
+                        <button type="button" id="addStepBtn" class="btn-secondary btn-small">+ Add Step</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 15: Creative Content Options -->
+            <section class="form-section">
+                <div class="collapsible-header" id="creativeContentHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">15</span>
+                            Creative Content Options
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Customize writing style and content preferences (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="creativeContentContent">
+                    <label for="writingStyle">Writing Style:</label>
+                    <select id="writingStyle" aria-label="Writing style">
+                        <option value="">Default</option>
+                        <option value="academic">Academic</option>
+                        <option value="blog">Blog Post</option>
+                        <option value="technical">Technical Documentation</option>
+                        <option value="narrative">Narrative</option>
+                        <option value="persuasive">Persuasive</option>
+                        <option value="descriptive">Descriptive</option>
+                        <option value="journalistic">Journalistic</option>
+                    </select>
+
+                    <label for="pointOfView" style="margin-top: 16px;">Point of View:</label>
+                    <select id="pointOfView" aria-label="Point of view">
+                        <option value="">Default</option>
+                        <option value="first-person">First Person (I/we)</option>
+                        <option value="second-person">Second Person (you)</option>
+                        <option value="third-person-limited">Third Person Limited (he/she)</option>
+                        <option value="third-person-omniscient">Third Person Omniscient</option>
+                    </select>
+
+                    <label for="wordCountTarget" style="margin-top: 16px;">Word Count Target:</label>
+                    <input type="text" id="wordCountTarget" placeholder="E.g., 500-1000 words" aria-label="Word count target">
+                    <small class="helper-text">Specify desired word count or range</small>
+
+                    <label for="readingLevel" style="margin-top: 16px;">Reading Level:</label>
+                    <select id="readingLevel" aria-label="Reading level">
+                        <option value="">Default</option>
+                        <option value="elementary">Elementary (Grade 1-5)</option>
+                        <option value="middle-school">Middle School (Grade 6-8)</option>
+                        <option value="high-school">High School (Grade 9-12)</option>
+                        <option value="college">College</option>
+                        <option value="professional">Professional</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Section 16: Research Instructions -->
+            <section class="form-section">
+                <div class="collapsible-header" id="researchInstructionsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">16</span>
+                            Research Instructions
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Guide AI research and fact-checking behavior (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="researchInstructionsContent">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="searchLatestInfo">
+                        <label for="searchLatestInfo">
+                            <strong>Search for latest information before answering</strong>
+                            <small class="helper-text">Ensure response includes current information</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="citeSources">
+                        <label for="citeSources">
+                            <strong>Cite specific sources with dates and URLs</strong>
+                            <small class="helper-text">Include citations and references</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="compareMultipleSources">
+                        <label for="compareMultipleSources">
+                            <strong>Compare multiple authoritative sources</strong>
+                            <small class="helper-text">Cross-reference different sources</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="verifyFacts">
+                        <label for="verifyFacts">
+                            <strong>Verify facts and flag uncertain information</strong>
+                            <small class="helper-text">Explicitly note confidence levels</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="includeConfidence">
+                        <label for="includeConfidence">
+                            <strong>Include confidence levels for key claims</strong>
+                            <small class="helper-text">Rate certainty of statements</small>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 17: Iterative Refinement -->
+            <section class="form-section">
+                <div class="collapsible-header" id="iterativeRefinementHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">17</span>
+                            Iterative Refinement
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Enable collaborative refinement and iteration (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="iterativeRefinementContent">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="askClarifyingQuestions">
+                        <label for="askClarifyingQuestions">
+                            <strong>Ask clarifying questions before providing final answer</strong>
+                            <small class="helper-text">Ensure requirements are well understood</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="provideAlternatives">
+                        <label for="provideAlternatives">
+                            <strong>Provide multiple solution approaches or alternatives</strong>
+                            <small class="helper-text">Offer different options to consider</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="requestFeedback">
+                        <label for="requestFeedback">
+                            <strong>Request feedback and iterate based on responses</strong>
+                            <small class="helper-text">Enable back-and-forth refinement</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="suggestImprovements">
+                        <label for="suggestImprovements">
+                            <strong>Suggest improvements or optimizations</strong>
+                            <small class="helper-text">Proactively recommend enhancements</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="identifyAssumptions">
+                        <label for="identifyAssumptions">
+                            <strong>Identify assumptions and ask for confirmation</strong>
+                            <small class="helper-text">Make implicit assumptions explicit</small>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 18: Generate Prompt -->
             <section class="form-section">
                 <h2 class="section-header">
-                    <span class="section-number">14</span>
+                    <span class="section-number">18</span>
                     Generate Prompt
                 </h2>
                 <p class="section-description">Generate and display the final prompt</p>
@@ -1081,6 +1273,37 @@
         const validationsContainer = document.getElementById('validationsContainer');
         const addValidationBtn = document.getElementById('addValidationBtn');
 
+        // Phase 3 DOM Elements
+        const multiStepHeader = document.getElementById('multiStepHeader');
+        const multiStepContent = document.getElementById('multiStepContent');
+        const enableMultiStep = document.getElementById('enableMultiStep');
+        const multiStepContainer = document.getElementById('multiStepContainer');
+        const stepsContainer = document.getElementById('stepsContainer');
+        const addStepBtn = document.getElementById('addStepBtn');
+
+        const creativeContentHeader = document.getElementById('creativeContentHeader');
+        const creativeContentContent = document.getElementById('creativeContentContent');
+        const writingStyle = document.getElementById('writingStyle');
+        const pointOfView = document.getElementById('pointOfView');
+        const wordCountTarget = document.getElementById('wordCountTarget');
+        const readingLevel = document.getElementById('readingLevel');
+
+        const researchInstructionsHeader = document.getElementById('researchInstructionsHeader');
+        const researchInstructionsContent = document.getElementById('researchInstructionsContent');
+        const searchLatestInfo = document.getElementById('searchLatestInfo');
+        const citeSources = document.getElementById('citeSources');
+        const compareMultipleSources = document.getElementById('compareMultipleSources');
+        const verifyFacts = document.getElementById('verifyFacts');
+        const includeConfidence = document.getElementById('includeConfidence');
+
+        const iterativeRefinementHeader = document.getElementById('iterativeRefinementHeader');
+        const iterativeRefinementContent = document.getElementById('iterativeRefinementContent');
+        const askClarifyingQuestions = document.getElementById('askClarifyingQuestions');
+        const provideAlternatives = document.getElementById('provideAlternatives');
+        const requestFeedback = document.getElementById('requestFeedback');
+        const suggestImprovements = document.getElementById('suggestImprovements');
+        const identifyAssumptions = document.getElementById('identifyAssumptions');
+
         // ===== Few-Shot Examples State =====
         let exampleCount = 0;
         const MAX_EXAMPLES = 5;
@@ -1088,6 +1311,12 @@
         // ===== Validation Conditions State =====
         let validationCount = 0;
         let validations = [];
+
+        // ===== Multi-Step Workflows State =====
+        let stepCount = 0;
+        let steps = [];
+        const MIN_STEPS = 2;
+        const MAX_STEPS = 10;
 
         // ===== Event Listeners =====
         personaSelect.addEventListener('change', togglePersonaCustom);
@@ -1151,6 +1380,33 @@
         qualityControlsHeader.addEventListener('click', () => toggleCollapsible(qualityControlsHeader, qualityControlsContent));
         validationConditionsHeader.addEventListener('click', () => toggleCollapsible(validationConditionsHeader, validationConditionsContent));
         addValidationBtn.addEventListener('click', addValidationCondition);
+
+        // Phase 3 collapsible sections
+        multiStepHeader.addEventListener('click', () => toggleCollapsible(multiStepHeader, multiStepContent));
+        creativeContentHeader.addEventListener('click', () => toggleCollapsible(creativeContentHeader, creativeContentContent));
+        researchInstructionsHeader.addEventListener('click', () => toggleCollapsible(researchInstructionsHeader, researchInstructionsContent));
+        iterativeRefinementHeader.addEventListener('click', () => toggleCollapsible(iterativeRefinementHeader, iterativeRefinementContent));
+
+        // Phase 3 event listeners
+        enableMultiStep.addEventListener('change', toggleMultiStepContainer);
+        addStepBtn.addEventListener('click', addStep);
+
+        // Phase 3 live token count updates
+        enableMultiStep.addEventListener('change', updateLiveTokenCount);
+        writingStyle.addEventListener('change', updateLiveTokenCount);
+        pointOfView.addEventListener('change', updateLiveTokenCount);
+        wordCountTarget.addEventListener('input', updateLiveTokenCount);
+        readingLevel.addEventListener('change', updateLiveTokenCount);
+        searchLatestInfo.addEventListener('change', updateLiveTokenCount);
+        citeSources.addEventListener('change', updateLiveTokenCount);
+        compareMultipleSources.addEventListener('change', updateLiveTokenCount);
+        verifyFacts.addEventListener('change', updateLiveTokenCount);
+        includeConfidence.addEventListener('change', updateLiveTokenCount);
+        askClarifyingQuestions.addEventListener('change', updateLiveTokenCount);
+        provideAlternatives.addEventListener('change', updateLiveTokenCount);
+        requestFeedback.addEventListener('change', updateLiveTokenCount);
+        suggestImprovements.addEventListener('change', updateLiveTokenCount);
+        identifyAssumptions.addEventListener('change', updateLiveTokenCount);
 
         // Live token count for Phase 2 fields
         programmingLanguage.addEventListener('input', updateLiveTokenCount);
