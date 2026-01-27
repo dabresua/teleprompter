@@ -657,6 +657,9 @@
                         <option value="research-summary">Research Summary</option>
                         <option value="api-documentation">API Documentation</option>
                         <option value="user-story">User Story Writing</option>
+                        <option value="feature-request">Software Feature Request</option>
+                        <option value="bug-analysis">Bug Analysis</option>
+                        <option value="project-familiarization">Project Familiarization</option>
                     </select>
                 </div>
 
@@ -1194,6 +1197,106 @@ Use secure token generation. Implement rate limiting to prevent abuse.`;
                     audienceSelect.value = 'Semi-Technical - Technical Project Managers';
                     selfReflection.checked = true;
                     antiHallucination.checked = false;
+                    break;
+
+                case 'feature-request':
+                    personaSelect.value = 'Product Manager';
+                    instructions.value = 'Analyze the following feature request and create a comprehensive specification. Include technical feasibility, user impact, and implementation recommendations.';
+                    inputData.value = `Feature Request: Add real-time collaboration features to our document editor, similar to Google Docs. Multiple users should be able to edit simultaneously with cursor positions visible and changes synced instantly.`;
+                    outputFormat.value = `## Feature Overview
+## User Stories
+## Technical Requirements
+- Frontend changes
+- Backend changes
+- Infrastructure needs
+## Implementation Approach
+## Challenges and Risks
+## Success Metrics
+## Timeline Estimate`;
+                    additionalContext.value = 'Current stack: React frontend, Node.js backend, MongoDB database. Target users: teams of 5-50 people. Performance requirement: <100ms latency for edits.';
+                    document.getElementById('chainOfThought').checked = true;
+                    toggleReasoningMethod();
+                    cotSteps.value = `1. Analyze user needs and use cases
+2. Identify technical requirements and dependencies
+3. Evaluate existing solutions and technologies
+4. Consider scalability and performance implications
+5. Assess implementation complexity and timeline`;
+                    cotXmlTags.checked = true;
+                    audienceSelect.value = 'Semi-Technical - Product Managers';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = true;
+                    break;
+
+                case 'bug-analysis':
+                    personaSelect.value = 'Senior Software Engineer';
+                    instructions.value = 'Analyze the following bug report, identify root cause, and provide a detailed fix with testing approach.';
+                    inputData.value = `<bug_report>
+Title: Application crashes when uploading files larger than 10MB
+Environment: Production, Chrome 120, Windows 11
+Steps to reproduce:
+1. Navigate to /upload page
+2. Select a file larger than 10MB
+3. Click "Upload" button
+4. Browser tab becomes unresponsive
+
+Error log:
+Uncaught RangeError: Maximum call stack size exceeded
+  at FileReader.onload (upload.js:45)
+  at convertToBase64 (utils.js:123)
+</bug_report>`;
+                    outputFormat.value = `## Root Cause Analysis
+## Impact Assessment
+## Proposed Solution
+- Code changes
+- Configuration changes
+## Testing Strategy
+## Prevention Measures`;
+                    additionalContext.value = 'File upload uses Base64 encoding. Current implementation loads entire file into memory. Production handles 1000+ uploads daily. Quick fix needed but should be production-ready.';
+                    document.getElementById('chainOfThought').checked = true;
+                    toggleReasoningMethod();
+                    cotSteps.value = `1. Analyze error message and stack trace
+2. Identify code location and logic flow
+3. Determine why the issue occurs
+4. Evaluate potential solutions
+5. Recommend fix with minimal risk`;
+                    cotXmlTags.checked = true;
+                    audienceSelect.value = 'Technical - Software Developers';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = true;
+                    break;
+
+                case 'project-familiarization':
+                    personaSelect.value = 'Senior Software Engineer';
+                    instructions.value = 'You are working as an AI agent inside this codebase. Familiarize yourself with the project structure, architecture, and key components. Prepare to answer questions and assist with development tasks.';
+                    inputData.value = `<project_context>
+Repository: teleprompter
+Purpose: AI Prompt Engineering Wizard - a single-page application for building structured AI prompts
+Technology: Vanilla HTML/CSS/JavaScript (no frameworks)
+File structure:
+- index.html (main application file)
+- README.md (project documentation)
+- REQUIREMENTS.md (detailed specifications)
+</project_context>`;
+                    outputFormat.value = `## Project Summary
+Brief overview of what this project does
+
+## Architecture Overview
+Key technical decisions and structure
+
+## Main Components
+List and describe major parts of the codebase
+
+## How to Work with This Project
+Development workflow and guidelines
+
+## Questions I Can Help With
+Types of tasks I'm ready to assist with`;
+                    additionalContext.value = 'Focus on understanding the codebase well enough to make contributions, fix bugs, or add features. Be ready to explain any part of the code or suggest improvements.';
+                    document.getElementById('zeroShot').checked = true;
+                    toggleReasoningMethod();
+                    audienceSelect.value = 'Technical - Software Developers';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = true;
                     break;
             }
 
