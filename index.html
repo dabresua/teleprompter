@@ -935,8 +935,6 @@
                 </div>
                 
                 <div class="collapsible-content" id="validationConditionsContent">
-                    <p class="section-description">Add conditions to measure success of the AI's response</p>
-                    
                     <div id="validationsContainer"></div>
                     
                     <button type="button" id="addValidationBtn" class="btn-secondary btn-small">+ Add Validation Condition</button>
@@ -1709,6 +1707,22 @@
                 exampleCount = 0;
                 initializeExamples();
                 
+                // Reset validation conditions
+                validationsContainer.innerHTML = '';
+                validationCount = 0;
+                validations = [];
+                
+                // Reset collapsible sections to collapsed state
+                document.querySelectorAll('.collapsible-content').forEach(content => {
+                    content.classList.remove('open');
+                });
+                document.querySelectorAll('.collapsible-header').forEach(header => {
+                    header.classList.remove('active');
+                });
+                document.querySelectorAll('.collapsible-toggle').forEach(toggle => {
+                    toggle.classList.remove('open');
+                });
+                
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
@@ -1784,6 +1798,22 @@ ${prompt}
             audienceCustomContainer.classList.add('hidden');
             examplesContainer.innerHTML = '';
             exampleCount = 0;
+            
+            // Reset validation conditions
+            validationsContainer.innerHTML = '';
+            validationCount = 0;
+            validations = [];
+            
+            // Reset collapsible sections to collapsed state
+            document.querySelectorAll('.collapsible-content').forEach(content => {
+                content.classList.remove('open');
+            });
+            document.querySelectorAll('.collapsible-header').forEach(header => {
+                header.classList.remove('active');
+            });
+            document.querySelectorAll('.collapsible-toggle').forEach(toggle => {
+                toggle.classList.remove('open');
+            });
 
             switch(scenario) {
                 case 'code-security':
