@@ -810,7 +810,11 @@
 
         // ===== Event Listeners =====
         personaSelect.addEventListener('change', togglePersonaCustom);
+        personaSelect.addEventListener('change', updateLiveTokenCount);
+        personaCustom.addEventListener('input', updateLiveTokenCount);
         audienceSelect.addEventListener('change', toggleAudienceCustom);
+        audienceSelect.addEventListener('change', updateLiveTokenCount);
+        audienceCustom.addEventListener('input', updateLiveTokenCount);
         reasoningRadios.forEach(radio => radio.addEventListener('change', toggleReasoningMethod));
         addExampleBtn.addEventListener('click', addExample);
         generateBtn.addEventListener('click', generatePrompt);
@@ -819,9 +823,23 @@
         copyBtn.addEventListener('click', copyToClipboard);
         loadExample.addEventListener('change', loadExampleScenario);
         generatedPrompt.addEventListener('input', updateCharCount);
+        
+        // Live token count updates on field changes
+        instructions.addEventListener('input', updateLiveTokenCount);
+        inputData.addEventListener('input', updateLiveTokenCount);
+        outputFormat.addEventListener('input', updateLiveTokenCount);
+        additionalContext.addEventListener('input', updateLiveTokenCount);
+        responseLength.addEventListener('change', updateLiveTokenCount);
+        toneStyle.addEventListener('change', updateLiveTokenCount);
+        formatPreferences.addEventListener('input', updateLiveTokenCount);
+        negativePrompts.addEventListener('input', updateLiveTokenCount);
+        cotSteps.addEventListener('input', updateLiveTokenCount);
+        selfReflection.addEventListener('change', updateLiveTokenCount);
+        antiHallucination.addEventListener('change', updateLiveTokenCount);
 
         // ===== Initialize =====
         initializeExamples();
+        updateLiveTokenCount(); // Initialize token count display
 
         // ===== Functions =====
         function togglePersonaCustom() {
@@ -1083,7 +1101,66 @@
             const text = generatedPrompt.value;
             const charCount_val = text.length;
             const tokenCount = Math.ceil(charCount_val / 4); // Rough estimate: ~1 token per 4 characters
-            charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens`;
+            
+            // Apply color coding based on token count
+            if (tokenCount > 2000) {
+                charCount.style.color = 'var(--error)';
+                charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens ⚠️ Large prompt - consider reducing`;
+            } else if (tokenCount > 1000) {
+                charCount.style.color = 'orange';
+                charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens ⚠️ Getting large`;
+            } else {
+                charCount.style.color = 'var(--text-light)';
+                charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens`;
+            }
+        }
+
+        function updateLiveTokenCount() {
+            // Calculate approximate token count from all form fields
+            let totalChars = 0;
+            
+            // Collect text from all relevant fields
+            if (personaSelect.value && personaSelect.value !== 'None (no persona)') {
+                if (personaSelect.value === 'Other (custom)') {
+                    totalChars += personaCustom.value.length;
+                } else if (personaTemplates[personaSelect.value]) {
+                    totalChars += personaTemplates[personaSelect.value].length;
+                }
+            }
+            
+            totalChars += instructions.value.length;
+            totalChars += inputData.value.length;
+            totalChars += outputFormat.value.length;
+            totalChars += additionalContext.value.length;
+            totalChars += formatPreferences.value.length;
+            totalChars += negativePrompts.value.length;
+            totalChars += cotSteps.value.length;
+            
+            if (audienceSelect.value && audienceSelect.value !== 'General (not specified)') {
+                if (audienceSelect.value === 'Other (custom)') {
+                    totalChars += audienceCustom.value.length;
+                } else if (audienceTemplates[audienceSelect.value]) {
+                    totalChars += audienceTemplates[audienceSelect.value].length;
+                }
+            }
+            
+            // Add approximate overhead for formatting, labels, and quality controls
+            const overhead = 500; // Rough estimate for section labels and quality control text
+            totalChars += overhead;
+            
+            const tokenCount = Math.ceil(totalChars / 4);
+            
+            // Update the display with live preview
+            if (tokenCount > 2000) {
+                charCount.style.color = 'var(--error)';
+                charCount.textContent = `~${totalChars} characters • ~${tokenCount} tokens ⚠️ Large prompt - consider reducing`;
+            } else if (tokenCount > 1000) {
+                charCount.style.color = 'orange';
+                charCount.textContent = `~${totalChars} characters • ~${tokenCount} tokens ⚠️ Getting large`;
+            } else {
+                charCount.style.color = 'var(--text-light)';
+                charCount.textContent = `~${totalChars} characters • ~${tokenCount} tokens`;
+            }
         }
 
         function clearForm() {
@@ -1094,7 +1171,8 @@
                 fewShotContainer.classList.add('hidden');
                 cotContainer.classList.add('hidden');
                 generatedPrompt.value = '';
-                charCount.textContent = '0 characters • 0 tokens';
+                charCount.style.color = 'var(--text-light)';
+                charCount.textContent = '~0 characters • ~0 tokens';
                 instructions.classList.remove('field-error');
                 instructionsError.style.display = 'none';
                 
