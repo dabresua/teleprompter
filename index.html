@@ -337,6 +337,85 @@
             margin-top: var(--spacing-sm);
         }
 
+        /* ===== Collapsible Sections ===== */
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: var(--border-radius);
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .collapsible-header:hover {
+            background: #f3f4f6;
+        }
+
+        .collapsible-header.active {
+            background: #e5e7eb;
+        }
+
+        .collapsible-toggle {
+            font-size: 1.2em;
+            transition: transform var(--transition);
+        }
+
+        .collapsible-toggle.open {
+            transform: rotate(90deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible-content.open {
+            max-height: 2000px;
+        }
+
+        /* ===== Validation Conditions ===== */
+        .validation-item {
+            background: #f9fafb;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            cursor: move;
+        }
+
+        .validation-item.blocking {
+            border-left: 4px solid var(--error);
+        }
+
+        .validation-item.warning {
+            border-left: 4px solid orange;
+        }
+
+        .validation-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .validation-order {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
+
+        .drag-handle {
+            cursor: move;
+            color: var(--text-light);
+            margin-right: 8px;
+        }
+
         /* ===== Notification ===== */
         .notification {
             position: fixed;
@@ -574,6 +653,130 @@
                 <small class="helper-text">List specific things to avoid in the response</small>
             </section>
 
+            <!-- Section 5c: Code-Specific Options -->
+            <section class="form-section">
+                <div class="collapsible-header" id="codeOptionsHeader">
+                    <div>
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">5c</span>
+                            Code-Specific Options
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Configure code generation preferences (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="codeOptionsContent">
+                    <label for="programmingLanguage">Programming Language:</label>
+                    <select id="programmingLanguage" aria-label="Programming language">
+                        <option value="">Not specified</option>
+                        <option value="Python">Python</option>
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="TypeScript">TypeScript</option>
+                        <option value="Java">Java</option>
+                        <option value="C#">C#</option>
+                        <option value="C++">C++</option>
+                        <option value="C">C</option>
+                        <option value="Go">Go</option>
+                        <option value="Rust">Rust</option>
+                        <option value="Ruby">Ruby</option>
+                        <option value="PHP">PHP</option>
+                        <option value="Swift">Swift</option>
+                        <option value="Kotlin">Kotlin</option>
+                        <option value="Scala">Scala</option>
+                        <option value="R">R</option>
+                        <option value="MATLAB">MATLAB</option>
+                        <option value="SQL">SQL</option>
+                        <option value="Shell/Bash">Shell/Bash</option>
+                        <option value="PowerShell">PowerShell</option>
+                        <option value="Dart">Dart</option>
+                    </select>
+
+                    <label for="frameworkLibrary" style="margin-top: 16px;">Framework/Library:</label>
+                    <input type="text" id="frameworkLibrary" placeholder="E.g., React, Django, Spring Boot, .NET Core" aria-label="Framework or library">
+                    <small class="helper-text">Specify the tech stack or framework to use</small>
+
+                    <label for="codeStyle" style="margin-top: 16px;">Code Style:</label>
+                    <select id="codeStyle" aria-label="Code style guide">
+                        <option value="">Default</option>
+                        <option value="PEP 8 (Python)">PEP 8 (Python)</option>
+                        <option value="Google Style Guide">Google Style Guide</option>
+                        <option value="Airbnb Style Guide">Airbnb Style Guide</option>
+                        <option value="Standard JS">Standard JS</option>
+                        <option value="PSR-12 (PHP)">PSR-12 (PHP)</option>
+                        <option value="Oracle Java Style">Oracle Java Style</option>
+                        <option value="Microsoft C# Conventions">Microsoft C# Conventions</option>
+                    </select>
+
+                    <div class="checkbox-option" style="margin-top: 16px;">
+                        <input type="checkbox" id="includeTests">
+                        <label for="includeTests">
+                            <strong>Include unit tests</strong>
+                            <small class="helper-text">Generate test cases for the code</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="includeDocumentation">
+                        <label for="includeDocumentation">
+                            <strong>Include documentation</strong>
+                            <small class="helper-text">Add docstrings, comments, and inline documentation</small>
+                        </label>
+                    </div>
+
+                    <label for="testFramework" style="margin-top: 16px;">Test Framework (if tests enabled):</label>
+                    <input type="text" id="testFramework" placeholder="E.g., pytest, Jest, JUnit, xUnit" aria-label="Test framework">
+                </div>
+            </section>
+
+            <!-- Section 5d: Safety & Ethics Guidelines -->
+            <section class="form-section">
+                <div class="collapsible-header" id="safetyEthicsHeader">
+                    <div>
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">5d</span>
+                            Safety & Ethics Guidelines
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Enable ethical and safety considerations (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="safetyEthicsContent">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="checkBias">
+                        <label for="checkBias">
+                            <strong>Check for bias in recommendations</strong>
+                            <small class="helper-text">Ensure fair and unbiased output</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="accessibilityRequirements">
+                        <label for="accessibilityRequirements">
+                            <strong>Consider accessibility requirements</strong>
+                            <small class="helper-text">Ensure solutions are accessible to all users</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="privacyDataProtection">
+                        <label for="privacyDataProtection">
+                            <strong>Privacy and data protection concerns</strong>
+                            <small class="helper-text">Address GDPR, data privacy, and security</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="ethicalImplications">
+                        <label for="ethicalImplications">
+                            <strong>Evaluate ethical implications</strong>
+                            <small class="helper-text">Consider broader societal and ethical impacts</small>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
             <!-- Section 6: Reasoning Method -->
             <section class="form-section">
                 <h2 class="section-header">
@@ -721,6 +924,28 @@
                     <button type="button" id="clearBtn" class="btn-secondary">Clear All</button>
                 </div>
             </section>
+
+            <!-- Section 10: Validation/Verification Conditions -->
+            <section class="form-section">
+                <div class="collapsible-header" id="validationConditionsHeader">
+                    <div>
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">10</span>
+                            Validation/Verification Conditions
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define success criteria for the AI output (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="validationConditionsContent">
+                    <p class="section-description">Add conditions to measure success of the AI's response</p>
+                    
+                    <div id="validationsContainer"></div>
+                    
+                    <button type="button" id="addValidationBtn" class="btn-secondary btn-small">+ Add Validation Condition</button>
+                </div>
+            </section>
         </form>
 
         <!-- Output Section -->
@@ -804,9 +1029,35 @@
         const copyBtn = document.getElementById('copyBtn');
         const charCount = document.getElementById('charCount');
 
+        // Phase 2 DOM Elements
+        const codeOptionsHeader = document.getElementById('codeOptionsHeader');
+        const codeOptionsContent = document.getElementById('codeOptionsContent');
+        const programmingLanguage = document.getElementById('programmingLanguage');
+        const frameworkLibrary = document.getElementById('frameworkLibrary');
+        const codeStyle = document.getElementById('codeStyle');
+        const includeTests = document.getElementById('includeTests');
+        const includeDocumentation = document.getElementById('includeDocumentation');
+        const testFramework = document.getElementById('testFramework');
+
+        const safetyEthicsHeader = document.getElementById('safetyEthicsHeader');
+        const safetyEthicsContent = document.getElementById('safetyEthicsContent');
+        const checkBias = document.getElementById('checkBias');
+        const accessibilityRequirements = document.getElementById('accessibilityRequirements');
+        const privacyDataProtection = document.getElementById('privacyDataProtection');
+        const ethicalImplications = document.getElementById('ethicalImplications');
+
+        const validationConditionsHeader = document.getElementById('validationConditionsHeader');
+        const validationConditionsContent = document.getElementById('validationConditionsContent');
+        const validationsContainer = document.getElementById('validationsContainer');
+        const addValidationBtn = document.getElementById('addValidationBtn');
+
         // ===== Few-Shot Examples State =====
         let exampleCount = 0;
         const MAX_EXAMPLES = 5;
+
+        // ===== Validation Conditions State =====
+        let validationCount = 0;
+        let validations = [];
 
         // ===== Event Listeners =====
         personaSelect.addEventListener('change', togglePersonaCustom);
@@ -836,6 +1087,20 @@
         cotSteps.addEventListener('input', updateLiveTokenCount);
         selfReflection.addEventListener('change', updateLiveTokenCount);
         antiHallucination.addEventListener('change', updateLiveTokenCount);
+
+        // Phase 2 Event Listeners
+        codeOptionsHeader.addEventListener('click', () => toggleCollapsible(codeOptionsHeader, codeOptionsContent));
+        safetyEthicsHeader.addEventListener('click', () => toggleCollapsible(safetyEthicsHeader, safetyEthicsContent));
+        validationConditionsHeader.addEventListener('click', () => toggleCollapsible(validationConditionsHeader, validationConditionsContent));
+        addValidationBtn.addEventListener('click', addValidationCondition);
+
+        // Live token count for Phase 2 fields
+        programmingLanguage.addEventListener('change', updateLiveTokenCount);
+        frameworkLibrary.addEventListener('input', updateLiveTokenCount);
+        codeStyle.addEventListener('change', updateLiveTokenCount);
+        includeTests.addEventListener('change', updateLiveTokenCount);
+        includeDocumentation.addEventListener('change', updateLiveTokenCount);
+        testFramework.addEventListener('input', updateLiveTokenCount);
 
         // ===== Initialize =====
         initializeExamples();
@@ -871,6 +1136,137 @@
                 fewShotContainer.classList.add('hidden');
                 cotContainer.classList.add('hidden');
             }
+        }
+
+        function toggleCollapsible(header, content) {
+            const toggle = header.querySelector('.collapsible-toggle');
+            const isOpen = content.classList.contains('open');
+            
+            if (isOpen) {
+                content.classList.remove('open');
+                toggle.classList.remove('open');
+                header.classList.remove('active');
+            } else {
+                content.classList.add('open');
+                toggle.classList.add('open');
+                header.classList.add('active');
+            }
+        }
+
+        function addValidationCondition() {
+            validationCount++;
+            const validationDiv = document.createElement('div');
+            validationDiv.className = 'validation-item';
+            validationDiv.id = `validation-${validationCount}`;
+            validationDiv.draggable = true;
+            
+            const index = validations.length;
+            validations.push({
+                id: validationCount,
+                description: '',
+                impact: 'warning'
+            });
+            
+            validationDiv.innerHTML = `
+                <div class="validation-header">
+                    <div style="display: flex; align-items: center;">
+                        <span class="drag-handle">☰</span>
+                        <span class="validation-order">${index + 1}.</span>
+                        <strong>Validation Condition</strong>
+                    </div>
+                    <button type="button" class="btn-danger btn-small" onclick="removeValidationCondition(${validationCount})">Remove</button>
+                </div>
+                <label for="validationDesc${validationCount}">Description:</label>
+                <textarea id="validationDesc${validationCount}" placeholder="E.g., Response must include working code examples" data-validation-id="${validationCount}"></textarea>
+                <label for="validationImpact${validationCount}" style="margin-top: 8px;">Impact:</label>
+                <select id="validationImpact${validationCount}" data-validation-id="${validationCount}" onchange="updateValidationImpact(${validationCount}, this.value)">
+                    <option value="warning">Warning</option>
+                    <option value="blocking">Blocking</option>
+                </select>
+            `;
+            
+            validationsContainer.appendChild(validationDiv);
+            
+            // Add drag and drop event listeners
+            validationDiv.addEventListener('dragstart', handleDragStart);
+            validationDiv.addEventListener('dragover', handleDragOver);
+            validationDiv.addEventListener('drop', handleDrop);
+            validationDiv.addEventListener('dragend', handleDragEnd);
+        }
+
+        function removeValidationCondition(id) {
+            const validationDiv = document.getElementById(`validation-${id}`);
+            if (validationDiv) {
+                validationDiv.remove();
+                // Remove from state
+                validations = validations.filter(v => v.id !== id);
+                // Renumber remaining validations
+                renumberValidations();
+            }
+        }
+
+        function updateValidationImpact(id, impact) {
+            const validationDiv = document.getElementById(`validation-${id}`);
+            if (validationDiv) {
+                validationDiv.classList.remove('blocking', 'warning');
+                validationDiv.classList.add(impact);
+            }
+            // Update state
+            const validation = validations.find(v => v.id === id);
+            if (validation) {
+                validation.impact = impact;
+            }
+        }
+
+        function renumberValidations() {
+            const items = validationsContainer.querySelectorAll('.validation-item');
+            items.forEach((item, index) => {
+                const orderSpan = item.querySelector('.validation-order');
+                if (orderSpan) {
+                    orderSpan.textContent = `${index + 1}.`;
+                }
+            });
+        }
+
+        // Drag and drop handlers
+        let draggedItem = null;
+
+        function handleDragStart(e) {
+            draggedItem = this;
+            this.style.opacity = '0.4';
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            return false;
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            if (draggedItem !== this) {
+                const allItems = Array.from(validationsContainer.querySelectorAll('.validation-item'));
+                const draggedIndex = allItems.indexOf(draggedItem);
+                const targetIndex = allItems.indexOf(this);
+                
+                if (draggedIndex < targetIndex) {
+                    this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                } else {
+                    this.parentNode.insertBefore(draggedItem, this);
+                }
+                
+                renumberValidations();
+            }
+            
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            this.style.opacity = '1';
         }
 
         function initializeExamples() {
@@ -1066,6 +1462,66 @@
                 prompt.push('IMPORTANT - Do NOT:\n' + negativePrompts.value.trim());
             }
 
+            // Code-Specific Options
+            const progLang = programmingLanguage.value;
+            const framework = frameworkLibrary.value.trim();
+            const style = codeStyle.value;
+            const tests = includeTests.checked;
+            const docs = includeDocumentation.checked;
+            const testFw = testFramework.value.trim();
+            
+            if (progLang || framework || style || tests || docs) {
+                let codeSection = 'Code-Specific Requirements:';
+                
+                if (progLang) {
+                    codeSection += '\n- Programming Language: ' + progLang;
+                }
+                
+                if (framework) {
+                    codeSection += '\n- Framework/Library: ' + framework;
+                }
+                
+                if (style) {
+                    codeSection += '\n- Code Style: ' + style;
+                }
+                
+                if (tests) {
+                    codeSection += '\n- Include comprehensive unit tests';
+                    if (testFw) {
+                        codeSection += ' using ' + testFw;
+                    }
+                }
+                
+                if (docs) {
+                    codeSection += '\n- Include detailed documentation with docstrings and inline comments';
+                }
+                
+                prompt.push(codeSection);
+            }
+
+            // Safety & Ethics Guidelines
+            if (checkBias.checked || accessibilityRequirements.checked || privacyDataProtection.checked || ethicalImplications.checked) {
+                let safetySection = 'Safety & Ethics Considerations:';
+                
+                if (checkBias.checked) {
+                    safetySection += '\n- Check for and eliminate bias in recommendations';
+                }
+                
+                if (accessibilityRequirements.checked) {
+                    safetySection += '\n- Ensure solutions meet accessibility requirements (WCAG 2.1 AA minimum)';
+                }
+                
+                if (privacyDataProtection.checked) {
+                    safetySection += '\n- Address privacy and data protection concerns (GDPR compliance)';
+                }
+                
+                if (ethicalImplications.checked) {
+                    safetySection += '\n- Consider and discuss ethical implications of the solution';
+                }
+                
+                prompt.push(safetySection);
+            }
+
             // Audience
             const selectedAudience = audienceSelect.value;
             if (selectedAudience && selectedAudience !== 'General (not specified)') {
@@ -1076,6 +1532,24 @@
                 } else if (audienceTemplates[selectedAudience]) {
                     prompt.push(audienceTemplates[selectedAudience]);
                 }
+            }
+
+            // Validation/Verification Conditions
+            const validationItems = validationsContainer.querySelectorAll('.validation-item');
+            if (validationItems.length > 0) {
+                let validationSection = 'Success Criteria - Validate that the response meets these conditions:';
+                
+                validationItems.forEach((item, index) => {
+                    const desc = item.querySelector('textarea').value.trim();
+                    const impact = item.querySelector('select').value;
+                    
+                    if (desc) {
+                        const impactLabel = impact === 'blocking' ? '[REQUIRED]' : '[RECOMMENDED]';
+                        validationSection += `\n${index + 1}. ${impactLabel} ${desc}`;
+                    }
+                });
+                
+                prompt.push(validationSection);
             }
 
             // Self-reflection
