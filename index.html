@@ -1466,6 +1466,59 @@
             }
         }
 
+        // Phase 3: Multi-Step Workflows functions
+        function toggleMultiStepContainer() {
+            if (enableMultiStep.checked) {
+                workflowStepsContainer.classList.remove('hidden');
+                // Add minimum steps if empty
+                while (workflowStepsContainer.children.length < MIN_STEPS) {
+                    addStep();
+                }
+            } else {
+                workflowStepsContainer.classList.add('hidden');
+            }
+        }
+
+        function addStep() {
+            if (workflowStepsContainer.children.length >= MAX_STEPS) {
+                alert(`Maximum ${MAX_STEPS} steps allowed`);
+                return;
+            }
+
+            stepCount++;
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'workflow-step';
+            stepDiv.innerHTML = `
+                <strong>Step ${workflowStepsContainer.children.length + 1}:</strong>
+                <textarea placeholder="Describe this step..."></textarea>
+                ${workflowStepsContainer.children.length >= MIN_STEPS - 1 ? '<button type="button" class="remove-step-btn" onclick="removeStep(this)">Remove</button>' : ''}
+            `;
+            
+            const textarea = stepDiv.querySelector('textarea');
+            textarea.addEventListener('input', updateLiveTokenCount);
+            
+            workflowStepsContainer.appendChild(stepDiv);
+            updateStepNumbers();
+        }
+
+        function removeStep(button) {
+            if (workflowStepsContainer.children.length <= MIN_STEPS) {
+                alert(`Minimum ${MIN_STEPS} steps required`);
+                return;
+            }
+
+            button.parentElement.remove();
+            updateStepNumbers();
+            updateLiveTokenCount();
+        }
+
+        function updateStepNumbers() {
+            const steps = workflowStepsContainer.querySelectorAll('.workflow-step');
+            steps.forEach((step, index) => {
+                step.querySelector('strong').textContent = `Step ${index + 1}:`;
+            });
+        }
+
         function addValidationCondition() {
             validationCount++;
             const validationDiv = document.createElement('div');
@@ -1828,6 +1881,105 @@
                 }
                 
                 prompt.push(safetySection);
+            }
+
+            // Multi-Step Workflows
+            if (enableMultiStep.checked) {
+                const steps = workflowStepsContainer.querySelectorAll('.workflow-step');
+                if (steps.length >= MIN_STEPS) {
+                    let workflowSection = 'Step-by-Step Process:';
+                    
+                    steps.forEach((step, index) => {
+                        const desc = step.querySelector('textarea').value.trim();
+                        if (desc) {
+                            workflowSection += `\nStep ${index + 1}: ${desc}`;
+                        }
+                    });
+                    
+                    prompt.push(workflowSection);
+                }
+            }
+
+            // Creative Content Options
+            const writingStyleValue = writingStyle.value;
+            const povValue = pointOfView.value;
+            const wordCountValue = wordCountTarget.value.trim();
+            const readingLevelValue = readingLevel.value;
+            
+            if (writingStyleValue || povValue || wordCountValue || readingLevelValue) {
+                let creativeSection = 'Creative Content Guidelines:';
+                
+                if (writingStyleValue) {
+                    creativeSection += '\n- Writing Style: ' + writingStyleValue;
+                }
+                
+                if (povValue) {
+                    creativeSection += '\n- Point of View: ' + povValue;
+                }
+                
+                if (wordCountValue) {
+                    creativeSection += '\n- Target Word Count: ' + wordCountValue;
+                }
+                
+                if (readingLevelValue) {
+                    creativeSection += '\n- Reading Level: ' + readingLevelValue;
+                }
+                
+                prompt.push(creativeSection);
+            }
+
+            // Research Instructions
+            if (searchLatestInfo.checked || citeSources.checked || compareSources.checked || verifyFacts.checked || includeConfidence.checked) {
+                let researchSection = 'Research Guidelines:';
+                
+                if (searchLatestInfo.checked) {
+                    researchSection += '\n- Search for and incorporate the latest information before answering';
+                }
+                
+                if (citeSources.checked) {
+                    researchSection += '\n- Cite specific sources with dates and URLs where applicable';
+                }
+                
+                if (compareSources.checked) {
+                    researchSection += '\n- Compare information from multiple authoritative sources';
+                }
+                
+                if (verifyFacts.checked) {
+                    researchSection += '\n- Verify facts before presenting them and flag any uncertain information';
+                }
+                
+                if (includeConfidence.checked) {
+                    researchSection += '\n- Include confidence levels for key claims and findings';
+                }
+                
+                prompt.push(researchSection);
+            }
+
+            // Iterative Refinement
+            if (askClarifying.checked || provideAlternatives.checked || requestFeedback.checked || suggestImprovements.checked || identifyAssumptions.checked) {
+                let iterativeSection = 'Iterative Approach:';
+                
+                if (askClarifying.checked) {
+                    iterativeSection += '\n- Ask clarifying questions before providing the final answer if anything is ambiguous';
+                }
+                
+                if (provideAlternatives.checked) {
+                    iterativeSection += '\n- Provide multiple solution approaches or alternatives when applicable';
+                }
+                
+                if (requestFeedback.checked) {
+                    iterativeSection += '\n- Request feedback and be prepared to iterate based on responses';
+                }
+                
+                if (suggestImprovements.checked) {
+                    iterativeSection += '\n- Proactively suggest improvements or optimizations';
+                }
+                
+                if (identifyAssumptions.checked) {
+                    iterativeSection += '\n- Clearly identify any assumptions made and ask for confirmation';
+                }
+                
+                prompt.push(iterativeSection);
             }
 
             // Audience
