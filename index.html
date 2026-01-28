@@ -1929,7 +1929,7 @@
             }
 
             // Research Instructions
-            if (searchLatestInfo.checked || citeSources.checked || compareSources.checked || verifyFacts.checked || includeConfidence.checked) {
+            if (searchLatestInfo.checked || citeSources.checked || compareMultipleSources.checked || verifyFacts.checked || includeConfidence.checked) {
                 let researchSection = 'Research Guidelines:';
                 
                 if (searchLatestInfo.checked) {
@@ -1940,7 +1940,7 @@
                     researchSection += '\n- Cite specific sources with dates and URLs where applicable';
                 }
                 
-                if (compareSources.checked) {
+                if (compareMultipleSources.checked) {
                     researchSection += '\n- Compare information from multiple authoritative sources';
                 }
                 
@@ -1956,10 +1956,10 @@
             }
 
             // Iterative Refinement
-            if (askClarifying.checked || provideAlternatives.checked || requestFeedback.checked || suggestImprovements.checked || identifyAssumptions.checked) {
+            if (askClarifyingQuestions.checked || provideAlternatives.checked || requestFeedback.checked || suggestImprovements.checked || identifyAssumptions.checked) {
                 let iterativeSection = 'Iterative Approach:';
                 
-                if (askClarifying.checked) {
+                if (askClarifyingQuestions.checked) {
                     iterativeSection += '\n- Ask clarifying questions before providing the final answer if anything is ambiguous';
                 }
                 
