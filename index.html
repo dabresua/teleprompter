@@ -1469,18 +1469,18 @@
         // Phase 3: Multi-Step Workflows functions
         function toggleMultiStepContainer() {
             if (enableMultiStep.checked) {
-                workflowStepsContainer.classList.remove('hidden');
+                multiStepContainer.classList.remove('hidden');
                 // Add minimum steps if empty
-                while (workflowStepsContainer.children.length < MIN_STEPS) {
+                while (stepsContainer.children.length < MIN_STEPS) {
                     addStep();
                 }
             } else {
-                workflowStepsContainer.classList.add('hidden');
+                multiStepContainer.classList.add('hidden');
             }
         }
 
         function addStep() {
-            if (workflowStepsContainer.children.length >= MAX_STEPS) {
+            if (stepsContainer.children.length >= MAX_STEPS) {
                 alert(`Maximum ${MAX_STEPS} steps allowed`);
                 return;
             }
@@ -1489,20 +1489,20 @@
             const stepDiv = document.createElement('div');
             stepDiv.className = 'workflow-step';
             stepDiv.innerHTML = `
-                <strong>Step ${workflowStepsContainer.children.length + 1}:</strong>
+                <strong>Step ${stepsContainer.children.length + 1}:</strong>
                 <textarea placeholder="Describe this step..."></textarea>
-                ${workflowStepsContainer.children.length >= MIN_STEPS - 1 ? '<button type="button" class="remove-step-btn" onclick="removeStep(this)">Remove</button>' : ''}
+                ${stepsContainer.children.length >= MIN_STEPS - 1 ? '<button type="button" class="remove-step-btn" onclick="window.removeStep(this)">Remove</button>' : ''}
             `;
             
             const textarea = stepDiv.querySelector('textarea');
             textarea.addEventListener('input', updateLiveTokenCount);
             
-            workflowStepsContainer.appendChild(stepDiv);
+            stepsContainer.appendChild(stepDiv);
             updateStepNumbers();
         }
 
-        function removeStep(button) {
-            if (workflowStepsContainer.children.length <= MIN_STEPS) {
+        window.removeStep = function(button) {
+            if (stepsContainer.children.length <= MIN_STEPS) {
                 alert(`Minimum ${MIN_STEPS} steps required`);
                 return;
             }
@@ -1513,7 +1513,7 @@
         }
 
         function updateStepNumbers() {
-            const steps = workflowStepsContainer.querySelectorAll('.workflow-step');
+            const steps = stepsContainer.querySelectorAll('.workflow-step');
             steps.forEach((step, index) => {
                 step.querySelector('strong').textContent = `Step ${index + 1}:`;
             });
@@ -1885,7 +1885,7 @@
 
             // Multi-Step Workflows
             if (enableMultiStep.checked) {
-                const steps = workflowStepsContainer.querySelectorAll('.workflow-step');
+                const steps = stepsContainer.querySelectorAll('.workflow-step');
                 if (steps.length >= MIN_STEPS) {
                     let workflowSection = 'Step-by-Step Process:';
                     
