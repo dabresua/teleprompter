@@ -25,12 +25,12 @@ const generateBtn = document.getElementById('generateBtn');
 const clearBtn = document.getElementById('clearBtn');
 const exportBtn = document.getElementById('exportBtn');
 const generatedPrompt = document.getElementById('generatedPrompt');
-const exampleSelect = document.getElementById('exampleSelect');
-const tokenCount = document.getElementById('tokenCount');
+const loadExample = document.getElementById('loadExample'); // CORRECTED
+const charCount = document.getElementById('charCount'); // CORRECTED
 
 // Section 1: Persona
-const persona Select = document.getElementById('persona');
-const customPersona = document.getElementById('customPersona');
+const persona = document.getElementById('persona'); // CORRECTED
+const personaCustom = document.getElementById('personaCustom'); // CORRECTED
 
 // Section 2: Instructions (Required)
 const instructions = document.getElementById('instructions');
@@ -61,26 +61,26 @@ const includeDocumentation = document.getElementById('includeDocumentation');
 
 // Section 9: Safety & Ethics
 const checkBias = document.getElementById('checkBias');
-const considerAccessibility = document.getElementById('considerAccessibility');
-const privacyProtection = document.getElementById('privacyProtection');
+const accessibilityRequirements = document.getElementById('accessibilityRequirements'); // CORRECTED
+const privacyDataProtection = document.getElementById('privacyDataProtection'); // CORRECTED
 const ethicalImplications = document.getElementById('ethicalImplications');
 
 // Section 10: Reasoning Method
-const zeroShot = document.getElementById('zero-shot');
-const fewShot = document.getElementById('few-shot');
-const chainOfThought = document.getElementById('chain-of-thought');
-const useXmlTags = document.getElementById('useXmlTags');
+const zeroShot = document.getElementById('zeroShot'); // CORRECTED
+const fewShot = document.getElementById('fewShot'); // CORRECTED
+const chainOfThought = document.getElementById('chainOfThought'); // CORRECTED
+const cotXmlTags = document.getElementById('cotXmlTags'); // CORRECTED
 
 // Section 11: Audience
-const audience = document.getElementById('audience');
-const customAudience = document.getElementById('customAudience');
+const audience = document.getElementById('audience'); // CORRECTED
+const audienceCustom = document.getElementById('audienceCustom'); // CORRECTED
 
 // Section 12: Quality Controls
-const enableSelfReflection = document.getElementById('enableSelfReflection');
+const selfReflection = document.getElementById('selfReflection'); // CORRECTED
 const antiHallucination = document.getElementById('antiHallucination');
 
 // Section 13: Validation Conditions
-const validationContainer = document.getElementById('validationContainer');
+const validationsContainer = document.getElementById('validationsContainer'); // CORRECTED
 
 // Section 14: Multi-Step Workflows
 const enableMultiStep = document.getElementById('enableMultiStep');
@@ -101,7 +101,7 @@ const includeConfidence = document.getElementById('includeConfidence');
 
 // Section 17: Iterative Refinement
 const askClarifyingQuestions = document.getElementById('askClarifyingQuestions');
-const provideMultipleApproaches = document.getElementById('provideMultipleApproaches');
+const provideAlternatives = document.getElementById('provideAlternatives'); // CORRECTED
 const requestFeedback = document.getElementById('requestFeedback');
 const suggestImprovements = document.getElementById('suggestImprovements');
 const identifyAssumptions = document.getElementById('identifyAssumptions');
@@ -192,7 +192,7 @@ setTimeout(() => {
 #### How to Test
 ```javascript
 // Fill all sections
-persona.value = 'security-engineer';
+persona.value = 'Security Engineer'; // CORRECTED
 instructions.value = 'Review this Flask endpoint for security issues';
 inputData.value = '<code>@app.route("/upload", methods=["POST"])\ndef upload():\n    file = request.files["file"]\n    file.save(f"/uploads/{file.filename}")\n    return "OK"</code>';
 outputFormat.value = '1. Vulnerability Summary\n2. Detailed Explanation\n3. Secure Code Example';
@@ -207,13 +207,13 @@ includeTests.checked = true;
 testFramework.value = 'pytest';
 includeDocumentation.checked = true;
 checkBias.checked = true;
-considerAccessibility.checked = true;
-privacyProtection.checked = true;
+accessibilityRequirements.checked = true; // CORRECTED
+privacyDataProtection.checked = true; // CORRECTED
 ethicalImplications.checked = true;
-document.getElementById('chain-of-thought').checked = true;
-useXmlTags.checked = true;
-audience.value = 'technical-developers';
-enableSelfReflection.checked = true;
+chainOfThought.checked = true; // CORRECTED
+cotXmlTags.checked = true; // CORRECTED
+audience.value = 'Technical - Software Developers'; // CORRECTED
+selfReflection.checked = true; // CORRECTED
 antiHallucination.checked = true;
 
 // Enable multi-step workflow

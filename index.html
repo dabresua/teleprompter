@@ -1560,7 +1560,7 @@
             validationDiv.addEventListener('dragend', handleDragEnd);
         }
 
-        function removeValidationCondition(id) {
+        window.removeValidationCondition = function(id) {
             const validationDiv = document.getElementById(`validation-${id}`);
             if (validationDiv) {
                 validationDiv.remove();
@@ -1571,7 +1571,7 @@
             }
         }
 
-        function updateValidationImpact(id, impact) {
+        window.updateValidationImpact = function(id, impact) {
             const validationDiv = document.getElementById(`validation-${id}`);
             if (validationDiv) {
                 validationDiv.classList.remove('blocking', 'warning');
