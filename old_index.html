@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Engineering Wizard</title>
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary-color: #6b7280;
+            --background: #f9fafb;
+            --white: #ffffff;
+            --success: #10b981;
+            --error: #ef4444;
+            --border: #e5e7eb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --spacing-sm: 10px;
+            --spacing-md: 20px;
+            --spacing-lg: 30px;
+            --border-radius: 8px;
+            --transition: 0.2s ease;
+        }
+
+        /* ===== Reset and Base Styles ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* ===== Header Styles ===== */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #1e40af);
+            color: var(--white);
+            padding: var(--spacing-lg) var(--spacing-md);
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* ===== Main Container ===== */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+        }
+
+        /* ===== Section Styles ===== */
+        .form-section {
+            background: var(--white);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-number {
+            background: var(--primary-color);
+            color: var(--white);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--spacing-sm);
+            font-size: 0.9rem;
+        }
+
+        .section-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* ===== Form Element Styles ===== */
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .helper-text {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
+        select, textarea, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color var(--transition);
+        }
+
+        select:focus, textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--error);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .field-error {
+            border-color: var(--error) !important;
+        }
+
+        /* ===== Radio and Checkbox Styles ===== */
+        .radio-group, .checkbox-group {
+            margin: var(--spacing-md) 0;
+        }
+
+        .radio-option, .checkbox-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+            padding: 12px;
+            border-radius: var(--border-radius);
+            transition: background-color var(--transition);
+        }
+
+        .radio-option:hover, .checkbox-option:hover {
+            background-color: #f3f4f6;
+        }
+
+        .radio-option input[type="radio"],
+        .checkbox-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: var(--spacing-sm);
+            cursor: pointer;
+        }
+
+        .radio-option label,
+        .checkbox-option label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        /* ===== Hidden Elements ===== */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== Few-Shot Examples ===== */
+        .example-container {
+            margin-top: var(--spacing-md);
+        }
+
+        .example-item {
+            background: #f9fafb;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-md);
+            position: relative;
+        }
+
+        .example-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .example-fields {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .example-field label {
+            font-size: 0.9rem;
+        }
+
+        /* ===== Button Styles ===== */
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        /* ===== Output Section ===== */
+        #output {
+            background: var(--white);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-top: var(--spacing-md);
+        }
+
+        #generatedPrompt {
+            font-family: 'Courier New', Monaco, monospace;
+            background: #1f2937;
+            color: #f3f4f6;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            min-height: 400px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        .char-count {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: var(--spacing-sm);
+        }
+
+        /* ===== Collapsible Sections ===== */
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: var(--border-radius);
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .collapsible-header:hover {
+            background: #f3f4f6;
+        }
+
+        .collapsible-header.active {
+            background: #e5e7eb;
+        }
+
+        .collapsible-title {
+            flex: 1;
+        }
+
+        .collapsible-toggle {
+            font-size: 1.2em;
+            transition: transform var(--transition);
+        }
+
+        .collapsible-toggle.open {
+            transform: rotate(90deg);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible-content.open {
+            max-height: 2000px;
+        }
+
+        /* ===== Validation Conditions ===== */
+        .validation-item {
+            background: #f9fafb;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            cursor: move;
+        }
+
+        .validation-item.blocking {
+            border-left: 4px solid var(--error);
+        }
+
+        .validation-item.warning {
+            border-left: 4px solid orange;
+        }
+
+        .validation-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .validation-order {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
+
+        .drag-handle {
+            cursor: move;
+            color: var(--text-light);
+            margin-right: 8px;
+        }
+
+        /* ===== Workflow Steps (for Chain-of-Thought) ===== */
+        .workflow-step {
+            background: #f9fafb;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-md);
+            position: relative;
+        }
+
+        .workflow-step strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .workflow-step textarea {
+            width: 100%;
+            min-height: 80px;
+            margin-bottom: 8px;
+        }
+
+        .remove-step-btn {
+            background: var(--error);
+            color: var(--white);
+            border: none;
+            padding: 6px 12px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .remove-step-btn:hover {
+            background: #dc2626;
+        }
+
+        /* ===== Notification ===== */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: var(--white);
+            padding: 16px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            text-align: center;
+            padding: var(--spacing-lg);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* ===== Responsive Design ===== */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .form-section {
+                padding: var(--spacing-md);
+            }
+
+            .section-header {
+                font-size: 1.1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .output-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            main {
+                padding: var(--spacing-md);
+            }
+        }
+
+        /* ===== Custom Select Styling ===== */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+
+        /* ===== Load Example Dropdown ===== */
+        .load-example-section {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .load-example-section label {
+            color: #92400e;
+            font-weight: 600;
+        }
+
+        .load-example-section select {
+            margin-top: var(--spacing-sm);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Prompt Engineering Wizard</h1>
+        <p>Build well-structured prompts following best practices</p>
+    </header>
+
+    <main>
+        <form id="promptForm">
+            <!-- Section 1: Persona Definition -->
+            <section class="form-section">
+                <div class="collapsible-header" id="personaHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">1</span>
+                            Persona Definition
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define the AI's role and expertise</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="personaContent">
+                <label for="persona">Select Persona:</label>
+                <select id="persona" aria-label="Persona selection">
+                    <option value="">None (no persona)</option>
+                    <option value="Senior Software Engineer">Senior Software Engineer</option>
+                    <option value="Security Engineer">Security Engineer</option>
+                    <option value="Data Scientist">Data Scientist</option>
+                    <option value="Product Manager">Product Manager</option>
+                    <option value="Technical Writer">Technical Writer</option>
+                    <option value="UX Designer">UX Designer</option>
+                    <option value="DevOps Engineer">DevOps Engineer</option>
+                    <option value="Business Analyst">Business Analyst</option>
+                    <option value="Marketing Specialist">Marketing Specialist</option>
+                    <option value="Creative Writer">Creative Writer</option>
+                    <option value="Teacher/Educator">Teacher/Educator</option>
+                    <option value="Other (custom)">Other (custom)</option>
+                </select>
+                
+                <div id="personaCustomContainer" class="hidden">
+                    <label for="personaCustom" style="margin-top: 16px;">Custom Persona:</label>
+                    <textarea id="personaCustom" placeholder="e.g., You are an experienced Python developer with 10 years of experience..." aria-label="Custom persona description"></textarea>
+                </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Instructions -->
+            <section class="form-section">
+                <div class="collapsible-header" id="instructionsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">2</span>
+                            Instructions
+                </h2>
+                <p class="section-description">Main task description</p>
+                
+                <label for="instructions" class="required">Task Instructions:</label>
+                <textarea id="instructions" placeholder="Describe what you want the AI to do. E.g., 'Analyze the provided code for security vulnerabilities. Focus on...'" required aria-label="Task instructions" aria-required="true"></textarea>
+                <small class="helper-text">Be clear and specific about the task</small>
+                <span class="error-message" id="instructionsError">Instructions are required</span>
+            </section>
+
+            <!-- Section 3: Input Data -->
+            <section class="form-section">
+                <div class="collapsible-header" id="inputDataHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">3</span>
+                            Input Data
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Provide data/content to be processed</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="inputDataContent">
+                <label for="inputData">Input Data:</label>
+                <textarea id="inputData" placeholder="Paste your code, data, or content here. Use XML tags to structure:&#10;<code>your code</code>&#10;<document>your text</document>" aria-label="Input data"></textarea>
+                <small class="helper-text">Use XML tags like &lt;code&gt;, &lt;document&gt;, &lt;data&gt; to delimit different types of input</small>
+                </div>
+            </section>
+
+            <!-- Section 4: Output Format -->
+            <section class="form-section">
+                <div class="collapsible-header" id="outputFormatHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">4</span>
+                            Output Format
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Specify desired response structure</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="outputFormatContent">
+                <label for="outputFormat">Output Format:</label>
+                <textarea id="outputFormat" placeholder="Specify how you want the response structured:&#10;1. Summary&#10;2. Detailed analysis&#10;3. Code example&#10;4. Recommendations" aria-label="Output format"></textarea>
+                <small class="helper-text">Define the structure and format you want</small>
+                </div>
+            </section>
+
+            <!-- Section 5: Additional Context -->
+            <section class="form-section">
+                <div class="collapsible-header" id="additionalContextHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">5</span>
+                            Additional Context
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Provide constraints, requirements, or background</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="additionalContextContent">
+                <label for="additionalContext">Additional Context:</label>
+                <textarea id="additionalContext" placeholder="E.g., Using React 18, Performance critical, Must support mobile browsers, Target Python 3.9+..." aria-label="Additional context"></textarea>
+                <small class="helper-text">Any constraints, requirements, or background information</small>
+                </div>
+            </section>
+
+            <!-- Section 6: System Constraints -->
+            <section class="form-section">
+                <div class="collapsible-header" id="systemConstraintsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">6</span>
+                            System Constraints
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define response parameters and style preferences</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="systemConstraintsContent">
+                <label for="responseLength">Response Length:</label>
+                <select id="responseLength" aria-label="Response length preference">
+                    <option value="">No preference</option>
+                    <option value="brief">Brief summary only (under 200 words)</option>
+                    <option value="moderate">Moderate detail (200-500 words)</option>
+                    <option value="detailed">Detailed analysis (500-1000 words)</option>
+                    <option value="comprehensive">Comprehensive (over 1000 words)</option>
+                </select>
+
+                <label for="toneStyle" style="margin-top: 16px;">Tone/Style:</label>
+                <select id="toneStyle" aria-label="Tone and style preference">
+                    <option value="">Default</option>
+                    <option value="formal">Formal</option>
+                    <option value="conversational">Conversational</option>
+                    <option value="technical">Technical</option>
+                    <option value="creative">Creative</option>
+                    <option value="academic">Academic</option>
+                    <option value="professional">Professional</option>
+                </select>
+
+                <label for="formatPreferences" style="margin-top: 16px;">Format Preferences:</label>
+                <textarea id="formatPreferences" placeholder="E.g., Use tables for comparisons, Include code snippets, Provide diagrams/visualizations" aria-label="Format preferences"></textarea>
+                <small class="helper-text">Specify formatting requirements (tables, code blocks, lists, etc.)</small>
+                </div>
+            </section>
+
+            <!-- Section 7: Negative Prompting -->
+            <section class="form-section">
+                <div class="collapsible-header" id="negativePromptingHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">7</span>
+                            Negative Prompting
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Specify what the AI should NOT do (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="negativePromptingContent">
+                <label for="negativePrompts">Do NOT:</label>
+                <textarea id="negativePrompts" placeholder="E.g.,&#10;- Include code without explanation&#10;- Use deprecated methods&#10;- Make assumptions about user's environment&#10;- Provide solutions without testing" aria-label="Negative prompts"></textarea>
+                <small class="helper-text">List specific things to avoid in the response</small>
+                </div>
+            </section>
+
+            <!-- Section 8: Code-Specific Options -->
+            <section class="form-section">
+                <div class="collapsible-header" id="codeOptionsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">8</span>
+                            Code-Specific Options
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Configure code generation preferences (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="codeOptionsContent">
+                    <label for="programmingLanguage">Programming Language:</label>
+                    <input type="text" id="programmingLanguage" placeholder="E.g., Python, JavaScript, Java, Go, Rust" aria-label="Programming language">
+
+                    <label for="frameworkLibrary" style="margin-top: 16px;">Framework/Library:</label>
+                    <input type="text" id="frameworkLibrary" placeholder="E.g., React, Django, Spring Boot, .NET Core" aria-label="Framework or library">
+                    <small class="helper-text">Specify the tech stack or framework to use</small>
+
+                    <div class="checkbox-option" style="margin-top: 16px;">
+                        <input type="checkbox" id="includeTests">
+                        <label for="includeTests">
+                            <strong>Include unit tests</strong>
+                            <small class="helper-text">Generate test cases for the code</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="includeDocumentation">
+                        <label for="includeDocumentation">
+                            <strong>Include documentation</strong>
+                            <small class="helper-text">Add docstrings, comments, and inline documentation</small>
+                        </label>
+                    </div>
+
+                    <label for="testFramework" style="margin-top: 16px;">Test Framework (if tests enabled):</label>
+                    <input type="text" id="testFramework" placeholder="E.g., pytest, Jest, JUnit, xUnit" aria-label="Test framework">
+                </div>
+            </section>
+
+            <!-- Section 9: Safety & Ethics Guidelines -->
+            <section class="form-section">
+                <div class="collapsible-header" id="safetyEthicsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">9</span>
+                            Safety & Ethics Guidelines
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Enable ethical and safety considerations (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="safetyEthicsContent">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="checkBias">
+                        <label for="checkBias">
+                            <strong>Check for bias in recommendations</strong>
+                            <small class="helper-text">Ensure fair and unbiased output</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="accessibilityRequirements">
+                        <label for="accessibilityRequirements">
+                            <strong>Consider accessibility requirements</strong>
+                            <small class="helper-text">Ensure solutions are accessible to all users</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="privacyDataProtection">
+                        <label for="privacyDataProtection">
+                            <strong>Privacy and data protection concerns</strong>
+                            <small class="helper-text">Address GDPR, data privacy, and security</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="ethicalImplications">
+                        <label for="ethicalImplications">
+                            <strong>Evaluate ethical implications</strong>
+                            <small class="helper-text">Consider broader societal and ethical impacts</small>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 10: Reasoning Method -->
+            <section class="form-section">
+                <div class="collapsible-header" id="reasoningMethodHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">10</span>
+                            Reasoning Method
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Choose how the AI should approach the problem</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="reasoningMethodContent">
+                <div class="radio-group" role="radiogroup" aria-label="Reasoning method">
+                    <div class="radio-option">
+                        <input type="radio" id="zeroShot" name="reasoning" value="zero-shot" checked>
+                        <label for="zeroShot">
+                            <strong>Zero-shot:</strong> Direct prompting without examples
+                        </label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="fewShot" name="reasoning" value="few-shot">
+                        <label for="fewShot">
+                            <strong>Few-shot:</strong> Provide example input/output pairs
+                        </label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="chainOfThought" name="reasoning" value="chain-of-thought">
+                        <label for="chainOfThought">
+                            <strong>Chain-of-Thought:</strong> Show step-by-step reasoning
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Few-shot examples container -->
+                <div id="fewShotContainer" class="hidden">
+                    <label>Examples:</label>
+                    <small class="helper-text">Provide examples that demonstrate the pattern you want</small>
+                    <div id="examplesContainer" class="example-container"></div>
+                    <div class="button-group">
+                        <button type="button" id="addExampleBtn" class="btn-secondary btn-small">Add Another Example</button>
+                    </div>
+                </div>
+
+                <!-- Chain-of-thought container -->
+                <div id="cotContainer" class="hidden">
+                    <label>Reasoning Steps:</label>
+                    <small class="helper-text">Define the step-by-step reasoning process the AI should follow</small>
+                    <div id="cotStepsContainer" style="margin-top: 16px;"></div>
+                    <button type="button" id="addCotStepBtn" class="btn-secondary btn-small" style="margin-top: 12px;">+ Add Step</button>
+                    
+                    <div class="checkbox-option" style="margin-top: 16px;">
+                        <input type="checkbox" id="cotXmlTags" checked>
+                        <label for="cotXmlTags">Use XML tags for thinking process</label>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <!-- Section 11: Audience -->
+            <section class="form-section">
+                <div class="collapsible-header" id="audienceHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">11</span>
+                            Audience
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define who will read the output</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="audienceContent">
+                <label for="audience">Target Audience:</label>
+                <select id="audience" aria-label="Target audience selection">
+                    <option value="">General (not specified)</option>
+                    <option value="Technical - Software Developers">Technical - Software Developers</option>
+                    <option value="Technical - System Architects">Technical - System Architects</option>
+                    <option value="Technical - Data Engineers">Technical - Data Engineers</option>
+                    <option value="Technical - DevOps/SRE">Technical - DevOps/SRE</option>
+                    <option value="Semi-Technical - Product Managers">Semi-Technical - Product Managers</option>
+                    <option value="Semi-Technical - Technical Project Managers">Semi-Technical - Technical Project Managers</option>
+                    <option value="Non-Technical - Business Stakeholders">Non-Technical - Business Stakeholders</option>
+                    <option value="Non-Technical - C-Level Executives">Non-Technical - C-Level Executives</option>
+                    <option value="Non-Technical - Marketing/Sales Teams">Non-Technical - Marketing/Sales Teams</option>
+                    <option value="Students/Learners - Beginners">Students/Learners - Beginners</option>
+                    <option value="Students/Learners - Intermediate">Students/Learners - Intermediate</option>
+                    <option value="Students/Learners - Advanced">Students/Learners - Advanced</option>
+                    <option value="General Public">General Public</option>
+                    <option value="Other (custom)">Other (custom)</option>
+                </select>
+                
+                <div id="audienceCustomContainer" class="hidden">
+                    <label for="audienceCustom" style="margin-top: 16px;">Custom Audience:</label>
+                    <textarea id="audienceCustom" placeholder="e.g., Medical professionals with basic technical knowledge..." aria-label="Custom audience description"></textarea>
+                </div>
+                </div>
+            </section>
+
+            <!-- Section 12: Quality Controls -->
+            <section class="form-section">
+                <div class="collapsible-header" id="qualityControlsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">12</span>
+                            Quality Controls
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Enable quality assurance features</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="qualityControlsContent">
+                <div class="checkbox-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="selfReflection" checked>
+                        <label for="selfReflection">
+                            <strong>Enable self-reflection</strong><br>
+                            <small class="helper-text">AI will review its own answer for errors and improvements</small>
+                        </label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="antiHallucination" checked>
+                        <label for="antiHallucination">
+                            <strong>Include anti-hallucination guidelines</strong><br>
+                            <small class="helper-text">Instructs AI to cite sources, admit uncertainty, and avoid speculation</small>
+                        </label>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <!-- Section 13: Validation/Verification Conditions -->
+            <section class="form-section">
+                <div class="collapsible-header" id="validationConditionsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">13</span>
+                            Validation/Verification Conditions
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define success criteria for the AI output (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="validationConditionsContent">
+                    <div id="validationsContainer"></div>
+                    
+                    <button type="button" id="addValidationBtn" class="btn-secondary btn-small">+ Add Validation Condition</button>
+                </div>
+            </section>
+
+            <!-- Section 14: Creative Content Options -->
+            <section class="form-section">
+                <div class="collapsible-header" id="creativeContentHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">14</span>
+                            Creative Content Options
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Customize writing style and content preferences (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="creativeContentContent">
+                    <label for="writingStyle">Writing Style:</label>
+                    <select id="writingStyle" aria-label="Writing style">
+                        <option value="">Default</option>
+                        <option value="academic">Academic</option>
+                        <option value="blog">Blog Post</option>
+                        <option value="technical">Technical Documentation</option>
+                        <option value="narrative">Narrative</option>
+                        <option value="persuasive">Persuasive</option>
+                        <option value="descriptive">Descriptive</option>
+                        <option value="journalistic">Journalistic</option>
+                    </select>
+
+                    <label for="pointOfView" style="margin-top: 16px;">Point of View:</label>
+                    <select id="pointOfView" aria-label="Point of view">
+                        <option value="">Default</option>
+                        <option value="first-person">First Person (I/we)</option>
+                        <option value="second-person">Second Person (you)</option>
+                        <option value="third-person-limited">Third Person Limited (he/she)</option>
+                        <option value="third-person-omniscient">Third Person Omniscient</option>
+                    </select>
+
+                    <label for="wordCountTarget" style="margin-top: 16px;">Word Count Target:</label>
+                    <input type="text" id="wordCountTarget" placeholder="E.g., 500-1000 words" aria-label="Word count target">
+                    <small class="helper-text">Specify desired word count or range</small>
+
+                    <label for="readingLevel" style="margin-top: 16px;">Reading Level:</label>
+                    <select id="readingLevel" aria-label="Reading level">
+                        <option value="">Default</option>
+                        <option value="elementary">Elementary (Grade 1-5)</option>
+                        <option value="middle-school">Middle School (Grade 6-8)</option>
+                        <option value="high-school">High School (Grade 9-12)</option>
+                        <option value="college">College</option>
+                        <option value="professional">Professional</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Section 16: Research Instructions -->
+            <section class="form-section">
+                <div class="collapsible-header" id="researchInstructionsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">15</span>
+                            Research Instructions
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Guide AI research and fact-checking behavior (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="researchInstructionsContent">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="searchLatestInfo">
+                        <label for="searchLatestInfo">
+                            <strong>Search for latest information before answering</strong>
+                            <small class="helper-text">Ensure response includes current information</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="citeSources">
+                        <label for="citeSources">
+                            <strong>Cite specific sources with dates and URLs</strong>
+                            <small class="helper-text">Include citations and references</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="compareMultipleSources">
+                        <label for="compareMultipleSources">
+                            <strong>Compare multiple authoritative sources</strong>
+                            <small class="helper-text">Cross-reference different sources</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="verifyFacts">
+                        <label for="verifyFacts">
+                            <strong>Verify facts and flag uncertain information</strong>
+                            <small class="helper-text">Explicitly note confidence levels</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="includeConfidence">
+                        <label for="includeConfidence">
+                            <strong>Include confidence levels for key claims</strong>
+                            <small class="helper-text">Rate certainty of statements</small>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 17: Iterative Refinement -->
+            <section class="form-section">
+                <div class="collapsible-header" id="iterativeRefinementHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">16</span>
+                            Iterative Refinement
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Enable collaborative refinement and iteration (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="iterativeRefinementContent">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="askClarifyingQuestions">
+                        <label for="askClarifyingQuestions">
+                            <strong>Ask clarifying questions before providing final answer</strong>
+                            <small class="helper-text">Ensure requirements are well understood</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="provideAlternatives">
+                        <label for="provideAlternatives">
+                            <strong>Provide multiple solution approaches or alternatives</strong>
+                            <small class="helper-text">Offer different options to consider</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="requestFeedback">
+                        <label for="requestFeedback">
+                            <strong>Request feedback and iterate based on responses</strong>
+                            <small class="helper-text">Enable back-and-forth refinement</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="suggestImprovements">
+                        <label for="suggestImprovements">
+                            <strong>Suggest improvements or optimizations</strong>
+                            <small class="helper-text">Proactively recommend enhancements</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="identifyAssumptions">
+                        <label for="identifyAssumptions">
+                            <strong>Identify assumptions and ask for confirmation</strong>
+                            <small class="helper-text">Make implicit assumptions explicit</small>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 17: Generate Prompt -->
+            <section class="form-section">
+                <h2 class="section-header">
+                    <span class="section-number">17</span>
+                    Generate Prompt
+                </h2>
+                <p class="section-description">Generate and display the final prompt</p>
+                
+                <!-- Load Example Section -->
+                <div class="load-example-section">
+                    <label for="loadExample">Quick Start - Load an Example:</label>
+                    <select id="loadExample" aria-label="Load example scenario">
+                        <option value="">-- Select an Example --</option>
+                        <optgroup label="Software Development">
+                            <option value="code-security">Code Security Review</option>
+                            <option value="bug-analysis">Bug Analysis</option>
+                            <option value="api-documentation">API Documentation</option>
+                            <option value="feature-request">Software Feature Request</option>
+                            <option value="project-familiarization">Project Familiarization</option>
+                        </optgroup>
+                        <optgroup label="Business & Product">
+                            <option value="user-story">User Story Writing</option>
+                            <option value="research-summary">Research Summary</option>
+                        </optgroup>
+                        <optgroup label="Data & Analysis">
+                            <option value="email-classification">Email Classification</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="generateBtn" class="btn-primary">Generate Prompt</button>
+                    <button type="button" id="exportBtn" class="btn-success">Export to REQUIREMENTS.md</button>
+                    <button type="button" id="clearBtn" class="btn-secondary">Clear All</button>
+                </div>
+            </section>
+        </form>
+
+        <!-- Output Section -->
+        <section id="output">
+            <div class="output-header">
+                <h2 style="margin: 0;">Generated Prompt</h2>
+                <button type="button" id="copyBtn" class="btn-success btn-small">Copy to Clipboard</button>
+            </div>
+            <textarea id="generatedPrompt" readonly aria-label="Generated prompt output"></textarea>
+            <div class="char-count" id="charCount">0 characters • 0 tokens</div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Built with vanilla HTML/CSS/JS • No frameworks required</p>
+    </footer>
+
+    <script>
+        // ===== Persona Templates =====
+        const personaTemplates = {
+            "Senior Software Engineer": "You are a senior software engineer with extensive experience in software architecture, design patterns, and best practices. You write clean, maintainable code and prioritize scalability and performance.",
+            "Security Engineer": "You are an experienced security engineer specializing in web application vulnerabilities, secure coding practices, and threat modeling. You prioritize security best practices and can identify potential vulnerabilities.",
+            "Data Scientist": "You are a data scientist with expertise in statistical analysis, machine learning, and data visualization. You can explain complex analytical concepts clearly and provide actionable insights from data.",
+            "Product Manager": "You are an experienced product manager who understands user needs, market dynamics, and product strategy. You can balance technical constraints with business objectives and communicate effectively with both technical and non-technical stakeholders.",
+            "Technical Writer": "You are a skilled technical writer who can explain complex technical concepts in clear, accessible language. You create well-structured documentation with appropriate examples and diagrams.",
+            "UX Designer": "You are a UX designer with expertise in user research, interaction design, and usability principles. You focus on creating intuitive, accessible, and user-centered designs.",
+            "DevOps Engineer": "You are a DevOps engineer experienced in CI/CD pipelines, infrastructure as code, containerization, and cloud platforms. You prioritize automation, reliability, and monitoring.",
+            "Business Analyst": "You are a business analyst skilled at understanding business requirements, process optimization, and translating between technical and business stakeholders. You focus on delivering measurable business value.",
+            "Marketing Specialist": "You are a marketing specialist with expertise in content strategy, audience segmentation, and digital marketing. You understand how to create compelling messaging that resonates with target audiences.",
+            "Creative Writer": "You are a creative writer with a strong command of narrative techniques, character development, and engaging storytelling. You can write in various styles and genres while maintaining voice consistency.",
+            "Teacher/Educator": "You are an experienced educator who can break down complex topics into digestible lessons. You use clear explanations, relevant examples, and check for understanding."
+        };
+
+        // ===== Audience Templates =====
+        const audienceTemplates = {
+            "Technical - Software Developers": "Target audience: software developers with professional coding experience. Use appropriate technical terminology.",
+            "Technical - System Architects": "Target audience: senior system architects familiar with distributed systems and scalability patterns. Focus on architectural decisions and trade-offs.",
+            "Technical - Data Engineers": "Target audience: data engineers experienced with data pipelines, ETL processes, and big data technologies.",
+            "Technical - DevOps/SRE": "Target audience: DevOps engineers and SREs familiar with infrastructure automation and reliability engineering.",
+            "Semi-Technical - Product Managers": "Target audience: product managers with technical awareness but without deep engineering expertise. Balance technical detail with business context.",
+            "Semi-Technical - Technical Project Managers": "Target audience: technical project managers who understand development workflows but may not code regularly.",
+            "Non-Technical - Business Stakeholders": "Target audience: non-technical business stakeholders. Avoid jargon and use clear, accessible language.",
+            "Non-Technical - C-Level Executives": "Target audience: C-level executives who need high-level insights and business impact. Focus on strategic implications rather than technical details.",
+            "Non-Technical - Marketing/Sales Teams": "Target audience: marketing and sales professionals who need to understand capabilities without implementation details.",
+            "Students/Learners - Beginners": "Target audience: beginners with little to no prior knowledge. Use simple language, provide context, and include educational explanations.",
+            "Students/Learners - Intermediate": "Target audience: intermediate learners with foundational knowledge seeking to deepen understanding.",
+            "Students/Learners - Advanced": "Target audience: advanced learners or practitioners looking for expert-level insights and nuanced understanding.",
+            "General Public": "Target audience: general public with no specialized knowledge. Use everyday language and analogies. Avoid all jargon."
+        };
+
+        // ===== DOM Elements =====
+        const personaSelect = document.getElementById('persona');
+        const personaCustomContainer = document.getElementById('personaCustomContainer');
+        const personaCustom = document.getElementById('personaCustom');
+        const instructions = document.getElementById('instructions');
+        const instructionsError = document.getElementById('instructionsError');
+        const inputData = document.getElementById('inputData');
+        const outputFormat = document.getElementById('outputFormat');
+        const additionalContext = document.getElementById('additionalContext');
+        const responseLength = document.getElementById('responseLength');
+        const toneStyle = document.getElementById('toneStyle');
+        const formatPreferences = document.getElementById('formatPreferences');
+        const negativePrompts = document.getElementById('negativePrompts');
+        const reasoningRadios = document.querySelectorAll('input[name="reasoning"]');
+        const fewShotContainer = document.getElementById('fewShotContainer');
+        const cotContainer = document.getElementById('cotContainer');
+        const examplesContainer = document.getElementById('examplesContainer');
+        const addExampleBtn = document.getElementById('addExampleBtn');
+        const cotStepsContainer = document.getElementById('cotStepsContainer');
+        const addCotStepBtn = document.getElementById('addCotStepBtn');
+        const cotXmlTags = document.getElementById('cotXmlTags');
+        const audienceSelect = document.getElementById('audience');
+        const audienceCustomContainer = document.getElementById('audienceCustomContainer');
+        const audienceCustom = document.getElementById('audienceCustom');
+        const selfReflection = document.getElementById('selfReflection');
+        const antiHallucination = document.getElementById('antiHallucination');
+        const loadExample = document.getElementById('loadExample');
+        const generateBtn = document.getElementById('generateBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const generatedPrompt = document.getElementById('generatedPrompt');
+        const copyBtn = document.getElementById('copyBtn');
+        const charCount = document.getElementById('charCount');
+
+        // Phase 2 DOM Elements
+        const codeOptionsHeader = document.getElementById('codeOptionsHeader');
+        const codeOptionsContent = document.getElementById('codeOptionsContent');
+        const programmingLanguage = document.getElementById('programmingLanguage');
+        const frameworkLibrary = document.getElementById('frameworkLibrary');
+        const includeTests = document.getElementById('includeTests');
+        const includeDocumentation = document.getElementById('includeDocumentation');
+        const testFramework = document.getElementById('testFramework');
+
+        const safetyEthicsHeader = document.getElementById('safetyEthicsHeader');
+        const safetyEthicsContent = document.getElementById('safetyEthicsContent');
+        const checkBias = document.getElementById('checkBias');
+        const accessibilityRequirements = document.getElementById('accessibilityRequirements');
+        const privacyDataProtection = document.getElementById('privacyDataProtection');
+        const ethicalImplications = document.getElementById('ethicalImplications');
+
+        const validationConditionsHeader = document.getElementById('validationConditionsHeader');
+        const validationConditionsContent = document.getElementById('validationConditionsContent');
+        const validationsContainer = document.getElementById('validationsContainer');
+        const addValidationBtn = document.getElementById('addValidationBtn');
+
+        const creativeContentHeader = document.getElementById('creativeContentHeader');
+        const creativeContentContent = document.getElementById('creativeContentContent');
+        const writingStyle = document.getElementById('writingStyle');
+        const pointOfView = document.getElementById('pointOfView');
+        const wordCountTarget = document.getElementById('wordCountTarget');
+        const readingLevel = document.getElementById('readingLevel');
+
+        const researchInstructionsHeader = document.getElementById('researchInstructionsHeader');
+        const researchInstructionsContent = document.getElementById('researchInstructionsContent');
+        const searchLatestInfo = document.getElementById('searchLatestInfo');
+        const citeSources = document.getElementById('citeSources');
+        const compareMultipleSources = document.getElementById('compareMultipleSources');
+        const verifyFacts = document.getElementById('verifyFacts');
+        const includeConfidence = document.getElementById('includeConfidence');
+
+        const iterativeRefinementHeader = document.getElementById('iterativeRefinementHeader');
+        const iterativeRefinementContent = document.getElementById('iterativeRefinementContent');
+        const askClarifyingQuestions = document.getElementById('askClarifyingQuestions');
+        const provideAlternatives = document.getElementById('provideAlternatives');
+        const requestFeedback = document.getElementById('requestFeedback');
+        const suggestImprovements = document.getElementById('suggestImprovements');
+        const identifyAssumptions = document.getElementById('identifyAssumptions');
+
+        // ===== Few-Shot Examples State =====
+        let exampleCount = 0;
+        const MAX_EXAMPLES = 5;
+
+        // ===== Validation Conditions State =====
+        let validationCount = 0;
+        let validations = [];
+
+        // ===== Chain-of-Thought Steps State =====
+        let cotStepCount = 0;
+        const MIN_COT_STEPS = 2;
+        const MAX_COT_STEPS = 10;
+
+        // ===== Event Listeners =====
+        personaSelect.addEventListener('change', togglePersonaCustom);
+        personaSelect.addEventListener('change', updateLiveTokenCount);
+        personaCustom.addEventListener('input', updateLiveTokenCount);
+        audienceSelect.addEventListener('change', toggleAudienceCustom);
+        audienceSelect.addEventListener('change', updateLiveTokenCount);
+        audienceCustom.addEventListener('input', updateLiveTokenCount);
+        reasoningRadios.forEach(radio => radio.addEventListener('change', toggleReasoningMethod));
+        addExampleBtn.addEventListener('click', addExample);
+        addCotStepBtn.addEventListener('click', addCotStep);
+        generateBtn.addEventListener('click', generatePrompt);
+        exportBtn.addEventListener('click', exportToRequirements);
+        clearBtn.addEventListener('click', clearForm);
+        copyBtn.addEventListener('click', copyToClipboard);
+        loadExample.addEventListener('change', loadExampleScenario);
+        generatedPrompt.addEventListener('input', updateCharCount);
+        
+        // Live token count updates on field changes
+        instructions.addEventListener('input', updateLiveTokenCount);
+        inputData.addEventListener('input', updateLiveTokenCount);
+        outputFormat.addEventListener('input', updateLiveTokenCount);
+        additionalContext.addEventListener('input', updateLiveTokenCount);
+        responseLength.addEventListener('change', updateLiveTokenCount);
+        toneStyle.addEventListener('change', updateLiveTokenCount);
+        formatPreferences.addEventListener('input', updateLiveTokenCount);
+        negativePrompts.addEventListener('input', updateLiveTokenCount);
+        selfReflection.addEventListener('change', updateLiveTokenCount);
+        antiHallucination.addEventListener('change', updateLiveTokenCount);
+
+        // Collapsible sections event listeners
+        const personaHeader = document.getElementById('personaHeader');
+        const personaContent = document.getElementById('personaContent');
+        const inputDataHeader = document.getElementById('inputDataHeader');
+        const inputDataContent = document.getElementById('inputDataContent');
+        const outputFormatHeader = document.getElementById('outputFormatHeader');
+        const outputFormatContent = document.getElementById('outputFormatContent');
+        const additionalContextHeader = document.getElementById('additionalContextHeader');
+        const additionalContextContent = document.getElementById('additionalContextContent');
+        const systemConstraintsHeader = document.getElementById('systemConstraintsHeader');
+        const systemConstraintsContent = document.getElementById('systemConstraintsContent');
+        const negativePromptingHeader = document.getElementById('negativePromptingHeader');
+        const negativePromptingContent = document.getElementById('negativePromptingContent');
+        const reasoningMethodHeader = document.getElementById('reasoningMethodHeader');
+        const reasoningMethodContent = document.getElementById('reasoningMethodContent');
+        const audienceHeader = document.getElementById('audienceHeader');
+        const audienceContent = document.getElementById('audienceContent');
+        const qualityControlsHeader = document.getElementById('qualityControlsHeader');
+        const qualityControlsContent = document.getElementById('qualityControlsContent');
+
+        personaHeader.addEventListener('click', () => toggleCollapsible(personaHeader, personaContent));
+        inputDataHeader.addEventListener('click', () => toggleCollapsible(inputDataHeader, inputDataContent));
+        outputFormatHeader.addEventListener('click', () => toggleCollapsible(outputFormatHeader, outputFormatContent));
+        additionalContextHeader.addEventListener('click', () => toggleCollapsible(additionalContextHeader, additionalContextContent));
+        systemConstraintsHeader.addEventListener('click', () => toggleCollapsible(systemConstraintsHeader, systemConstraintsContent));
+        negativePromptingHeader.addEventListener('click', () => toggleCollapsible(negativePromptingHeader, negativePromptingContent));
+        codeOptionsHeader.addEventListener('click', () => toggleCollapsible(codeOptionsHeader, codeOptionsContent));
+        safetyEthicsHeader.addEventListener('click', () => toggleCollapsible(safetyEthicsHeader, safetyEthicsContent));
+        reasoningMethodHeader.addEventListener('click', () => toggleCollapsible(reasoningMethodHeader, reasoningMethodContent));
+        audienceHeader.addEventListener('click', () => toggleCollapsible(audienceHeader, audienceContent));
+        qualityControlsHeader.addEventListener('click', () => toggleCollapsible(qualityControlsHeader, qualityControlsContent));
+        validationConditionsHeader.addEventListener('click', () => toggleCollapsible(validationConditionsHeader, validationConditionsContent));
+        addValidationBtn.addEventListener('click', addValidationCondition);
+
+        creativeContentHeader.addEventListener('click', () => toggleCollapsible(creativeContentHeader, creativeContentContent));
+        researchInstructionsHeader.addEventListener('click', () => toggleCollapsible(researchInstructionsHeader, researchInstructionsContent));
+        iterativeRefinementHeader.addEventListener('click', () => toggleCollapsible(iterativeRefinementHeader, iterativeRefinementContent));
+
+        // Phase 3 live token count updates
+        writingStyle.addEventListener('change', updateLiveTokenCount);
+        pointOfView.addEventListener('change', updateLiveTokenCount);
+        wordCountTarget.addEventListener('input', updateLiveTokenCount);
+        readingLevel.addEventListener('change', updateLiveTokenCount);
+        searchLatestInfo.addEventListener('change', updateLiveTokenCount);
+        citeSources.addEventListener('change', updateLiveTokenCount);
+        compareMultipleSources.addEventListener('change', updateLiveTokenCount);
+        verifyFacts.addEventListener('change', updateLiveTokenCount);
+        includeConfidence.addEventListener('change', updateLiveTokenCount);
+        askClarifyingQuestions.addEventListener('change', updateLiveTokenCount);
+        provideAlternatives.addEventListener('change', updateLiveTokenCount);
+        requestFeedback.addEventListener('change', updateLiveTokenCount);
+        suggestImprovements.addEventListener('change', updateLiveTokenCount);
+        identifyAssumptions.addEventListener('change', updateLiveTokenCount);
+
+        // Live token count for Phase 2 fields
+        programmingLanguage.addEventListener('input', updateLiveTokenCount);
+        frameworkLibrary.addEventListener('input', updateLiveTokenCount);
+        includeTests.addEventListener('change', updateLiveTokenCount);
+        includeDocumentation.addEventListener('change', updateLiveTokenCount);
+        testFramework.addEventListener('input', updateLiveTokenCount);
+
+        // ===== Initialize =====
+        initializeExamples();
+        updateLiveTokenCount(); // Initialize token count display
+
+        // ===== Functions =====
+        function togglePersonaCustom() {
+            if (personaSelect.value === 'Other (custom)') {
+                personaCustomContainer.classList.remove('hidden');
+            } else {
+                personaCustomContainer.classList.add('hidden');
+            }
+        }
+
+        function toggleAudienceCustom() {
+            if (audienceSelect.value === 'Other (custom)') {
+                audienceCustomContainer.classList.remove('hidden');
+            } else {
+                audienceCustomContainer.classList.add('hidden');
+            }
+        }
+
+        function toggleReasoningMethod() {
+            const selectedReasoning = document.querySelector('input[name="reasoning"]:checked').value;
+            
+            if (selectedReasoning === 'few-shot') {
+                fewShotContainer.classList.remove('hidden');
+                cotContainer.classList.add('hidden');
+            } else if (selectedReasoning === 'chain-of-thought') {
+                fewShotContainer.classList.add('hidden');
+                cotContainer.classList.remove('hidden');
+                // Add minimum steps if empty
+                while (cotStepsContainer.children.length < MIN_COT_STEPS) {
+                    addCotStep();
+                }
+            } else {
+                fewShotContainer.classList.add('hidden');
+                cotContainer.classList.add('hidden');
+            }
+        }
+
+        function toggleCollapsible(header, content) {
+            const toggle = header.querySelector('.collapsible-toggle');
+            const isOpen = content.classList.contains('open');
+            
+            if (isOpen) {
+                content.classList.remove('open');
+                toggle.classList.remove('open');
+                header.classList.remove('active');
+            } else {
+                content.classList.add('open');
+                toggle.classList.add('open');
+                header.classList.add('active');
+            }
+        }
+
+        // Phase 3: Chain-of-Thought Steps functions
+        function addCotStep() {
+            if (cotStepsContainer.children.length >= MAX_COT_STEPS) {
+                alert(`Maximum ${MAX_COT_STEPS} steps allowed`);
+                return;
+            }
+
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'workflow-step';
+            stepDiv.innerHTML = `
+                <strong>Step ${cotStepsContainer.children.length + 1}:</strong>
+                <textarea placeholder="Describe this step..."></textarea>
+                ${cotStepsContainer.children.length >= MIN_COT_STEPS - 1 ? '<button type="button" class="remove-step-btn" onclick="window.removeCotStep(this)">Remove</button>' : ''}
+            `;
+            
+            const textarea = stepDiv.querySelector('textarea');
+            textarea.addEventListener('input', updateLiveTokenCount);
+            
+            cotStepsContainer.appendChild(stepDiv);
+            updateCotStepNumbers();
+        }
+
+        window.removeCotStep = function(button) {
+            if (cotStepsContainer.children.length <= MIN_COT_STEPS) {
+                alert(`Minimum ${MIN_COT_STEPS} steps required`);
+                return;
+            }
+
+            button.parentElement.remove();
+            updateCotStepNumbers();
+            updateLiveTokenCount();
+        }
+
+        function updateCotStepNumbers() {
+            const steps = cotStepsContainer.querySelectorAll('.workflow-step');
+            steps.forEach((step, index) => {
+                step.querySelector('strong').textContent = `Step ${index + 1}:`;
+            });
+        }
+
+        function addValidationCondition() {
+            validationCount++;
+            const validationDiv = document.createElement('div');
+            validationDiv.className = 'validation-item';
+            validationDiv.id = `validation-${validationCount}`;
+            validationDiv.draggable = true;
+            
+            const index = validations.length;
+            validations.push({
+                id: validationCount,
+                description: '',
+                impact: 'warning'
+            });
+            
+            validationDiv.innerHTML = `
+                <div class="validation-header">
+                    <div style="display: flex; align-items: center;">
+                        <span class="drag-handle">☰</span>
+                        <span class="validation-order">${index + 1}.</span>
+                        <strong>Validation Condition</strong>
+                    </div>
+                    <button type="button" class="btn-danger btn-small" onclick="removeValidationCondition(${validationCount})">Remove</button>
+                </div>
+                <label for="validationDesc${validationCount}">Description:</label>
+                <textarea id="validationDesc${validationCount}" placeholder="E.g., Response must include working code examples" data-validation-id="${validationCount}"></textarea>
+                <label for="validationImpact${validationCount}" style="margin-top: 8px;">Impact:</label>
+                <select id="validationImpact${validationCount}" data-validation-id="${validationCount}" onchange="updateValidationImpact(${validationCount}, this.value)">
+                    <option value="warning">Warning</option>
+                    <option value="blocking">Blocking</option>
+                </select>
+            `;
+            
+            validationsContainer.appendChild(validationDiv);
+            
+            // Add drag and drop event listeners
+            validationDiv.addEventListener('dragstart', handleDragStart);
+            validationDiv.addEventListener('dragover', handleDragOver);
+            validationDiv.addEventListener('drop', handleDrop);
+            validationDiv.addEventListener('dragend', handleDragEnd);
+        }
+
+        window.removeValidationCondition = function(id) {
+            const validationDiv = document.getElementById(`validation-${id}`);
+            if (validationDiv) {
+                validationDiv.remove();
+                // Remove from state
+                validations = validations.filter(v => v.id !== id);
+                // Renumber remaining validations
+                renumberValidations();
+            }
+        }
+
+        window.updateValidationImpact = function(id, impact) {
+            const validationDiv = document.getElementById(`validation-${id}`);
+            if (validationDiv) {
+                validationDiv.classList.remove('blocking', 'warning');
+                validationDiv.classList.add(impact);
+            }
+            // Update state
+            const validation = validations.find(v => v.id === id);
+            if (validation) {
+                validation.impact = impact;
+            }
+        }
+
+        function renumberValidations() {
+            const items = validationsContainer.querySelectorAll('.validation-item');
+            items.forEach((item, index) => {
+                const orderSpan = item.querySelector('.validation-order');
+                if (orderSpan) {
+                    orderSpan.textContent = `${index + 1}.`;
+                }
+            });
+        }
+
+        // Drag and drop handlers
+        let draggedItem = null;
+
+        function handleDragStart(e) {
+            draggedItem = this;
+            this.style.opacity = '0.4';
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            return false;
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            if (draggedItem !== this) {
+                const allItems = Array.from(validationsContainer.querySelectorAll('.validation-item'));
+                const draggedIndex = allItems.indexOf(draggedItem);
+                const targetIndex = allItems.indexOf(this);
+                
+                if (draggedIndex < targetIndex) {
+                    this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                } else {
+                    this.parentNode.insertBefore(draggedItem, this);
+                }
+                
+                renumberValidations();
+            }
+            
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            this.style.opacity = '1';
+        }
+
+        function initializeExamples() {
+            // Start with 2 examples
+            addExample();
+            addExample();
+        }
+
+        function addExample() {
+            if (exampleCount >= MAX_EXAMPLES) {
+                return;
+            }
+
+            exampleCount++;
+            const exampleDiv = document.createElement('div');
+            exampleDiv.className = 'example-item';
+            exampleDiv.id = `example-${exampleCount}`;
+            
+            exampleDiv.innerHTML = `
+                <div class="example-header">
+                    <span class="example-title">Example ${exampleCount}</span>
+                    <button type="button" class="btn-danger btn-small remove-example" onclick="removeExample(${exampleCount})">Remove</button>
+                </div>
+                <div class="example-fields">
+                    <div class="example-field">
+                        <label for="exampleInput-${exampleCount}">Example Input:</label>
+                        <textarea id="exampleInput-${exampleCount}" placeholder="Enter example input..." aria-label="Example ${exampleCount} input"></textarea>
+                    </div>
+                    <div class="example-field">
+                        <label for="exampleOutput-${exampleCount}">Example Output:</label>
+                        <textarea id="exampleOutput-${exampleCount}" placeholder="Enter example output..." aria-label="Example ${exampleCount} output"></textarea>
+                    </div>
+                </div>
+            `;
+            
+            examplesContainer.appendChild(exampleDiv);
+            updateExampleButtons();
+        }
+
+        function removeExample(id) {
+            const exampleDiv = document.getElementById(`example-${id}`);
+            if (exampleDiv) {
+                exampleDiv.remove();
+                exampleCount--;
+                renumberExamples();
+                updateExampleButtons();
+            }
+        }
+
+        function renumberExamples() {
+            const examples = examplesContainer.querySelectorAll('.example-item');
+            examples.forEach((example, index) => {
+                const newNum = index + 1;
+                example.id = `example-${newNum}`;
+                example.querySelector('.example-title').textContent = `Example ${newNum}`;
+                
+                const inputs = example.querySelectorAll('textarea');
+                inputs[0].id = `exampleInput-${newNum}`;
+                inputs[1].id = `exampleOutput-${newNum}`;
+                
+                const labels = example.querySelectorAll('label');
+                labels[0].setAttribute('for', `exampleInput-${newNum}`);
+                labels[1].setAttribute('for', `exampleOutput-${newNum}`);
+                
+                const removeBtn = example.querySelector('.remove-example');
+                removeBtn.setAttribute('onclick', `removeExample(${newNum})`);
+            });
+        }
+
+        function updateExampleButtons() {
+            const examples = examplesContainer.querySelectorAll('.example-item');
+            const removeButtons = examplesContainer.querySelectorAll('.remove-example');
+            
+            // Disable remove button if only 1 example
+            removeButtons.forEach(btn => {
+                btn.disabled = examples.length <= 1;
+            });
+            
+            // Disable add button if at max
+            addExampleBtn.disabled = exampleCount >= MAX_EXAMPLES;
+        }
+
+        function generatePrompt() {
+            // Validate instructions
+            if (!instructions.value.trim()) {
+                instructions.classList.add('field-error');
+                instructionsError.style.display = 'block';
+                instructions.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            } else {
+                instructions.classList.remove('field-error');
+                instructionsError.style.display = 'none';
+            }
+
+            let prompt = [];
+
+            // 1. Persona
+            const selectedPersona = personaSelect.value;
+            if (selectedPersona && selectedPersona !== 'None (no persona)') {
+                if (selectedPersona === 'Other (custom)') {
+                    if (personaCustom.value.trim()) {
+                        prompt.push(personaCustom.value.trim());
+                    }
+                } else if (personaTemplates[selectedPersona]) {
+                    prompt.push(personaTemplates[selectedPersona]);
+                }
+            }
+
+            // 2. Audience
+            const selectedAudience = audienceSelect.value;
+            if (selectedAudience && selectedAudience !== 'General (not specified)') {
+                if (selectedAudience === 'Other (custom)') {
+                    if (audienceCustom.value.trim()) {
+                        prompt.push(audienceCustom.value.trim());
+                    }
+                } else if (audienceTemplates[selectedAudience]) {
+                    prompt.push(audienceTemplates[selectedAudience]);
+                }
+            }
+
+            // 3. System Constraints
+            const responseLengthValue = responseLength.value;
+            const toneStyleValue = toneStyle.value;
+            const formatPreferencesValue = formatPreferences.value.trim();
+            
+            if (responseLengthValue || toneStyleValue || formatPreferencesValue) {
+                let constraintsSection = 'System Constraints:';
+                
+                if (responseLengthValue) {
+                    const lengthTexts = {
+                        'brief': 'Keep response brief and concise (under 200 words)',
+                        'moderate': 'Provide moderate detail (200-500 words)',
+                        'detailed': 'Provide detailed analysis (500-1000 words)',
+                        'comprehensive': 'Provide comprehensive coverage (over 1000 words)'
+                    };
+                    constraintsSection += '\n- Length: ' + lengthTexts[responseLengthValue];
+                }
+                
+                if (toneStyleValue) {
+                    constraintsSection += '\n- Tone: ' + toneStyleValue.charAt(0).toUpperCase() + toneStyleValue.slice(1);
+                }
+                
+                if (formatPreferencesValue) {
+                    constraintsSection += '\n- Format: ' + formatPreferencesValue;
+                }
+                
+                prompt.push(constraintsSection);
+            }
+
+            // 4. Safety & Ethics Guidelines
+            if (checkBias.checked || accessibilityRequirements.checked || privacyDataProtection.checked || ethicalImplications.checked) {
+                let safetySection = 'Safety & Ethics Considerations:';
+                
+                if (checkBias.checked) {
+                    safetySection += '\n- Check for and eliminate bias in recommendations';
+                }
+                
+                if (accessibilityRequirements.checked) {
+                    safetySection += '\n- Ensure solutions meet accessibility requirements (WCAG 2.1 AA minimum)';
+                }
+                
+                if (privacyDataProtection.checked) {
+                    safetySection += '\n- Address privacy and data protection concerns (GDPR compliance)';
+                }
+                
+                if (ethicalImplications.checked) {
+                    safetySection += '\n- Consider and discuss ethical implications of the solution';
+                }
+                
+                prompt.push(safetySection);
+            }
+
+            // 5. Additional Context
+            if (additionalContext.value.trim()) {
+                prompt.push('Additional context:\n' + additionalContext.value.trim());
+            }
+
+            // 6. Input Data
+            if (inputData.value.trim()) {
+                prompt.push(inputData.value.trim());
+            }
+
+            // 7. Instructions (always included)
+            prompt.push(instructions.value.trim());
+
+            // 8. Reasoning Method
+            const selectedReasoning = document.querySelector('input[name="reasoning"]:checked').value;
+            
+            // Chain-of-Thought
+            if (selectedReasoning === 'chain-of-thought') {
+                const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+                if (cotSteps.length >= MIN_COT_STEPS) {
+                    let cotSection = 'Think through this step-by-step:';
+                    
+                    cotSteps.forEach((step, index) => {
+                        const desc = step.querySelector('textarea').value.trim();
+                        if (desc) {
+                            cotSection += `\nStep ${index + 1}: ${desc}`;
+                        }
+                    });
+                    
+                    if (cotXmlTags.checked) {
+                        cotSection += '\nShow your reasoning in <thinking> tags before providing the final answer.';
+                    }
+                    
+                    prompt.push(cotSection);
+                }
+            }
+            
+            // Few-shot Examples
+            if (selectedReasoning === 'few-shot') {
+                const examples = examplesContainer.querySelectorAll('.example-item');
+                if (examples.length > 0) {
+                    let fewShotSection = 'Here are examples of the desired output:\n';
+                    
+                    examples.forEach((example, index) => {
+                        const inputField = example.querySelector(`textarea[id^="exampleInput"]`);
+                        const outputField = example.querySelector(`textarea[id^="exampleOutput"]`);
+                        
+                        if (inputField.value.trim() || outputField.value.trim()) {
+                            fewShotSection += `\nExample ${index + 1}:\n`;
+                            fewShotSection += `Input: ${inputField.value.trim()}\n`;
+                            fewShotSection += `Output: ${outputField.value.trim()}`;
+                            if (index < examples.length - 1) {
+                                fewShotSection += '\n';
+                            }
+                        }
+                    });
+                    
+                    fewShotSection += '\n\nNow, apply the same pattern to the following:';
+                    prompt.push(fewShotSection);
+                }
+            }
+
+            // 9. Code-Specific Options
+            const progLang = programmingLanguage.value.trim();
+            const framework = frameworkLibrary.value.trim();
+            const tests = includeTests.checked;
+            const docs = includeDocumentation.checked;
+            const testFw = testFramework.value.trim();
+            
+            if (progLang || framework || tests || docs) {
+                let codeSection = 'Code-Specific Requirements:';
+                
+                if (progLang) {
+                    codeSection += '\n- Programming Language: ' + progLang;
+                }
+                
+                if (framework) {
+                    codeSection += '\n- Framework/Library: ' + framework;
+                }
+                
+                if (tests) {
+                    codeSection += '\n- Include comprehensive unit tests';
+                    if (testFw) {
+                        codeSection += ' using ' + testFw;
+                    }
+                }
+                
+                if (docs) {
+                    codeSection += '\n- Include detailed documentation with docstrings and inline comments';
+                }
+                
+                prompt.push(codeSection);
+            }
+
+            // 10. Research Instructions
+            if (searchLatestInfo.checked || citeSources.checked || compareMultipleSources.checked || verifyFacts.checked || includeConfidence.checked) {
+                let researchSection = 'Research Guidelines:';
+                
+                if (searchLatestInfo.checked) {
+                    researchSection += '\n- Search for and incorporate the latest information before answering';
+                }
+                
+                if (citeSources.checked) {
+                    researchSection += '\n- Cite specific sources with dates and URLs where applicable';
+                }
+                
+                if (compareMultipleSources.checked) {
+                    researchSection += '\n- Compare information from multiple authoritative sources';
+                }
+                
+                if (verifyFacts.checked) {
+                    researchSection += '\n- Verify facts before presenting them and flag any uncertain information';
+                }
+                
+                if (includeConfidence.checked) {
+                    researchSection += '\n- Include confidence levels for key claims and findings';
+                }
+                
+                prompt.push(researchSection);
+            }
+
+            // 11. Creative Content Options
+            const writingStyleValue = writingStyle.value;
+            const povValue = pointOfView.value;
+            const wordCountValue = wordCountTarget.value.trim();
+            const readingLevelValue = readingLevel.value;
+            
+            if (writingStyleValue || povValue || wordCountValue || readingLevelValue) {
+                let creativeSection = 'Creative Content Guidelines:';
+                
+                if (writingStyleValue) {
+                    creativeSection += '\n- Writing Style: ' + writingStyleValue;
+                }
+                
+                if (povValue) {
+                    creativeSection += '\n- Point of View: ' + povValue;
+                }
+                
+                if (wordCountValue) {
+                    creativeSection += '\n- Target Word Count: ' + wordCountValue;
+                }
+                
+                if (readingLevelValue) {
+                    creativeSection += '\n- Reading Level: ' + readingLevelValue;
+                }
+                
+                prompt.push(creativeSection);
+            }
+
+            // 12. Output Format
+            if (outputFormat.value.trim()) {
+                prompt.push('Output format:\n' + outputFormat.value.trim());
+            }
+
+            // 13. Quality Controls
+            if (selfReflection.checked) {
+                prompt.push('After providing your solution, perform a self-review:\n1. Check for logical errors\n2. Verify all requirements are met\n3. Identify any assumptions made\n4. Rate your confidence (1-10)');
+            }
+
+            if (antiHallucination.checked) {
+                prompt.push('Important guidelines:\n- If you don\'t know something, explicitly say "I don\'t know"\n- Cite specific sources when making factual claims\n- Distinguish between facts and opinions\n- State assumptions explicitly\n- Only use well-documented, standard approaches');
+            }
+
+            // 14. Validation/Verification Conditions
+            const validationItems = validationsContainer.querySelectorAll('.validation-item');
+            if (validationItems.length > 0) {
+                let validationSection = 'Success Criteria - Validate that the response meets these conditions:';
+                
+                validationItems.forEach((item, index) => {
+                    const desc = item.querySelector('textarea').value.trim();
+                    const impact = item.querySelector('select').value;
+                    
+                    if (desc) {
+                        const impactLabel = impact === 'blocking' ? '[REQUIRED]' : '[RECOMMENDED]';
+                        validationSection += `\n${index + 1}. ${impactLabel} ${desc}`;
+                    }
+                });
+                
+                prompt.push(validationSection);
+            }
+
+            // 15. Negative Prompting
+            if (negativePrompts.value.trim()) {
+                prompt.push('IMPORTANT - Do NOT:\n' + negativePrompts.value.trim());
+            }
+
+            // 16. Iterative Refinement
+            if (askClarifyingQuestions.checked || provideAlternatives.checked || requestFeedback.checked || suggestImprovements.checked || identifyAssumptions.checked) {
+                let iterativeSection = 'Iterative Approach:';
+                
+                if (askClarifyingQuestions.checked) {
+                    iterativeSection += '\n- Ask clarifying questions before providing the final answer if anything is ambiguous';
+                }
+                
+                if (provideAlternatives.checked) {
+                    iterativeSection += '\n- Provide multiple solution approaches or alternatives when applicable';
+                }
+                
+                if (requestFeedback.checked) {
+                    iterativeSection += '\n- Request feedback and be prepared to iterate based on responses';
+                }
+                
+                if (suggestImprovements.checked) {
+                    iterativeSection += '\n- Proactively suggest improvements or optimizations';
+                }
+                
+                if (identifyAssumptions.checked) {
+                    iterativeSection += '\n- Clearly identify any assumptions made and ask for confirmation';
+                }
+                
+                prompt.push(iterativeSection);
+            }
+
+            // Join with blank lines and display
+            const finalPrompt = prompt.join('\n\n');
+            generatedPrompt.value = finalPrompt;
+            updateCharCount();
+
+            // Scroll to output
+            document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateCharCount() {
+            const text = generatedPrompt.value;
+            const charCount_val = text.length;
+            const tokenCount = Math.ceil(charCount_val / 4); // Rough estimate: ~1 token per 4 characters
+            
+            // Apply color coding based on token count
+            if (tokenCount > 2000) {
+                charCount.style.color = 'var(--error)';
+                charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens ⚠️ Large prompt - consider reducing`;
+            } else if (tokenCount > 1000) {
+                charCount.style.color = 'orange';
+                charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens ⚠️ Getting large`;
+            } else {
+                charCount.style.color = 'var(--text-light)';
+                charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens`;
+            }
+        }
+
+        function updateLiveTokenCount() {
+            // Calculate approximate token count from all form fields
+            let totalChars = 0;
+            
+            // Collect text from all relevant fields
+            if (personaSelect.value && personaSelect.value !== 'None (no persona)') {
+                if (personaSelect.value === 'Other (custom)') {
+                    totalChars += personaCustom.value.length;
+                } else if (personaTemplates[personaSelect.value]) {
+                    totalChars += personaTemplates[personaSelect.value].length;
+                }
+            }
+            
+            totalChars += instructions.value.length;
+            totalChars += inputData.value.length;
+            totalChars += outputFormat.value.length;
+            totalChars += additionalContext.value.length;
+            totalChars += formatPreferences.value.length;
+            totalChars += negativePrompts.value.length;
+            
+            // Add CoT steps
+            const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+            cotSteps.forEach(step => {
+                totalChars += step.querySelector('textarea').value.length;
+            });
+            
+            if (audienceSelect.value && audienceSelect.value !== 'General (not specified)') {
+                if (audienceSelect.value === 'Other (custom)') {
+                    totalChars += audienceCustom.value.length;
+                } else if (audienceTemplates[audienceSelect.value]) {
+                    totalChars += audienceTemplates[audienceSelect.value].length;
+                }
+            }
+            
+            // Add approximate overhead for formatting, labels, and quality controls
+            const overhead = 500; // Rough estimate for section labels and quality control text
+            totalChars += overhead;
+            
+            const tokenCount = Math.ceil(totalChars / 4);
+            
+            // Update the display with live preview
+            if (tokenCount > 2000) {
+                charCount.style.color = 'var(--error)';
+                charCount.textContent = `~${totalChars} characters • ~${tokenCount} tokens ⚠️ Large prompt - consider reducing`;
+            } else if (tokenCount > 1000) {
+                charCount.style.color = 'orange';
+                charCount.textContent = `~${totalChars} characters • ~${tokenCount} tokens ⚠️ Getting large`;
+            } else {
+                charCount.style.color = 'var(--text-light)';
+                charCount.textContent = `~${totalChars} characters • ~${tokenCount} tokens`;
+            }
+        }
+
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all fields?')) {
+                document.getElementById('promptForm').reset();
+                personaCustomContainer.classList.add('hidden');
+                audienceCustomContainer.classList.add('hidden');
+                fewShotContainer.classList.add('hidden');
+                cotContainer.classList.add('hidden');
+                generatedPrompt.value = '';
+                charCount.style.color = 'var(--text-light)';
+                charCount.textContent = '~0 characters • ~0 tokens';
+                instructions.classList.remove('field-error');
+                instructionsError.style.display = 'none';
+                
+                // Reset examples
+                examplesContainer.innerHTML = '';
+                exampleCount = 0;
+                initializeExamples();
+                
+                // Reset CoT steps
+                cotStepsContainer.innerHTML = '';
+                cotStepCount = 0;
+                
+                // Reset validation conditions
+                validationsContainer.innerHTML = '';
+                validationCount = 0;
+                validations = [];
+                
+                // Reset collapsible sections to collapsed state
+                document.querySelectorAll('.collapsible-content').forEach(content => {
+                    content.classList.remove('open');
+                });
+                document.querySelectorAll('.collapsible-header').forEach(header => {
+                    header.classList.remove('active');
+                });
+                document.querySelectorAll('.collapsible-toggle').forEach(toggle => {
+                    toggle.classList.remove('open');
+                });
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function exportToRequirements() {
+            const prompt = generatedPrompt.value;
+            if (!prompt) {
+                showNotification('Please generate a prompt first');
+                return;
+            }
+
+            // Create markdown content
+            const markdown = `# AI Agent Requirements
+
+## Generated Prompt
+
+${prompt}
+
+---
+
+*Generated by AI Prompt Engineering Wizard on ${new Date().toLocaleDateString()}*
+`;
+
+            // Create blob and download
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'REQUIREMENTS.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Exported to REQUIREMENTS.md');
+        }
+
+        function copyToClipboard() {
+            const text = generatedPrompt.value;
+            if (!text) {
+                return;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copied!');
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy to Clipboard';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        function loadExampleScenario() {
+            const scenario = loadExample.value;
+            if (!scenario) return;
+
+            // Clear form first
+            document.getElementById('promptForm').reset();
+            personaCustomContainer.classList.add('hidden');
+            audienceCustomContainer.classList.add('hidden');
+            examplesContainer.innerHTML = '';
+            exampleCount = 0;
+            
+            // Reset CoT steps
+            cotStepsContainer.innerHTML = '';
+            cotStepCount = 0;
+            
+            // Reset validation conditions
+            validationsContainer.innerHTML = '';
+            validationCount = 0;
+            validations = [];
+            
+            // Reset collapsible sections to collapsed state
+            document.querySelectorAll('.collapsible-content').forEach(content => {
+                content.classList.remove('open');
+            });
+            document.querySelectorAll('.collapsible-header').forEach(header => {
+                header.classList.remove('active');
+            });
+            document.querySelectorAll('.collapsible-toggle').forEach(toggle => {
+                toggle.classList.remove('open');
+            });
+
+            switch(scenario) {
+                case 'code-security':
+                    personaSelect.value = 'Security Engineer';
+                    instructions.value = 'Review the following Python Flask endpoint for security issues. Prioritize critical vulnerabilities and provide specific recommendations.';
+                    inputData.value = `<code>
+@app.route('/user/<id>')
+def get_user(id):
+    query = f"SELECT * FROM users WHERE id = {id}"
+    user = db.execute(query)
+    return jsonify(user)
+</code>`;
+                    outputFormat.value = `1. Vulnerability Summary (with severity levels)
+2. Detailed Explanation of each issue
+3. Secure Code Example
+4. Additional Security Recommendations`;
+                    additionalContext.value = 'This endpoint handles authentication-related user data. The application uses PostgreSQL database. Performance is critical (10k requests/minute).';
+                    document.getElementById('chainOfThought').checked = true;
+                    toggleReasoningMethod();
+                    setTimeout(() => {
+                        // Add 3 more steps to reach 5 total
+                        addCotStep();
+                        addCotStep();
+                        addCotStep();
+                        const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+                        if (cotSteps.length >= 5) {
+                            cotSteps[0].querySelector('textarea').value = 'Identify potential SQL injection vectors';
+                            cotSteps[1].querySelector('textarea').value = 'Check for authentication and authorization issues';
+                            cotSteps[2].querySelector('textarea').value = 'Evaluate data exposure risks';
+                            cotSteps[3].querySelector('textarea').value = 'Consider input validation and sanitization';
+                            cotSteps[4].querySelector('textarea').value = 'Review error handling';
+                        }
+                    }, 100);
+                    cotXmlTags.checked = true;
+                    audienceSelect.value = 'Technical - Software Developers';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = true;
+                    break;
+
+                case 'email-classification':
+                    personaSelect.value = 'Data Scientist';
+                    instructions.value = 'Classify the following email into one of these categories: Sales, Support, Billing, HR, General. Provide a confidence score and brief reasoning.';
+                    inputData.value = '[Email content will be inserted here]';
+                    outputFormat.value = 'Category: [category name], Confidence: [percentage], Reasoning: [one sentence explanation]';
+                    document.getElementById('fewShot').checked = true;
+                    toggleReasoningMethod();
+                    addExample();
+                    addExample();
+                    addExample();
+                    setTimeout(() => {
+                        document.getElementById('exampleInput-1').value = "Hi, I'd like to upgrade my subscription to the premium plan. What are my options?";
+                        document.getElementById('exampleOutput-1').value = "Category: Billing, Confidence: 95%, Reasoning: Direct mention of subscription upgrade indicates billing inquiry";
+                        document.getElementById('exampleInput-2').value = "My account isn't loading properly. I keep getting error 404 when I try to access the dashboard.";
+                        document.getElementById('exampleOutput-2').value = "Category: Support, Confidence: 98%, Reasoning: Technical issue requiring troubleshooting assistance";
+                        document.getElementById('exampleInput-3').value = "I'm interested in your enterprise solution for our team of 50 people. Can we schedule a demo?";
+                        document.getElementById('exampleOutput-3').value = "Category: Sales, Confidence: 97%, Reasoning: New business opportunity with demo request";
+                    }, 100);
+                    audienceSelect.value = 'Semi-Technical - Product Managers';
+                    selfReflection.checked = false;
+                    antiHallucination.checked = true;
+                    break;
+
+                case 'research-summary':
+                    personaSelect.value = 'Business Analyst';
+                    instructions.value = 'Summarize the current state of solid-state battery technology, focusing on commercial viability and recent breakthroughs.';
+                    outputFormat.value = `## Executive Summary (3-4 sentences)
+## Key Technologies
+## Recent Breakthroughs (2023-2025)
+## Commercial Readiness Assessment
+## Major Players and Investments
+## Timeline to Market`;
+                    additionalContext.value = 'Focus on automotive applications. Include specific companies and their announced timelines. Data should be from credible sources.';
+                    document.getElementById('zeroShot').checked = true;
+                    toggleReasoningMethod();
+                    audienceSelect.value = 'Non-Technical - C-Level Executives';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = true;
+                    break;
+
+                case 'api-documentation':
+                    personaSelect.value = 'Technical Writer';
+                    instructions.value = 'Create comprehensive API documentation for the following endpoint. Include all necessary details for developers to successfully integrate this API.';
+                    inputData.value = `<code>
+POST /api/v1/users
+Creates a new user account
+Parameters: email (string, required), name (string, required), role (string, optional)
+Returns: user object with id, created_at timestamp
+Authentication: Bearer token required
+Rate limit: 100 requests per hour
+</code>`;
+                    outputFormat.value = `# Endpoint Overview
+## HTTP Method and URL
+## Description
+## Authentication
+## Request Parameters (table format)
+## Request Example (curl and JavaScript)
+## Response Format
+## Response Example (JSON)
+## Error Codes
+## Rate Limits`;
+                    additionalContext.value = 'REST API following OpenAPI 3.0 specification. Target framework: Node.js with Express. Must include examples in both curl and JavaScript fetch.';
+                    document.getElementById('zeroShot').checked = true;
+                    toggleReasoningMethod();
+                    audienceSelect.value = 'Technical - Software Developers';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = true;
+                    break;
+
+                case 'user-story':
+                    personaSelect.value = 'Product Manager';
+                    instructions.value = 'Write a detailed user story with acceptance criteria for the described feature. Follow standard Agile format.';
+                    inputData.value = 'Feature request: Allow users to export their data in CSV format from the dashboard. Users should be able to select date ranges and specific data fields to include.';
+                    outputFormat.value = `**User Story:**
+As a [user type]
+I want [goal]
+So that [benefit]
+
+**Acceptance Criteria:**
+- [ ] Criterion 1
+- [ ] Criterion 2
+[etc.]
+
+**Technical Notes:**
+[Any technical considerations]`;
+                    additionalContext.value = 'B2B SaaS product. GDPR compliance required (data export is a regulatory requirement). Target implementation: Q2 2025. Current tech stack: React frontend, Python Django backend.';
+                    document.getElementById('fewShot').checked = true;
+                    toggleReasoningMethod();
+                    addExample();
+                    addExample();
+                    setTimeout(() => {
+                        document.getElementById('exampleInput-1').value = "Feature: Dark mode toggle";
+                        document.getElementById('exampleOutput-1').value = `**User Story:**
+As a user who works late hours
+I want to switch the interface to dark mode
+So that I can reduce eye strain and work more comfortably
+
+**Acceptance Criteria:**
+- [ ] Toggle switch appears in user settings menu
+- [ ] Dark mode preference persists across sessions
+- [ ] Mode change applies immediately without page reload
+- [ ] All UI components render properly in dark mode
+
+**Technical Notes:**
+Use CSS custom properties for theming. Store preference in localStorage.`;
+                        document.getElementById('exampleInput-2').value = "Feature: Password reset via email";
+                        document.getElementById('exampleOutput-2').value = `**User Story:**
+As a user who forgot my password
+I want to reset it using my email address
+So that I can regain access to my account securely
+
+**Acceptance Criteria:**
+- [ ] Reset link sent to registered email within 1 minute
+- [ ] Link expires after 24 hours
+- [ ] User must create a new password (cannot reuse old one)
+- [ ] Confirmation email sent after successful reset
+
+**Technical Notes:**
+Use secure token generation. Implement rate limiting to prevent abuse.`;
+                    }, 100);
+                    audienceSelect.value = 'Semi-Technical - Technical Project Managers';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = false;
+                    break;
+
+                case 'feature-request':
+                    personaSelect.value = 'Product Manager';
+                    instructions.value = 'Analyze the following feature request and create a comprehensive specification. Include technical feasibility, user impact, and implementation recommendations.';
+                    inputData.value = `Feature Request: Add real-time collaboration features to our document editor, similar to Google Docs. Multiple users should be able to edit simultaneously with cursor positions visible and changes synced instantly.`;
+                    outputFormat.value = `## Feature Overview
+## User Stories
+## Technical Requirements
+- Frontend changes
+- Backend changes
+- Infrastructure needs
+## Implementation Approach
+## Challenges and Risks
+## Success Metrics
+## Timeline Estimate`;
+                    additionalContext.value = 'Current stack: React frontend, Node.js backend, MongoDB database. Target users: teams of 5-50 people. Performance requirement: <100ms latency for edits.';
+                    document.getElementById('chainOfThought').checked = true;
+                    toggleReasoningMethod();
+                    setTimeout(() => {
+                        // Add 3 more steps to reach 5 total
+                        addCotStep();
+                        addCotStep();
+                        addCotStep();
+                        const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+                        if (cotSteps.length >= 5) {
+                            cotSteps[0].querySelector('textarea').value = 'Analyze user needs and use cases';
+                            cotSteps[1].querySelector('textarea').value = 'Identify technical requirements and dependencies';
+                            cotSteps[2].querySelector('textarea').value = 'Evaluate existing solutions and technologies';
+                            cotSteps[3].querySelector('textarea').value = 'Consider scalability and performance implications';
+                            cotSteps[4].querySelector('textarea').value = 'Assess implementation complexity and timeline';
+                        }
+                    }, 100);
+                    cotXmlTags.checked = true;
+                    audienceSelect.value = 'Semi-Technical - Product Managers';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = true;
+                    break;
+
+                case 'bug-analysis':
+                    personaSelect.value = 'Senior Software Engineer';
+                    instructions.value = 'Analyze the following bug report, identify root cause, and provide a detailed fix with testing approach.';
+                    inputData.value = `<bug_report>
+Title: Application crashes when uploading files larger than 10MB
+Environment: Production, Chrome 120, Windows 11
+Steps to reproduce:
+1. Navigate to /upload page
+2. Select a file larger than 10MB
+3. Click "Upload" button
+4. Browser tab becomes unresponsive
+
+Error log:
+Uncaught RangeError: Maximum call stack size exceeded
+  at FileReader.onload (upload.js:45)
+  at convertToBase64 (utils.js:123)
+</bug_report>`;
+                    outputFormat.value = `## Root Cause Analysis
+## Impact Assessment
+## Proposed Solution
+- Code changes
+- Configuration changes
+## Testing Strategy
+## Prevention Measures`;
+                    additionalContext.value = 'File upload uses Base64 encoding. Current implementation loads entire file into memory. Production handles 1000+ uploads daily. Quick fix needed but should be production-ready.';
+                    document.getElementById('chainOfThought').checked = true;
+                    toggleReasoningMethod();
+                    setTimeout(() => {
+                        // Add 3 more steps to reach 5 total
+                        addCotStep();
+                        addCotStep();
+                        addCotStep();
+                        const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+                        if (cotSteps.length >= 5) {
+                            cotSteps[0].querySelector('textarea').value = 'Analyze error message and stack trace';
+                            cotSteps[1].querySelector('textarea').value = 'Identify code location and logic flow';
+                            cotSteps[2].querySelector('textarea').value = 'Determine why the issue occurs';
+                            cotSteps[3].querySelector('textarea').value = 'Evaluate potential solutions';
+                            cotSteps[4].querySelector('textarea').value = 'Recommend fix with minimal risk';
+                        }
+                    }, 100);
+                    cotXmlTags.checked = true;
+                    audienceSelect.value = 'Technical - Software Developers';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = true;
+                    break;
+
+                case 'project-familiarization':
+                    personaSelect.value = 'Senior Software Engineer';
+                    instructions.value = 'You are working as an AI agent inside this codebase. Familiarize yourself with the project structure, architecture, and key components. Prepare to answer questions and assist with development tasks.';
+                    inputData.value = `<project_context>
+Repository: teleprompter
+Purpose: AI Prompt Engineering Wizard - a single-page application for building structured AI prompts
+Technology: Vanilla HTML/CSS/JavaScript (no frameworks)
+File structure:
+- index.html (main application file)
+- README.md (project documentation)
+- REQUIREMENTS.md (detailed specifications)
+</project_context>`;
+                    outputFormat.value = `## Project Summary
+Brief overview of what this project does
+
+## Architecture Overview
+Key technical decisions and structure
+
+## Main Components
+List and describe major parts of the codebase
+
+## How to Work with This Project
+Development workflow and guidelines
+
+## Questions I Can Help With
+Types of tasks I'm ready to assist with`;
+                    additionalContext.value = 'Focus on understanding the codebase well enough to make contributions, fix bugs, or add features. Be ready to explain any part of the code or suggest improvements.';
+                    document.getElementById('zeroShot').checked = true;
+                    toggleReasoningMethod();
+                    audienceSelect.value = 'Technical - Software Developers';
+                    selfReflection.checked = true;
+                    antiHallucination.checked = true;
+                    break;
+            }
+
+            showNotification(`Loaded: ${loadExample.options[loadExample.selectedIndex].text}`);
+            loadExample.value = '';
+        }
+    </script>
+</body>
+</html>

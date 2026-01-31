@@ -5,554 +5,551 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Prompt Engineering Wizard</title>
     <style>
-        /* ===== CSS Variables ===== */
-        :root {
-            --primary-color: #2563eb;
-            --primary-hover: #1d4ed8;
-            --secondary-color: #6b7280;
-            --background: #f9fafb;
-            --white: #ffffff;
-            --success: #10b981;
-            --error: #ef4444;
-            --border: #e5e7eb;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
-            --spacing-sm: 10px;
-            --spacing-md: 20px;
-            --spacing-lg: 30px;
-            --border-radius: 8px;
-            --transition: 0.2s ease;
-        }
-
-        /* ===== Reset and Base Styles ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background-color: var(--background);
-            color: var(--text-dark);
-            line-height: 1.6;
-            font-size: 16px;
-        }
-
-        /* ===== Header Styles ===== */
-        header {
-            background: linear-gradient(135deg, var(--primary-color), #1e40af);
-            color: var(--white);
-            padding: var(--spacing-lg) var(--spacing-md);
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            font-size: 2rem;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        header p {
-            font-size: 1.1rem;
-            opacity: 0.95;
-        }
-
-        /* ===== Main Container ===== */
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: var(--spacing-lg) var(--spacing-md);
-        }
-
-        /* ===== Section Styles ===== */
-        .form-section {
-            background: var(--white);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-md);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .section-header {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: var(--spacing-sm);
-            display: flex;
-            align-items: center;
-        }
-
-        .section-number {
-            background: var(--primary-color);
-            color: var(--white);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: var(--spacing-sm);
-            font-size: 0.9rem;
-        }
-
-        .section-description {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            margin-bottom: var(--spacing-md);
-        }
-
-        /* ===== Form Element Styles ===== */
-        label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-        }
-
-        .helper-text {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-top: 6px;
-        }
-
-        select, textarea, input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color var(--transition);
-        }
-
-        select:focus, textarea:focus, input[type="text"]:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-            line-height: 1.5;
-        }
-
-        .required::after {
-            content: " *";
-            color: var(--error);
-        }
-
-        .error-message {
-            color: var(--error);
-            font-size: 0.9rem;
-            margin-top: 8px;
-            display: none;
-        }
-
-        .field-error {
-            border-color: var(--error) !important;
-        }
-
-        /* ===== Radio and Checkbox Styles ===== */
-        .radio-group, .checkbox-group {
-            margin: var(--spacing-md) 0;
-        }
-
-        .radio-option, .checkbox-option {
-            display: flex;
-            align-items: center;
-            margin-bottom: var(--spacing-sm);
-            padding: 12px;
-            border-radius: var(--border-radius);
-            transition: background-color var(--transition);
-        }
-
-        .radio-option:hover, .checkbox-option:hover {
-            background-color: #f3f4f6;
-        }
-
-        .radio-option input[type="radio"],
-        .checkbox-option input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: var(--spacing-sm);
-            cursor: pointer;
-        }
-
-        .radio-option label,
-        .checkbox-option label {
-            margin: 0;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        /* ===== Hidden Elements ===== */
-        .hidden {
-            display: none !important;
-        }
-
-        /* ===== Few-Shot Examples ===== */
-        .example-container {
-            margin-top: var(--spacing-md);
-        }
-
-        .example-item {
-            background: #f9fafb;
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border);
-            margin-bottom: var(--spacing-md);
-            position: relative;
-        }
-
-        .example-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .example-title {
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .example-fields {
-            display: grid;
-            gap: var(--spacing-md);
-        }
-
-        .example-field label {
-            font-size: 0.9rem;
-        }
-
-        /* ===== Button Styles ===== */
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all var(--transition);
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: var(--white);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-secondary {
-            background: var(--secondary-color);
-            color: var(--white);
-        }
-
-        .btn-secondary:hover {
-            background: #4b5563;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: var(--white);
-        }
-
-        .btn-success:hover {
-            background: #059669;
-        }
-
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 0.9rem;
-        }
-
-        .btn-danger {
-            background: var(--error);
-            color: var(--white);
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        button:disabled:hover {
-            transform: none;
-            box-shadow: none;
-        }
-
-        .button-group {
-            display: flex;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-md);
-            flex-wrap: wrap;
-        }
-
-        /* ===== Output Section ===== */
-        #output {
-            background: var(--white);
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            margin-top: var(--spacing-md);
-        }
-
-        #generatedPrompt {
-            font-family: 'Courier New', Monaco, monospace;
-            background: #1f2937;
-            color: #f3f4f6;
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius);
-            min-height: 400px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .output-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-md);
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-        }
-
-        .char-count {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-top: var(--spacing-sm);
-        }
-
-        /* ===== Collapsible Sections ===== */
-        .collapsible-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            user-select: none;
-            padding: 12px;
-            background: #f9fafb;
-            border-radius: var(--border-radius);
-            margin-bottom: 12px;
-            transition: var(--transition);
-        }
-
-        .collapsible-header:hover {
-            background: #f3f4f6;
-        }
-
-        .collapsible-header.active {
-            background: #e5e7eb;
-        }
-
-        .collapsible-title {
-            flex: 1;
-        }
-
-        .collapsible-toggle {
-            font-size: 1.2em;
-            transition: transform var(--transition);
-        }
-
-        .collapsible-toggle.open {
-            transform: rotate(90deg);
-        }
-
-        .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .collapsible-content.open {
-            max-height: 2000px;
-        }
-
-        /* ===== Validation Conditions ===== */
-        .validation-item {
-            background: #f9fafb;
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border);
-            margin-bottom: var(--spacing-md);
-            position: relative;
-            cursor: move;
-        }
-
-        .validation-item.blocking {
-            border-left: 4px solid var(--error);
-        }
-
-        .validation-item.warning {
-            border-left: 4px solid orange;
-        }
-
-        .validation-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-
-        .validation-order {
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-right: 8px;
-        }
-
-        .drag-handle {
-            cursor: move;
-            color: var(--text-light);
-            margin-right: 8px;
-        }
-
-        /* ===== Workflow Steps (for Chain-of-Thought) ===== */
-        .workflow-step {
-            background: #f9fafb;
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border);
-            margin-bottom: var(--spacing-md);
-            position: relative;
-        }
-
-        .workflow-step strong {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-        }
-
-        .workflow-step textarea {
-            width: 100%;
-            min-height: 80px;
-            margin-bottom: 8px;
-        }
-
-        .remove-step-btn {
-            background: var(--error);
-            color: var(--white);
-            border: none;
-            padding: 6px 12px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .remove-step-btn:hover {
-            background: #dc2626;
-        }
-
-        /* ===== Notification ===== */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--success);
-            color: var(--white);
-            padding: 16px 24px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* ===== Footer ===== */
-        footer {
-            text-align: center;
-            padding: var(--spacing-lg);
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        /* ===== Responsive Design ===== */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.5rem;
-            }
-
-            header p {
-                font-size: 1rem;
-            }
-
-            .form-section {
-                padding: var(--spacing-md);
-            }
-
-            .section-header {
-                font-size: 1.1rem;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
-            }
-
-            .output-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-            main {
-                padding: var(--spacing-md);
-            }
-        }
-
-        /* ===== Custom Select Styling ===== */
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            padding-right: 40px;
-        }
-
-        /* ===== Load Example Dropdown ===== */
-        .load-example-section {
-            background: #fef3c7;
-            border: 2px solid #fbbf24;
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .load-example-section label {
-            color: #92400e;
-            font-weight: 600;
-        }
-
-        .load-example-section select {
-            margin-top: var(--spacing-sm);
-        }
+/* ===== CSS Variables ===== */
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary-color: #6b7280;
+    --background: #f9fafb;
+    --white: #ffffff;
+    --success: #10b981;
+    --error: #ef4444;
+    --border: #e5e7eb;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --spacing-sm: 10px;
+    --spacing-md: 20px;
+    --spacing-lg: 30px;
+    --border-radius: 8px;
+    --transition: 0.2s ease;
+}
+/* ===== Header Styles ===== */
+header {
+    background: linear-gradient(135deg, var(--primary-color), #1e40af);
+    color: var(--white);
+    padding: var(--spacing-lg) var(--spacing-md);
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+header p {
+    font-size: 1.1rem;
+    opacity: 0.95;
+}
+
+/* ===== Footer ===== */
+footer {
+    text-align: center;
+    padding: var(--spacing-lg);
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+/* ===== Reset and Base Styles ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    background-color: var(--background);
+    color: var(--text-dark);
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+/* ===== Main Container ===== */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md);
+}
+
+/* ===== Section Styles ===== */
+.form-section {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+}
+
+.section-number {
+    background: var(--primary-color);
+    color: var(--white);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--spacing-sm);
+    font-size: 0.9rem;
+}
+
+.section-description {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
+}
+
+/* ===== Hidden Elements ===== */
+.hidden {
+    display: none !important;
+}
+
+/* ===== Output Section ===== */
+#output {
+    background: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-top: var(--spacing-md);
+}
+
+#generatedPrompt {
+    font-family: 'Courier New', Monaco, monospace;
+    background: #1f2937;
+    color: #f3f4f6;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    min-height: 400px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.char-count {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-top: var(--spacing-sm);
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    header p {
+        font-size: 1rem;
+    }
+
+    .form-section {
+        padding: var(--spacing-md);
+    }
+
+    .section-header {
+        font-size: 1.1rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .output-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    main {
+        padding: var(--spacing-md);
+    }
+}
+/* ===== Form Element Styles ===== */
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.helper-text {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 6px;
+}
+
+select, textarea, input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color var(--transition);
+}
+
+select:focus, textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+}
+
+.required::after {
+    content: " *";
+    color: var(--error);
+}
+
+.error-message {
+    color: var(--error);
+    font-size: 0.9rem;
+    margin-top: 8px;
+    display: none;
+}
+
+.field-error {
+    border-color: var(--error) !important;
+}
+
+/* ===== Radio and Checkbox Styles ===== */
+.radio-group, .checkbox-group {
+    margin: var(--spacing-md) 0;
+}
+
+.radio-option, .checkbox-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    padding: 12px;
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition);
+}
+
+.radio-option:hover, .checkbox-option:hover {
+    background-color: #f3f4f6;
+}
+
+.radio-option input[type="radio"],
+.checkbox-option input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.radio-option label,
+.checkbox-option label {
+    margin: 0;
+    cursor: pointer;
+    flex: 1;
+}
+
+/* ===== Custom Select Styling ===== */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+/* ===== Load Example Dropdown ===== */
+.load-example-section {
+    background: #fef3c7;
+    border: 2px solid #fbbf24;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-md);
+}
+
+.load-example-section label {
+    color: #92400e;
+    font-weight: 600;
+}
+
+.load-example-section select {
+    margin-top: var(--spacing-sm);
+}
+/* ===== Button Styles ===== */
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+.btn-success {
+    background: var(--success);
+    color: var(--white);
+}
+
+.btn-success:hover {
+    background: #059669;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+.btn-danger {
+    background: var(--error);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+/* ===== Collapsible Sections ===== */
+.collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: var(--border-radius);
+    margin-bottom: 12px;
+    transition: var(--transition);
+}
+
+.collapsible-header:hover {
+    background: #f3f4f6;
+}
+
+.collapsible-header.active {
+    background: #e5e7eb;
+}
+
+.collapsible-title {
+    flex: 1;
+}
+
+.collapsible-toggle {
+    font-size: 1.2em;
+    transition: transform var(--transition);
+}
+
+.collapsible-toggle.open {
+    transform: rotate(90deg);
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.collapsible-content.open {
+    max-height: 2000px;
+}
+
+/* ===== Few-Shot Examples ===== */
+.example-container {
+    margin-top: var(--spacing-md);
+}
+
+.example-item {
+    background: #f9fafb;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    margin-bottom: var(--spacing-md);
+    position: relative;
+}
+
+.example-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.example-title {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.example-fields {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.example-field label {
+    font-size: 0.9rem;
+}
+
+/* ===== Validation Conditions ===== */
+.validation-item {
+    background: #f9fafb;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    margin-bottom: var(--spacing-md);
+    position: relative;
+    cursor: move;
+}
+
+.validation-item.blocking {
+    border-left: 4px solid var(--error);
+}
+
+.validation-item.warning {
+    border-left: 4px solid orange;
+}
+
+.validation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.validation-order {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-right: 8px;
+}
+
+.drag-handle {
+    cursor: move;
+    color: var(--text-light);
+    margin-right: 8px;
+}
+
+/* ===== Workflow Steps (for Chain-of-Thought) ===== */
+.workflow-step {
+    background: #f9fafb;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    margin-bottom: var(--spacing-md);
+    position: relative;
+}
+
+.workflow-step strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.workflow-step textarea {
+    width: 100%;
+    min-height: 80px;
+    margin-bottom: 8px;
+}
+
+.remove-step-btn {
+    background: var(--error);
+    color: var(--white);
+    border: none;
+    padding: 6px 12px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.remove-step-btn:hover {
+    background: #dc2626;
+}
+
+/* ===== Notification ===== */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--success);
+    color: var(--white);
+    padding: 16px 24px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -1197,1312 +1194,1910 @@
     </footer>
 
     <script>
-        // ===== Persona Templates =====
-        const personaTemplates = {
-            "Senior Software Engineer": "You are a senior software engineer with extensive experience in software architecture, design patterns, and best practices. You write clean, maintainable code and prioritize scalability and performance.",
-            "Security Engineer": "You are an experienced security engineer specializing in web application vulnerabilities, secure coding practices, and threat modeling. You prioritize security best practices and can identify potential vulnerabilities.",
-            "Data Scientist": "You are a data scientist with expertise in statistical analysis, machine learning, and data visualization. You can explain complex analytical concepts clearly and provide actionable insights from data.",
-            "Product Manager": "You are an experienced product manager who understands user needs, market dynamics, and product strategy. You can balance technical constraints with business objectives and communicate effectively with both technical and non-technical stakeholders.",
-            "Technical Writer": "You are a skilled technical writer who can explain complex technical concepts in clear, accessible language. You create well-structured documentation with appropriate examples and diagrams.",
-            "UX Designer": "You are a UX designer with expertise in user research, interaction design, and usability principles. You focus on creating intuitive, accessible, and user-centered designs.",
-            "DevOps Engineer": "You are a DevOps engineer experienced in CI/CD pipelines, infrastructure as code, containerization, and cloud platforms. You prioritize automation, reliability, and monitoring.",
-            "Business Analyst": "You are a business analyst skilled at understanding business requirements, process optimization, and translating between technical and business stakeholders. You focus on delivering measurable business value.",
-            "Marketing Specialist": "You are a marketing specialist with expertise in content strategy, audience segmentation, and digital marketing. You understand how to create compelling messaging that resonates with target audiences.",
-            "Creative Writer": "You are a creative writer with a strong command of narrative techniques, character development, and engaging storytelling. You can write in various styles and genres while maintaining voice consistency.",
-            "Teacher/Educator": "You are an experienced educator who can break down complex topics into digestible lessons. You use clear explanations, relevant examples, and check for understanding."
-        };
+/**
+ * Configuration constants and templates
+ * Pure data - no dependencies
+ */
+(function() {
+    'use strict';
 
-        // ===== Audience Templates =====
-        const audienceTemplates = {
-            "Technical - Software Developers": "Target audience: software developers with professional coding experience. Use appropriate technical terminology.",
-            "Technical - System Architects": "Target audience: senior system architects familiar with distributed systems and scalability patterns. Focus on architectural decisions and trade-offs.",
-            "Technical - Data Engineers": "Target audience: data engineers experienced with data pipelines, ETL processes, and big data technologies.",
-            "Technical - DevOps/SRE": "Target audience: DevOps engineers and SREs familiar with infrastructure automation and reliability engineering.",
-            "Semi-Technical - Product Managers": "Target audience: product managers with technical awareness but without deep engineering expertise. Balance technical detail with business context.",
-            "Semi-Technical - Technical Project Managers": "Target audience: technical project managers who understand development workflows but may not code regularly.",
-            "Non-Technical - Business Stakeholders": "Target audience: non-technical business stakeholders. Avoid jargon and use clear, accessible language.",
-            "Non-Technical - C-Level Executives": "Target audience: C-level executives who need high-level insights and business impact. Focus on strategic implications rather than technical details.",
-            "Non-Technical - Marketing/Sales Teams": "Target audience: marketing and sales professionals who need to understand capabilities without implementation details.",
-            "Students/Learners - Beginners": "Target audience: beginners with little to no prior knowledge. Use simple language, provide context, and include educational explanations.",
-            "Students/Learners - Intermediate": "Target audience: intermediate learners with foundational knowledge seeking to deepen understanding.",
-            "Students/Learners - Advanced": "Target audience: advanced learners or practitioners looking for expert-level insights and nuanced understanding.",
-            "General Public": "Target audience: general public with no specialized knowledge. Use everyday language and analogies. Avoid all jargon."
-        };
+    // ===== Persona Templates =====
+    window.personaTemplates = {
+        "Senior Software Engineer": "You are a senior software engineer with extensive experience in software architecture, design patterns, and best practices. You write clean, maintainable code and prioritize scalability and performance.",
+        "Security Engineer": "You are an experienced security engineer specializing in web application vulnerabilities, secure coding practices, and threat modeling. You prioritize security best practices and can identify potential vulnerabilities.",
+        "Data Scientist": "You are a data scientist with expertise in statistical analysis, machine learning, and data visualization. You can explain complex analytical concepts clearly and provide actionable insights from data.",
+        "Product Manager": "You are an experienced product manager who understands user needs, market dynamics, and product strategy. You can balance technical constraints with business objectives and communicate effectively with both technical and non-technical stakeholders.",
+        "Technical Writer": "You are a skilled technical writer who can explain complex technical concepts in clear, accessible language. You create well-structured documentation with appropriate examples and diagrams.",
+        "UX Designer": "You are a UX designer with expertise in user research, interaction design, and usability principles. You focus on creating intuitive, accessible, and user-centered designs.",
+        "DevOps Engineer": "You are a DevOps engineer experienced in CI/CD pipelines, infrastructure as code, containerization, and cloud platforms. You prioritize automation, reliability, and monitoring.",
+        "Business Analyst": "You are a business analyst skilled at understanding business requirements, process optimization, and translating between technical and business stakeholders. You focus on delivering measurable business value.",
+        "Marketing Specialist": "You are a marketing specialist with expertise in content strategy, audience segmentation, and digital marketing. You understand how to create compelling messaging that resonates with target audiences.",
+        "Creative Writer": "You are a creative writer with a strong command of narrative techniques, character development, and engaging storytelling. You can write in various styles and genres while maintaining voice consistency.",
+        "Teacher/Educator": "You are an experienced educator who can break down complex topics into digestible lessons. You use clear explanations, relevant examples, and check for understanding."
+    };
 
-        // ===== DOM Elements =====
-        const personaSelect = document.getElementById('persona');
-        const personaCustomContainer = document.getElementById('personaCustomContainer');
-        const personaCustom = document.getElementById('personaCustom');
-        const instructions = document.getElementById('instructions');
-        const instructionsError = document.getElementById('instructionsError');
-        const inputData = document.getElementById('inputData');
-        const outputFormat = document.getElementById('outputFormat');
-        const additionalContext = document.getElementById('additionalContext');
-        const responseLength = document.getElementById('responseLength');
-        const toneStyle = document.getElementById('toneStyle');
-        const formatPreferences = document.getElementById('formatPreferences');
-        const negativePrompts = document.getElementById('negativePrompts');
-        const reasoningRadios = document.querySelectorAll('input[name="reasoning"]');
-        const fewShotContainer = document.getElementById('fewShotContainer');
-        const cotContainer = document.getElementById('cotContainer');
-        const examplesContainer = document.getElementById('examplesContainer');
-        const addExampleBtn = document.getElementById('addExampleBtn');
-        const cotStepsContainer = document.getElementById('cotStepsContainer');
-        const addCotStepBtn = document.getElementById('addCotStepBtn');
-        const cotXmlTags = document.getElementById('cotXmlTags');
-        const audienceSelect = document.getElementById('audience');
-        const audienceCustomContainer = document.getElementById('audienceCustomContainer');
-        const audienceCustom = document.getElementById('audienceCustom');
-        const selfReflection = document.getElementById('selfReflection');
-        const antiHallucination = document.getElementById('antiHallucination');
-        const loadExample = document.getElementById('loadExample');
-        const generateBtn = document.getElementById('generateBtn');
-        const exportBtn = document.getElementById('exportBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const generatedPrompt = document.getElementById('generatedPrompt');
-        const copyBtn = document.getElementById('copyBtn');
-        const charCount = document.getElementById('charCount');
+    // ===== Audience Templates =====
+    window.audienceTemplates = {
+        "Technical - Software Developers": "Target audience: software developers with professional coding experience. Use appropriate technical terminology.",
+        "Technical - System Architects": "Target audience: senior system architects familiar with distributed systems and scalability patterns. Focus on architectural decisions and trade-offs.",
+        "Technical - Data Engineers": "Target audience: data engineers experienced with data pipelines, ETL processes, and big data technologies.",
+        "Technical - DevOps/SRE": "Target audience: DevOps engineers and SREs familiar with infrastructure automation and reliability engineering.",
+        "Semi-Technical - Product Managers": "Target audience: product managers with technical awareness but without deep engineering expertise. Balance technical detail with business context.",
+        "Semi-Technical - Technical Project Managers": "Target audience: technical project managers who understand development workflows but may not code regularly.",
+        "Non-Technical - Business Stakeholders": "Target audience: non-technical business stakeholders. Avoid jargon and use clear, accessible language.",
+        "Non-Technical - C-Level Executives": "Target audience: C-level executives who need high-level insights and business impact. Focus on strategic implications rather than technical details.",
+        "Non-Technical - Marketing/Sales Teams": "Target audience: marketing and sales professionals who need to understand capabilities without implementation details.",
+        "Students/Learners - Beginners": "Target audience: beginners with little to no prior knowledge. Use simple language, provide context, and include educational explanations.",
+        "Students/Learners - Intermediate": "Target audience: intermediate learners with foundational knowledge seeking to deepen understanding.",
+        "Students/Learners - Advanced": "Target audience: advanced learners or practitioners looking for expert-level insights and nuanced understanding.",
+        "General Public": "Target audience: general public with no specialized knowledge. Use everyday language and analogies. Avoid all jargon."
+    };
 
-        // Phase 2 DOM Elements
-        const codeOptionsHeader = document.getElementById('codeOptionsHeader');
-        const codeOptionsContent = document.getElementById('codeOptionsContent');
-        const programmingLanguage = document.getElementById('programmingLanguage');
-        const frameworkLibrary = document.getElementById('frameworkLibrary');
-        const includeTests = document.getElementById('includeTests');
-        const includeDocumentation = document.getElementById('includeDocumentation');
-        const testFramework = document.getElementById('testFramework');
+    // ===== Constants =====
+    window.MAX_EXAMPLES = 5;
+    window.MIN_COT_STEPS = 2;
+    window.MAX_COT_STEPS = 10;
 
-        const safetyEthicsHeader = document.getElementById('safetyEthicsHeader');
-        const safetyEthicsContent = document.getElementById('safetyEthicsContent');
-        const checkBias = document.getElementById('checkBias');
-        const accessibilityRequirements = document.getElementById('accessibilityRequirements');
-        const privacyDataProtection = document.getElementById('privacyDataProtection');
-        const ethicalImplications = document.getElementById('ethicalImplications');
+    // ===== Response Length Text Mapping =====
+    window.responseLengthTexts = {
+        'brief': 'Keep response brief and concise (under 200 words)',
+        'moderate': 'Provide moderate detail (200-500 words)',
+        'detailed': 'Provide detailed analysis (500-1000 words)',
+        'comprehensive': 'Provide comprehensive coverage (over 1000 words)'
+    };
 
-        const validationConditionsHeader = document.getElementById('validationConditionsHeader');
-        const validationConditionsContent = document.getElementById('validationConditionsContent');
-        const validationsContainer = document.getElementById('validationsContainer');
-        const addValidationBtn = document.getElementById('addValidationBtn');
+})();
+/**
+ * Example scenarios data
+ * Pure data - no dependencies
+ */
+(function() {
+    'use strict';
 
-        const creativeContentHeader = document.getElementById('creativeContentHeader');
-        const creativeContentContent = document.getElementById('creativeContentContent');
-        const writingStyle = document.getElementById('writingStyle');
-        const pointOfView = document.getElementById('pointOfView');
-        const wordCountTarget = document.getElementById('wordCountTarget');
-        const readingLevel = document.getElementById('readingLevel');
+    window.exampleScenarios = {
+        'code-security': {
+            persona: 'Security Engineer',
+            instructions: 'Review the following Python Flask endpoint for security issues. Prioritize critical vulnerabilities and provide specific recommendations.',
+            inputData: '<code>\n@app.route(\'/user/<id>\')\ndef get_user(id):\n    query = f"SELECT * FROM users WHERE id = {id}"\n    user = db.execute(query)\n    return jsonify(user)\n</code>',
+            outputFormat: '1. Vulnerability Summary (with severity levels)\n2. Detailed Explanation of each issue\n3. Secure Code Example\n4. Additional Security Recommendations',
+            additionalContext: 'This endpoint handles authentication-related user data. The application uses PostgreSQL database. Performance is critical (10k requests/minute).',
+            reasoning: 'chain-of-thought',
+            cotSteps: [
+                'Identify potential SQL injection vectors',
+                'Check for authentication and authorization issues',
+                'Evaluate data exposure risks',
+                'Consider input validation and sanitization',
+                'Review error handling'
+            ],
+            cotXmlTags: true,
+            audience: 'Technical - Software Developers',
+            selfReflection: true,
+            antiHallucination: true
+        },
 
-        const researchInstructionsHeader = document.getElementById('researchInstructionsHeader');
-        const researchInstructionsContent = document.getElementById('researchInstructionsContent');
-        const searchLatestInfo = document.getElementById('searchLatestInfo');
-        const citeSources = document.getElementById('citeSources');
-        const compareMultipleSources = document.getElementById('compareMultipleSources');
-        const verifyFacts = document.getElementById('verifyFacts');
-        const includeConfidence = document.getElementById('includeConfidence');
+        'email-classification': {
+            persona: 'Data Scientist',
+            instructions: 'Classify the following email into one of these categories: Sales, Support, Billing, HR, General. Provide a confidence score and brief reasoning.',
+            inputData: '[Email content will be inserted here]',
+            outputFormat: 'Category: [category name], Confidence: [percentage], Reasoning: [one sentence explanation]',
+            reasoning: 'few-shot',
+            examples: [
+                {
+                    input: "Hi, I'd like to upgrade my subscription to the premium plan. What are my options?",
+                    output: "Category: Billing, Confidence: 95%, Reasoning: Direct mention of subscription upgrade indicates billing inquiry"
+                },
+                {
+                    input: "My account isn't loading properly. I keep getting error 404 when I try to access the dashboard.",
+                    output: "Category: Support, Confidence: 98%, Reasoning: Technical issue requiring troubleshooting assistance"
+                },
+                {
+                    input: "I'm interested in your enterprise solution for our team of 50 people. Can we schedule a demo?",
+                    output: "Category: Sales, Confidence: 97%, Reasoning: New business opportunity with demo request"
+                }
+            ],
+            audience: 'Semi-Technical - Product Managers',
+            selfReflection: false,
+            antiHallucination: true
+        },
 
-        const iterativeRefinementHeader = document.getElementById('iterativeRefinementHeader');
-        const iterativeRefinementContent = document.getElementById('iterativeRefinementContent');
-        const askClarifyingQuestions = document.getElementById('askClarifyingQuestions');
-        const provideAlternatives = document.getElementById('provideAlternatives');
-        const requestFeedback = document.getElementById('requestFeedback');
-        const suggestImprovements = document.getElementById('suggestImprovements');
-        const identifyAssumptions = document.getElementById('identifyAssumptions');
+        'research-summary': {
+            persona: 'Business Analyst',
+            instructions: 'Summarize the current state of solid-state battery technology, focusing on commercial viability and recent breakthroughs.',
+            outputFormat: '## Executive Summary (3-4 sentences)\n## Key Technologies\n## Recent Breakthroughs (2023-2025)\n## Commercial Readiness Assessment\n## Major Players and Investments\n## Timeline to Market',
+            additionalContext: 'Focus on automotive applications. Include specific companies and their announced timelines. Data should be from credible sources.',
+            reasoning: 'zero-shot',
+            audience: 'Non-Technical - C-Level Executives',
+            selfReflection: true,
+            antiHallucination: true
+        },
 
-        // ===== Few-Shot Examples State =====
-        let exampleCount = 0;
-        const MAX_EXAMPLES = 5;
+        'api-documentation': {
+            persona: 'Technical Writer',
+            instructions: 'Create comprehensive API documentation for the following endpoint. Include all necessary details for developers to successfully integrate this API.',
+            inputData: '<code>\nPOST /api/v1/users\nCreates a new user account\nParameters: email (string, required), name (string, required), role (string, optional)\nReturns: user object with id, created_at timestamp\nAuthentication: Bearer token required\nRate limit: 100 requests per hour\n</code>',
+            outputFormat: '# Endpoint Overview\n## HTTP Method and URL\n## Description\n## Authentication\n## Request Parameters (table format)\n## Request Example (curl and JavaScript)\n## Response Format\n## Response Example (JSON)\n## Error Codes\n## Rate Limits',
+            additionalContext: 'REST API following OpenAPI 3.0 specification. Target framework: Node.js with Express. Must include examples in both curl and JavaScript fetch.',
+            reasoning: 'zero-shot',
+            audience: 'Technical - Software Developers',
+            selfReflection: true,
+            antiHallucination: true
+        },
 
-        // ===== Validation Conditions State =====
-        let validationCount = 0;
-        let validations = [];
+        'user-story': {
+            persona: 'Product Manager',
+            instructions: 'Write a detailed user story with acceptance criteria for the described feature. Follow standard Agile format.',
+            inputData: 'Feature request: Allow users to export their data in CSV format from the dashboard. Users should be able to select date ranges and specific data fields to include.',
+            outputFormat: '**User Story:**\nAs a [user type]\nI want [goal]\nSo that [benefit]\n\n**Acceptance Criteria:**\n- [ ] Criterion 1\n- [ ] Criterion 2\n[etc.]\n\n**Technical Notes:**\n[Any technical considerations]',
+            additionalContext: 'B2B SaaS product. GDPR compliance required (data export is a regulatory requirement). Target implementation: Q2 2025. Current tech stack: React frontend, Python Django backend.',
+            reasoning: 'few-shot',
+            examples: [
+                {
+                    input: 'Feature: Dark mode toggle',
+                    output: '**User Story:**\nAs a user who works late hours\nI want to switch the interface to dark mode\nSo that I can reduce eye strain and work more comfortably\n\n**Acceptance Criteria:**\n- [ ] Toggle switch appears in user settings menu\n- [ ] Dark mode preference persists across sessions\n- [ ] Mode change applies immediately without page reload\n- [ ] All UI components render properly in dark mode\n\n**Technical Notes:**\nUse CSS custom properties for theming. Store preference in localStorage.'
+                },
+                {
+                    input: 'Feature: Password reset via email',
+                    output: '**User Story:**\nAs a user who forgot my password\nI want to reset it using my email address\nSo that I can regain access to my account securely\n\n**Acceptance Criteria:**\n- [ ] Reset link sent to registered email within 1 minute\n- [ ] Link expires after 24 hours\n- [ ] User must create a new password (cannot reuse old one)\n- [ ] Confirmation email sent after successful reset\n\n**Technical Notes:**\nUse secure token generation. Implement rate limiting to prevent abuse.'
+                }
+            ],
+            audience: 'Semi-Technical - Technical Project Managers',
+            selfReflection: true,
+            antiHallucination: false
+        },
 
-        // ===== Chain-of-Thought Steps State =====
-        let cotStepCount = 0;
-        const MIN_COT_STEPS = 2;
-        const MAX_COT_STEPS = 10;
+        'feature-request': {
+            persona: 'Product Manager',
+            instructions: 'Analyze the following feature request and create a comprehensive specification. Include technical feasibility, user impact, and implementation recommendations.',
+            inputData: 'Feature Request: Add real-time collaboration features to our document editor, similar to Google Docs. Multiple users should be able to edit simultaneously with cursor positions visible and changes synced instantly.',
+            outputFormat: '## Feature Overview\n## User Stories\n## Technical Requirements\n- Frontend changes\n- Backend changes\n- Infrastructure needs\n## Implementation Approach\n## Challenges and Risks\n## Success Metrics\n## Timeline Estimate',
+            additionalContext: 'Current stack: React frontend, Node.js backend, MongoDB database. Target users: teams of 5-50 people. Performance requirement: <100ms latency for edits.',
+            reasoning: 'chain-of-thought',
+            cotSteps: [
+                'Analyze user needs and use cases',
+                'Identify technical requirements and dependencies',
+                'Evaluate existing solutions and technologies',
+                'Consider scalability and performance implications',
+                'Assess implementation complexity and timeline'
+            ],
+            cotXmlTags: true,
+            audience: 'Semi-Technical - Product Managers',
+            selfReflection: true,
+            antiHallucination: true
+        },
 
-        // ===== Event Listeners =====
-        personaSelect.addEventListener('change', togglePersonaCustom);
-        personaSelect.addEventListener('change', updateLiveTokenCount);
-        personaCustom.addEventListener('input', updateLiveTokenCount);
-        audienceSelect.addEventListener('change', toggleAudienceCustom);
-        audienceSelect.addEventListener('change', updateLiveTokenCount);
-        audienceCustom.addEventListener('input', updateLiveTokenCount);
-        reasoningRadios.forEach(radio => radio.addEventListener('change', toggleReasoningMethod));
-        addExampleBtn.addEventListener('click', addExample);
-        addCotStepBtn.addEventListener('click', addCotStep);
-        generateBtn.addEventListener('click', generatePrompt);
-        exportBtn.addEventListener('click', exportToRequirements);
-        clearBtn.addEventListener('click', clearForm);
-        copyBtn.addEventListener('click', copyToClipboard);
-        loadExample.addEventListener('change', loadExampleScenario);
-        generatedPrompt.addEventListener('input', updateCharCount);
+        'bug-analysis': {
+            persona: 'Senior Software Engineer',
+            instructions: 'Analyze the following bug report, identify root cause, and provide a detailed fix with testing approach.',
+            inputData: '<bug_report>\nTitle: Application crashes when uploading files larger than 10MB\nEnvironment: Production, Chrome 120, Windows 11\nSteps to reproduce:\n1. Navigate to /upload page\n2. Select a file larger than 10MB\n3. Click "Upload" button\n4. Browser tab becomes unresponsive\n\nError log:\nUncaught RangeError: Maximum call stack size exceeded\n  at FileReader.onload (upload.js:45)\n  at convertToBase64 (utils.js:123)\n</bug_report>',
+            outputFormat: '## Root Cause Analysis\n## Impact Assessment\n## Proposed Solution\n- Code changes\n- Configuration changes\n## Testing Strategy\n## Prevention Measures',
+            additionalContext: 'File upload uses Base64 encoding. Current implementation loads entire file into memory. Production handles 1000+ uploads daily. Quick fix needed but should be production-ready.',
+            reasoning: 'chain-of-thought',
+            cotSteps: [
+                'Analyze error message and stack trace',
+                'Identify code location and logic flow',
+                'Determine why the issue occurs',
+                'Evaluate potential solutions',
+                'Recommend fix with minimal risk'
+            ],
+            cotXmlTags: true,
+            audience: 'Technical - Software Developers',
+            selfReflection: true,
+            antiHallucination: true
+        },
+
+        'project-familiarization': {
+            persona: 'Senior Software Engineer',
+            instructions: 'You are working as an AI agent inside this codebase. Familiarize yourself with the project structure, architecture, and key components. Prepare to answer questions and assist with development tasks.',
+            inputData: '<project_context>\nRepository: teleprompter\nPurpose: AI Prompt Engineering Wizard - a single-page application for building structured AI prompts\nTechnology: Vanilla HTML/CSS/JavaScript (no frameworks)\nFile structure:\n- index.html (main application file)\n- README.md (project documentation)\n- REQUIREMENTS.md (detailed specifications)\n</project_context>',
+            outputFormat: '## Project Summary\nBrief overview of what this project does\n\n## Architecture Overview\nKey technical decisions and structure\n\n## Main Components\nList and describe major parts of the codebase\n\n## How to Work with This Project\nDevelopment workflow and guidelines\n\n## Questions I Can Help With\nTypes of tasks I\'m ready to assist with',
+            additionalContext: 'Focus on understanding the codebase well enough to make contributions, fix bugs, or add features. Be ready to explain any part of the code or suggest improvements.',
+            reasoning: 'zero-shot',
+            audience: 'Technical - Software Developers',
+            selfReflection: true,
+            antiHallucination: true
+        }
+    };
+
+})();
+/**
+ * Pure business logic functions for token counting
+ * No DOM dependencies - can be unit tested
+ */
+(function() {
+    'use strict';
+
+    /**
+     * Calculate approximate token count from character count
+     * Uses rough estimate of ~4 characters per token
+     * @param {number} charCount - Number of characters
+     * @returns {number} Estimated token count
+     */
+    window.calculateTokenCount = function(charCount) {
+        return Math.ceil(charCount / 4);
+    };
+
+    /**
+     * Get token count status and message
+     * @param {number} tokenCount - Number of tokens
+     * @param {number} charCount - Number of characters
+     * @param {boolean} isLive - Whether this is a live preview
+     * @returns {Object} Status object with color and message
+     */
+    window.getTokenCountStatus = function(tokenCount, charCount, isLive) {
+        const prefix = isLive ? '~' : '';
         
-        // Live token count updates on field changes
-        instructions.addEventListener('input', updateLiveTokenCount);
-        inputData.addEventListener('input', updateLiveTokenCount);
-        outputFormat.addEventListener('input', updateLiveTokenCount);
-        additionalContext.addEventListener('input', updateLiveTokenCount);
-        responseLength.addEventListener('change', updateLiveTokenCount);
-        toneStyle.addEventListener('change', updateLiveTokenCount);
-        formatPreferences.addEventListener('input', updateLiveTokenCount);
-        negativePrompts.addEventListener('input', updateLiveTokenCount);
-        selfReflection.addEventListener('change', updateLiveTokenCount);
-        antiHallucination.addEventListener('change', updateLiveTokenCount);
+        if (tokenCount > 2000) {
+            return {
+                color: 'var(--error)',
+                message: `${prefix}${charCount} characters • ${prefix}${tokenCount} tokens ⚠️ Large prompt - consider reducing`
+            };
+        } else if (tokenCount > 1000) {
+            return {
+                color: 'orange',
+                message: `${prefix}${charCount} characters • ${prefix}${tokenCount} tokens ⚠️ Getting large`
+            };
+        } else {
+            return {
+                color: 'var(--text-light)',
+                message: `${prefix}${charCount} characters • ${prefix}${tokenCount} tokens`
+            };
+        }
+    };
 
-        // Collapsible sections event listeners
-        const personaHeader = document.getElementById('personaHeader');
-        const personaContent = document.getElementById('personaContent');
-        const inputDataHeader = document.getElementById('inputDataHeader');
-        const inputDataContent = document.getElementById('inputDataContent');
-        const outputFormatHeader = document.getElementById('outputFormatHeader');
-        const outputFormatContent = document.getElementById('outputFormatContent');
-        const additionalContextHeader = document.getElementById('additionalContextHeader');
-        const additionalContextContent = document.getElementById('additionalContextContent');
-        const systemConstraintsHeader = document.getElementById('systemConstraintsHeader');
-        const systemConstraintsContent = document.getElementById('systemConstraintsContent');
-        const negativePromptingHeader = document.getElementById('negativePromptingHeader');
-        const negativePromptingContent = document.getElementById('negativePromptingContent');
-        const reasoningMethodHeader = document.getElementById('reasoningMethodHeader');
-        const reasoningMethodContent = document.getElementById('reasoningMethodContent');
-        const audienceHeader = document.getElementById('audienceHeader');
-        const audienceContent = document.getElementById('audienceContent');
-        const qualityControlsHeader = document.getElementById('qualityControlsHeader');
-        const qualityControlsContent = document.getElementById('qualityControlsContent');
-
-        personaHeader.addEventListener('click', () => toggleCollapsible(personaHeader, personaContent));
-        inputDataHeader.addEventListener('click', () => toggleCollapsible(inputDataHeader, inputDataContent));
-        outputFormatHeader.addEventListener('click', () => toggleCollapsible(outputFormatHeader, outputFormatContent));
-        additionalContextHeader.addEventListener('click', () => toggleCollapsible(additionalContextHeader, additionalContextContent));
-        systemConstraintsHeader.addEventListener('click', () => toggleCollapsible(systemConstraintsHeader, systemConstraintsContent));
-        negativePromptingHeader.addEventListener('click', () => toggleCollapsible(negativePromptingHeader, negativePromptingContent));
-        codeOptionsHeader.addEventListener('click', () => toggleCollapsible(codeOptionsHeader, codeOptionsContent));
-        safetyEthicsHeader.addEventListener('click', () => toggleCollapsible(safetyEthicsHeader, safetyEthicsContent));
-        reasoningMethodHeader.addEventListener('click', () => toggleCollapsible(reasoningMethodHeader, reasoningMethodContent));
-        audienceHeader.addEventListener('click', () => toggleCollapsible(audienceHeader, audienceContent));
-        qualityControlsHeader.addEventListener('click', () => toggleCollapsible(qualityControlsHeader, qualityControlsContent));
-        validationConditionsHeader.addEventListener('click', () => toggleCollapsible(validationConditionsHeader, validationConditionsContent));
-        addValidationBtn.addEventListener('click', addValidationCondition);
-
-        creativeContentHeader.addEventListener('click', () => toggleCollapsible(creativeContentHeader, creativeContentContent));
-        researchInstructionsHeader.addEventListener('click', () => toggleCollapsible(researchInstructionsHeader, researchInstructionsContent));
-        iterativeRefinementHeader.addEventListener('click', () => toggleCollapsible(iterativeRefinementHeader, iterativeRefinementContent));
-
-        // Phase 3 live token count updates
-        writingStyle.addEventListener('change', updateLiveTokenCount);
-        pointOfView.addEventListener('change', updateLiveTokenCount);
-        wordCountTarget.addEventListener('input', updateLiveTokenCount);
-        readingLevel.addEventListener('change', updateLiveTokenCount);
-        searchLatestInfo.addEventListener('change', updateLiveTokenCount);
-        citeSources.addEventListener('change', updateLiveTokenCount);
-        compareMultipleSources.addEventListener('change', updateLiveTokenCount);
-        verifyFacts.addEventListener('change', updateLiveTokenCount);
-        includeConfidence.addEventListener('change', updateLiveTokenCount);
-        askClarifyingQuestions.addEventListener('change', updateLiveTokenCount);
-        provideAlternatives.addEventListener('change', updateLiveTokenCount);
-        requestFeedback.addEventListener('change', updateLiveTokenCount);
-        suggestImprovements.addEventListener('change', updateLiveTokenCount);
-        identifyAssumptions.addEventListener('change', updateLiveTokenCount);
-
-        // Live token count for Phase 2 fields
-        programmingLanguage.addEventListener('input', updateLiveTokenCount);
-        frameworkLibrary.addEventListener('input', updateLiveTokenCount);
-        includeTests.addEventListener('change', updateLiveTokenCount);
-        includeDocumentation.addEventListener('change', updateLiveTokenCount);
-        testFramework.addEventListener('input', updateLiveTokenCount);
-
-        // ===== Initialize =====
-        initializeExamples();
-        updateLiveTokenCount(); // Initialize token count display
-
-        // ===== Functions =====
-        function togglePersonaCustom() {
-            if (personaSelect.value === 'Other (custom)') {
-                personaCustomContainer.classList.remove('hidden');
-            } else {
-                personaCustomContainer.classList.add('hidden');
+    /**
+     * Calculate total character count from form data for live preview
+     * @param {Object} formData - Object containing form field values
+     * @returns {number} Total character count
+     */
+    window.calculateLiveCharCount = function(formData) {
+        let totalChars = 0;
+        
+        // Persona
+        if (formData.persona && formData.persona !== 'None (no persona)') {
+            if (formData.persona === 'Other (custom)') {
+                totalChars += (formData.personaCustom || '').length;
+            } else if (window.personaTemplates[formData.persona]) {
+                totalChars += window.personaTemplates[formData.persona].length;
             }
         }
-
-        function toggleAudienceCustom() {
-            if (audienceSelect.value === 'Other (custom)') {
-                audienceCustomContainer.classList.remove('hidden');
-            } else {
-                audienceCustomContainer.classList.add('hidden');
-            }
-        }
-
-        function toggleReasoningMethod() {
-            const selectedReasoning = document.querySelector('input[name="reasoning"]:checked').value;
-            
-            if (selectedReasoning === 'few-shot') {
-                fewShotContainer.classList.remove('hidden');
-                cotContainer.classList.add('hidden');
-            } else if (selectedReasoning === 'chain-of-thought') {
-                fewShotContainer.classList.add('hidden');
-                cotContainer.classList.remove('hidden');
-                // Add minimum steps if empty
-                while (cotStepsContainer.children.length < MIN_COT_STEPS) {
-                    addCotStep();
-                }
-            } else {
-                fewShotContainer.classList.add('hidden');
-                cotContainer.classList.add('hidden');
-            }
-        }
-
-        function toggleCollapsible(header, content) {
-            const toggle = header.querySelector('.collapsible-toggle');
-            const isOpen = content.classList.contains('open');
-            
-            if (isOpen) {
-                content.classList.remove('open');
-                toggle.classList.remove('open');
-                header.classList.remove('active');
-            } else {
-                content.classList.add('open');
-                toggle.classList.add('open');
-                header.classList.add('active');
-            }
-        }
-
-        // Phase 3: Chain-of-Thought Steps functions
-        function addCotStep() {
-            if (cotStepsContainer.children.length >= MAX_COT_STEPS) {
-                alert(`Maximum ${MAX_COT_STEPS} steps allowed`);
-                return;
-            }
-
-            const stepDiv = document.createElement('div');
-            stepDiv.className = 'workflow-step';
-            stepDiv.innerHTML = `
-                <strong>Step ${cotStepsContainer.children.length + 1}:</strong>
-                <textarea placeholder="Describe this step..."></textarea>
-                ${cotStepsContainer.children.length >= MIN_COT_STEPS - 1 ? '<button type="button" class="remove-step-btn" onclick="window.removeCotStep(this)">Remove</button>' : ''}
-            `;
-            
-            const textarea = stepDiv.querySelector('textarea');
-            textarea.addEventListener('input', updateLiveTokenCount);
-            
-            cotStepsContainer.appendChild(stepDiv);
-            updateCotStepNumbers();
-        }
-
-        window.removeCotStep = function(button) {
-            if (cotStepsContainer.children.length <= MIN_COT_STEPS) {
-                alert(`Minimum ${MIN_COT_STEPS} steps required`);
-                return;
-            }
-
-            button.parentElement.remove();
-            updateCotStepNumbers();
-            updateLiveTokenCount();
-        }
-
-        function updateCotStepNumbers() {
-            const steps = cotStepsContainer.querySelectorAll('.workflow-step');
-            steps.forEach((step, index) => {
-                step.querySelector('strong').textContent = `Step ${index + 1}:`;
+        
+        // Main content fields
+        totalChars += (formData.instructions || '').length;
+        totalChars += (formData.inputData || '').length;
+        totalChars += (formData.outputFormat || '').length;
+        totalChars += (formData.additionalContext || '').length;
+        totalChars += (formData.formatPreferences || '').length;
+        totalChars += (formData.negativePrompts || '').length;
+        
+        // CoT steps
+        if (formData.cotSteps && Array.isArray(formData.cotSteps)) {
+            formData.cotSteps.forEach(function(step) {
+                totalChars += (step || '').length;
             });
         }
-
-        function addValidationCondition() {
-            validationCount++;
-            const validationDiv = document.createElement('div');
-            validationDiv.className = 'validation-item';
-            validationDiv.id = `validation-${validationCount}`;
-            validationDiv.draggable = true;
-            
-            const index = validations.length;
-            validations.push({
-                id: validationCount,
-                description: '',
-                impact: 'warning'
-            });
-            
-            validationDiv.innerHTML = `
-                <div class="validation-header">
-                    <div style="display: flex; align-items: center;">
-                        <span class="drag-handle">☰</span>
-                        <span class="validation-order">${index + 1}.</span>
-                        <strong>Validation Condition</strong>
-                    </div>
-                    <button type="button" class="btn-danger btn-small" onclick="removeValidationCondition(${validationCount})">Remove</button>
-                </div>
-                <label for="validationDesc${validationCount}">Description:</label>
-                <textarea id="validationDesc${validationCount}" placeholder="E.g., Response must include working code examples" data-validation-id="${validationCount}"></textarea>
-                <label for="validationImpact${validationCount}" style="margin-top: 8px;">Impact:</label>
-                <select id="validationImpact${validationCount}" data-validation-id="${validationCount}" onchange="updateValidationImpact(${validationCount}, this.value)">
-                    <option value="warning">Warning</option>
-                    <option value="blocking">Blocking</option>
-                </select>
-            `;
-            
-            validationsContainer.appendChild(validationDiv);
-            
-            // Add drag and drop event listeners
-            validationDiv.addEventListener('dragstart', handleDragStart);
-            validationDiv.addEventListener('dragover', handleDragOver);
-            validationDiv.addEventListener('drop', handleDrop);
-            validationDiv.addEventListener('dragend', handleDragEnd);
-        }
-
-        window.removeValidationCondition = function(id) {
-            const validationDiv = document.getElementById(`validation-${id}`);
-            if (validationDiv) {
-                validationDiv.remove();
-                // Remove from state
-                validations = validations.filter(v => v.id !== id);
-                // Renumber remaining validations
-                renumberValidations();
+        
+        // Audience
+        if (formData.audience && formData.audience !== 'General (not specified)') {
+            if (formData.audience === 'Other (custom)') {
+                totalChars += (formData.audienceCustom || '').length;
+            } else if (window.audienceTemplates[formData.audience]) {
+                totalChars += window.audienceTemplates[formData.audience].length;
             }
         }
+        
+        // Add approximate overhead for formatting, labels, and quality controls
+        var overhead = 500;
+        totalChars += overhead;
+        
+        return totalChars;
+    };
 
-        window.updateValidationImpact = function(id, impact) {
-            const validationDiv = document.getElementById(`validation-${id}`);
-            if (validationDiv) {
-                validationDiv.classList.remove('blocking', 'warning');
-                validationDiv.classList.add(impact);
-            }
-            // Update state
-            const validation = validations.find(v => v.id === id);
-            if (validation) {
-                validation.impact = impact;
-            }
+})();
+/**
+ * Pure business logic for prompt generation
+ * Assembles prompt sections from form data
+ * No DOM dependencies - can be unit tested
+ */
+(function() {
+    'use strict';
+
+    /**
+     * Build persona section of prompt
+     * @param {string} selectedPersona - Selected persona value
+     * @param {string} customPersona - Custom persona text if applicable
+     * @returns {string|null} Persona text or null
+     */
+    window.buildPersonaSection = function(selectedPersona, customPersona) {
+        if (!selectedPersona || selectedPersona === 'None (no persona)') {
+            return null;
         }
+        
+        if (selectedPersona === 'Other (custom)') {
+            return customPersona ? customPersona.trim() : null;
+        }
+        
+        return window.personaTemplates[selectedPersona] || null;
+    };
 
-        function renumberValidations() {
-            const items = validationsContainer.querySelectorAll('.validation-item');
-            items.forEach((item, index) => {
-                const orderSpan = item.querySelector('.validation-order');
-                if (orderSpan) {
-                    orderSpan.textContent = `${index + 1}.`;
+    /**
+     * Build audience section of prompt
+     * @param {string} selectedAudience - Selected audience value
+     * @param {string} customAudience - Custom audience text if applicable
+     * @returns {string|null} Audience text or null
+     */
+    window.buildAudienceSection = function(selectedAudience, customAudience) {
+        if (!selectedAudience || selectedAudience === 'General (not specified)') {
+            return null;
+        }
+        
+        if (selectedAudience === 'Other (custom)') {
+            return customAudience ? customAudience.trim() : null;
+        }
+        
+        return window.audienceTemplates[selectedAudience] || null;
+    };
+
+    /**
+     * Build system constraints section
+     * @param {Object} constraints - Object with responseLength, toneStyle, formatPreferences
+     * @returns {string|null} Constraints section or null
+     */
+    window.buildConstraintsSection = function(constraints) {
+        var responseLength = constraints.responseLength;
+        var toneStyle = constraints.toneStyle;
+        var formatPreferences = (constraints.formatPreferences || '').trim();
+        
+        if (!responseLength && !toneStyle && !formatPreferences) {
+            return null;
+        }
+        
+        var section = 'System Constraints:';
+        
+        if (responseLength && window.responseLengthTexts[responseLength]) {
+            section += '\n- Length: ' + window.responseLengthTexts[responseLength];
+        }
+        
+        if (toneStyle) {
+            section += '\n- Tone: ' + toneStyle.charAt(0).toUpperCase() + toneStyle.slice(1);
+        }
+        
+        if (formatPreferences) {
+            section += '\n- Format: ' + formatPreferences;
+        }
+        
+        return section;
+    };
+
+    /**
+     * Build safety and ethics section
+     * @param {Object} options - Object with checkBias, accessibility, privacy, ethical flags
+     * @returns {string|null} Safety section or null
+     */
+    window.buildSafetySection = function(options) {
+        if (!options.checkBias && !options.accessibility && !options.privacy && !options.ethical) {
+            return null;
+        }
+        
+        var section = 'Safety & Ethics Considerations:';
+        
+        if (options.checkBias) {
+            section += '\n- Check for and eliminate bias in recommendations';
+        }
+        if (options.accessibility) {
+            section += '\n- Ensure solutions meet accessibility requirements (WCAG 2.1 AA minimum)';
+        }
+        if (options.privacy) {
+            section += '\n- Address privacy and data protection concerns (GDPR compliance)';
+        }
+        if (options.ethical) {
+            section += '\n- Consider and discuss ethical implications of the solution';
+        }
+        
+        return section;
+    };
+
+    /**
+     * Build chain-of-thought section
+     * @param {Array} steps - Array of step description strings
+     * @param {boolean} useXmlTags - Whether to include XML tag instruction
+     * @returns {string|null} CoT section or null
+     */
+    window.buildCoTSection = function(steps, useXmlTags) {
+        if (!steps || steps.length < window.MIN_COT_STEPS) {
+            return null;
+        }
+        
+        var section = 'Think through this step-by-step:';
+        
+        steps.forEach(function(desc, index) {
+            if (desc && desc.trim()) {
+                section += '\nStep ' + (index + 1) + ': ' + desc.trim();
+            }
+        });
+        
+        if (useXmlTags) {
+            section += '\nShow your reasoning in <thinking> tags before providing the final answer.';
+        }
+        
+        return section;
+    };
+
+    /**
+     * Build few-shot examples section
+     * @param {Array} examples - Array of {input, output} objects
+     * @returns {string|null} Few-shot section or null
+     */
+    window.buildFewShotSection = function(examples) {
+        if (!examples || examples.length === 0) {
+            return null;
+        }
+        
+        var hasContent = examples.some(function(ex) {
+            return (ex.input && ex.input.trim()) || (ex.output && ex.output.trim());
+        });
+        
+        if (!hasContent) {
+            return null;
+        }
+        
+        var section = 'Here are examples of the desired output:\n';
+        
+        examples.forEach(function(example, index) {
+            if ((example.input && example.input.trim()) || (example.output && example.output.trim())) {
+                section += '\nExample ' + (index + 1) + ':\n';
+                section += 'Input: ' + (example.input || '').trim() + '\n';
+                section += 'Output: ' + (example.output || '').trim();
+                if (index < examples.length - 1) {
+                    section += '\n';
                 }
+            }
+        });
+        
+        section += '\n\nNow, apply the same pattern to the following:';
+        return section;
+    };
+
+    /**
+     * Build code-specific requirements section
+     * @param {Object} options - Code options object
+     * @returns {string|null} Code section or null
+     */
+    window.buildCodeSection = function(options) {
+        var lang = (options.language || '').trim();
+        var framework = (options.framework || '').trim();
+        var tests = options.includeTests;
+        var docs = options.includeDocs;
+        var testFramework = (options.testFramework || '').trim();
+        
+        if (!lang && !framework && !tests && !docs) {
+            return null;
+        }
+        
+        var section = 'Code-Specific Requirements:';
+        
+        if (lang) {
+            section += '\n- Programming Language: ' + lang;
+        }
+        if (framework) {
+            section += '\n- Framework/Library: ' + framework;
+        }
+        if (tests) {
+            section += '\n- Include comprehensive unit tests';
+            if (testFramework) {
+                section += ' using ' + testFramework;
+            }
+        }
+        if (docs) {
+            section += '\n- Include detailed documentation with docstrings and inline comments';
+        }
+        
+        return section;
+    };
+
+    /**
+     * Build research guidelines section
+     * @param {Object} options - Research options flags
+     * @returns {string|null} Research section or null
+     */
+    window.buildResearchSection = function(options) {
+        if (!options.searchLatest && !options.citeSources && !options.compareSources && 
+            !options.verifyFacts && !options.includeConfidence) {
+            return null;
+        }
+        
+        var section = 'Research Guidelines:';
+        
+        if (options.searchLatest) {
+            section += '\n- Search for and incorporate the latest information before answering';
+        }
+        if (options.citeSources) {
+            section += '\n- Cite specific sources with dates and URLs where applicable';
+        }
+        if (options.compareSources) {
+            section += '\n- Compare information from multiple authoritative sources';
+        }
+        if (options.verifyFacts) {
+            section += '\n- Verify facts before presenting them and flag any uncertain information';
+        }
+        if (options.includeConfidence) {
+            section += '\n- Include confidence levels for key claims and findings';
+        }
+        
+        return section;
+    };
+
+    /**
+     * Build creative content guidelines section
+     * @param {Object} options - Creative options
+     * @returns {string|null} Creative section or null
+     */
+    window.buildCreativeSection = function(options) {
+        var style = options.writingStyle;
+        var pov = options.pointOfView;
+        var wordCount = (options.wordCount || '').trim();
+        var readingLevel = options.readingLevel;
+        
+        if (!style && !pov && !wordCount && !readingLevel) {
+            return null;
+        }
+        
+        var section = 'Creative Content Guidelines:';
+        
+        if (style) {
+            section += '\n- Writing Style: ' + style;
+        }
+        if (pov) {
+            section += '\n- Point of View: ' + pov;
+        }
+        if (wordCount) {
+            section += '\n- Target Word Count: ' + wordCount;
+        }
+        if (readingLevel) {
+            section += '\n- Reading Level: ' + readingLevel;
+        }
+        
+        return section;
+    };
+
+    /**
+     * Build validation conditions section
+     * @param {Array} validations - Array of {description, impact} objects
+     * @returns {string|null} Validation section or null
+     */
+    window.buildValidationSection = function(validations) {
+        if (!validations || validations.length === 0) {
+            return null;
+        }
+        
+        var hasContent = validations.some(function(v) {
+            return v.description && v.description.trim();
+        });
+        
+        if (!hasContent) {
+            return null;
+        }
+        
+        var section = 'Success Criteria - Validate that the response meets these conditions:';
+        
+        validations.forEach(function(validation, index) {
+            if (validation.description && validation.description.trim()) {
+                var impactLabel = validation.impact === 'blocking' ? '[REQUIRED]' : '[RECOMMENDED]';
+                section += '\n' + (index + 1) + '. ' + impactLabel + ' ' + validation.description.trim();
+            }
+        });
+        
+        return section;
+    };
+
+    /**
+     * Build iterative refinement section
+     * @param {Object} options - Iterative options flags
+     * @returns {string|null} Iterative section or null
+     */
+    window.buildIterativeSection = function(options) {
+        if (!options.askClarifying && !options.provideAlternatives && !options.requestFeedback && 
+            !options.suggestImprovements && !options.identifyAssumptions) {
+            return null;
+        }
+        
+        var section = 'Iterative Approach:';
+        
+        if (options.askClarifying) {
+            section += '\n- Ask clarifying questions before providing the final answer if anything is ambiguous';
+        }
+        if (options.provideAlternatives) {
+            section += '\n- Provide multiple solution approaches or alternatives when applicable';
+        }
+        if (options.requestFeedback) {
+            section += '\n- Request feedback and be prepared to iterate based on responses';
+        }
+        if (options.suggestImprovements) {
+            section += '\n- Proactively suggest improvements or optimizations';
+        }
+        if (options.identifyAssumptions) {
+            section += '\n- Clearly identify any assumptions made and ask for confirmation';
+        }
+        
+        return section;
+    };
+
+    /**
+     * Build quality control sections
+     * @param {boolean} selfReflection - Enable self-reflection
+     * @param {boolean} antiHallucination - Enable anti-hallucination guidelines
+     * @returns {Array} Array of quality control section strings
+     */
+    window.buildQualityControlSections = function(selfReflection, antiHallucination) {
+        var sections = [];
+        
+        if (selfReflection) {
+            sections.push('After providing your solution, perform a self-review:\n1. Check for logical errors\n2. Verify all requirements are met\n3. Identify any assumptions made\n4. Rate your confidence (1-10)');
+        }
+        
+        if (antiHallucination) {
+            sections.push('Important guidelines:\n- If you don\'t know something, explicitly say "I don\'t know"\n- Cite specific sources when making factual claims\n- Distinguish between facts and opinions\n- State assumptions explicitly\n- Only use well-documented, standard approaches');
+        }
+        
+        return sections;
+    };
+
+    /**
+     * Assemble complete prompt from all sections
+     * @param {Object} formData - Complete form data object
+     * @returns {string} Assembled prompt
+     */
+    window.assemblePrompt = function(formData) {
+        var sections = [];
+        
+        // 1. Persona
+        var persona = window.buildPersonaSection(formData.persona, formData.personaCustom);
+        if (persona) sections.push(persona);
+        
+        // 2. Audience
+        var audience = window.buildAudienceSection(formData.audience, formData.audienceCustom);
+        if (audience) sections.push(audience);
+        
+        // 3. System Constraints
+        var constraints = window.buildConstraintsSection({
+            responseLength: formData.responseLength,
+            toneStyle: formData.toneStyle,
+            formatPreferences: formData.formatPreferences
+        });
+        if (constraints) sections.push(constraints);
+        
+        // 4. Safety & Ethics
+        var safety = window.buildSafetySection({
+            checkBias: formData.checkBias,
+            accessibility: formData.accessibility,
+            privacy: formData.privacy,
+            ethical: formData.ethical
+        });
+        if (safety) sections.push(safety);
+        
+        // 5. Additional Context
+        if (formData.additionalContext && formData.additionalContext.trim()) {
+            sections.push('Additional context:\n' + formData.additionalContext.trim());
+        }
+        
+        // 6. Input Data
+        if (formData.inputData && formData.inputData.trim()) {
+            sections.push(formData.inputData.trim());
+        }
+        
+        // 7. Instructions (always included)
+        if (formData.instructions && formData.instructions.trim()) {
+            sections.push(formData.instructions.trim());
+        }
+        
+        // 8. Reasoning Method
+        if (formData.reasoning === 'chain-of-thought') {
+            var cot = window.buildCoTSection(formData.cotSteps, formData.cotXmlTags);
+            if (cot) sections.push(cot);
+        } else if (formData.reasoning === 'few-shot') {
+            var fewShot = window.buildFewShotSection(formData.examples);
+            if (fewShot) sections.push(fewShot);
+        }
+        
+        // 9. Code-Specific Options
+        var code = window.buildCodeSection({
+            language: formData.programmingLanguage,
+            framework: formData.framework,
+            includeTests: formData.includeTests,
+            includeDocs: formData.includeDocs,
+            testFramework: formData.testFramework
+        });
+        if (code) sections.push(code);
+        
+        // 10. Research Instructions
+        var research = window.buildResearchSection({
+            searchLatest: formData.searchLatest,
+            citeSources: formData.citeSources,
+            compareSources: formData.compareSources,
+            verifyFacts: formData.verifyFacts,
+            includeConfidence: formData.includeConfidence
+        });
+        if (research) sections.push(research);
+        
+        // 11. Creative Content Options
+        var creative = window.buildCreativeSection({
+            writingStyle: formData.writingStyle,
+            pointOfView: formData.pointOfView,
+            wordCount: formData.wordCount,
+            readingLevel: formData.readingLevel
+        });
+        if (creative) sections.push(creative);
+        
+        // 12. Output Format
+        if (formData.outputFormat && formData.outputFormat.trim()) {
+            sections.push('Output format:\n' + formData.outputFormat.trim());
+        }
+        
+        // 13. Quality Controls
+        var qualityControls = window.buildQualityControlSections(formData.selfReflection, formData.antiHallucination);
+        qualityControls.forEach(function(section) {
+            sections.push(section);
+        });
+        
+        // 14. Validation Conditions
+        var validation = window.buildValidationSection(formData.validations);
+        if (validation) sections.push(validation);
+        
+        // 15. Negative Prompting
+        if (formData.negativePrompts && formData.negativePrompts.trim()) {
+            sections.push('IMPORTANT - Do NOT:\n' + formData.negativePrompts.trim());
+        }
+        
+        // 16. Iterative Refinement
+        var iterative = window.buildIterativeSection({
+            askClarifying: formData.askClarifying,
+            provideAlternatives: formData.provideAlternatives,
+            requestFeedback: formData.requestFeedback,
+            suggestImprovements: formData.suggestImprovements,
+            identifyAssumptions: formData.identifyAssumptions
+        });
+        if (iterative) sections.push(iterative);
+        
+        return sections.join('\n\n');
+    };
+
+    /**
+     * Validate that instructions field is not empty
+     * @param {string} instructions - Instructions text
+     * @returns {boolean} True if valid
+     */
+    window.validateInstructions = function(instructions) {
+        return instructions && instructions.trim().length > 0;
+    };
+
+    /**
+     * Format markdown export content
+     * @param {string} prompt - Generated prompt
+     * @returns {string} Markdown formatted content
+     */
+    window.formatMarkdownExport = function(prompt) {
+        return '# AI Agent Requirements\n\n## Generated Prompt\n\n' + prompt + '\n\n---\n\n*Generated by AI Prompt Engineering Wizard on ' + new Date().toLocaleDateString() + '*\n';
+    };
+
+})();
+/**
+ * Application state management
+ * Manages mutable state used across modules
+ */
+(function() {
+    'use strict';
+
+    // ===== Few-Shot Examples State =====
+    window.exampleCount = 0;
+
+    // ===== Validation Conditions State =====
+    window.validationCount = 0;
+    window.validations = [];
+
+    // ===== Chain-of-Thought Steps State =====
+    window.cotStepCount = 0;
+
+    // ===== Drag and Drop State =====
+    window.draggedItem = null;
+
+    // ===== State Reset Function =====
+    window.resetState = function() {
+        window.exampleCount = 0;
+        window.validationCount = 0;
+        window.validations = [];
+        window.cotStepCount = 0;
+        window.draggedItem = null;
+    };
+
+})();
+/**
+ * DOM element references
+ * Cached references to frequently used DOM elements
+ */
+(function() {
+    'use strict';
+
+    // Initialize DOM references after DOM is ready
+    window.initDomRefs = function() {
+        // ===== Main Form Elements =====
+        window.dom = {
+            // Form
+            promptForm: document.getElementById('promptForm'),
+            
+            // Persona
+            personaSelect: document.getElementById('persona'),
+            personaCustomContainer: document.getElementById('personaCustomContainer'),
+            personaCustom: document.getElementById('personaCustom'),
+            
+            // Instructions
+            instructions: document.getElementById('instructions'),
+            instructionsError: document.getElementById('instructionsError'),
+            
+            // Input/Output
+            inputData: document.getElementById('inputData'),
+            outputFormat: document.getElementById('outputFormat'),
+            additionalContext: document.getElementById('additionalContext'),
+            
+            // System Constraints
+            responseLength: document.getElementById('responseLength'),
+            toneStyle: document.getElementById('toneStyle'),
+            formatPreferences: document.getElementById('formatPreferences'),
+            
+            // Negative Prompts
+            negativePrompts: document.getElementById('negativePrompts'),
+            
+            // Reasoning
+            reasoningRadios: document.querySelectorAll('input[name="reasoning"]'),
+            fewShotContainer: document.getElementById('fewShotContainer'),
+            cotContainer: document.getElementById('cotContainer'),
+            examplesContainer: document.getElementById('examplesContainer'),
+            addExampleBtn: document.getElementById('addExampleBtn'),
+            cotStepsContainer: document.getElementById('cotStepsContainer'),
+            addCotStepBtn: document.getElementById('addCotStepBtn'),
+            cotXmlTags: document.getElementById('cotXmlTags'),
+            
+            // Audience
+            audienceSelect: document.getElementById('audience'),
+            audienceCustomContainer: document.getElementById('audienceCustomContainer'),
+            audienceCustom: document.getElementById('audienceCustom'),
+            
+            // Quality Controls
+            selfReflection: document.getElementById('selfReflection'),
+            antiHallucination: document.getElementById('antiHallucination'),
+            
+            // Load Example
+            loadExample: document.getElementById('loadExample'),
+            
+            // Buttons
+            generateBtn: document.getElementById('generateBtn'),
+            exportBtn: document.getElementById('exportBtn'),
+            clearBtn: document.getElementById('clearBtn'),
+            copyBtn: document.getElementById('copyBtn'),
+            
+            // Output
+            generatedPrompt: document.getElementById('generatedPrompt'),
+            charCount: document.getElementById('charCount'),
+            
+            // Code Options
+            codeOptionsHeader: document.getElementById('codeOptionsHeader'),
+            codeOptionsContent: document.getElementById('codeOptionsContent'),
+            programmingLanguage: document.getElementById('programmingLanguage'),
+            frameworkLibrary: document.getElementById('frameworkLibrary'),
+            includeTests: document.getElementById('includeTests'),
+            includeDocumentation: document.getElementById('includeDocumentation'),
+            testFramework: document.getElementById('testFramework'),
+            
+            // Safety & Ethics
+            safetyEthicsHeader: document.getElementById('safetyEthicsHeader'),
+            safetyEthicsContent: document.getElementById('safetyEthicsContent'),
+            checkBias: document.getElementById('checkBias'),
+            accessibilityRequirements: document.getElementById('accessibilityRequirements'),
+            privacyDataProtection: document.getElementById('privacyDataProtection'),
+            ethicalImplications: document.getElementById('ethicalImplications'),
+            
+            // Validation Conditions
+            validationConditionsHeader: document.getElementById('validationConditionsHeader'),
+            validationConditionsContent: document.getElementById('validationConditionsContent'),
+            validationsContainer: document.getElementById('validationsContainer'),
+            addValidationBtn: document.getElementById('addValidationBtn'),
+            
+            // Creative Content
+            creativeContentHeader: document.getElementById('creativeContentHeader'),
+            creativeContentContent: document.getElementById('creativeContentContent'),
+            writingStyle: document.getElementById('writingStyle'),
+            pointOfView: document.getElementById('pointOfView'),
+            wordCountTarget: document.getElementById('wordCountTarget'),
+            readingLevel: document.getElementById('readingLevel'),
+            
+            // Research Instructions
+            researchInstructionsHeader: document.getElementById('researchInstructionsHeader'),
+            researchInstructionsContent: document.getElementById('researchInstructionsContent'),
+            searchLatestInfo: document.getElementById('searchLatestInfo'),
+            citeSources: document.getElementById('citeSources'),
+            compareMultipleSources: document.getElementById('compareMultipleSources'),
+            verifyFacts: document.getElementById('verifyFacts'),
+            includeConfidence: document.getElementById('includeConfidence'),
+            
+            // Iterative Refinement
+            iterativeRefinementHeader: document.getElementById('iterativeRefinementHeader'),
+            iterativeRefinementContent: document.getElementById('iterativeRefinementContent'),
+            askClarifyingQuestions: document.getElementById('askClarifyingQuestions'),
+            provideAlternatives: document.getElementById('provideAlternatives'),
+            requestFeedback: document.getElementById('requestFeedback'),
+            suggestImprovements: document.getElementById('suggestImprovements'),
+            identifyAssumptions: document.getElementById('identifyAssumptions'),
+            
+            // Collapsible Headers
+            personaHeader: document.getElementById('personaHeader'),
+            personaContent: document.getElementById('personaContent'),
+            inputDataHeader: document.getElementById('inputDataHeader'),
+            inputDataContent: document.getElementById('inputDataContent'),
+            outputFormatHeader: document.getElementById('outputFormatHeader'),
+            outputFormatContent: document.getElementById('outputFormatContent'),
+            additionalContextHeader: document.getElementById('additionalContextHeader'),
+            additionalContextContent: document.getElementById('additionalContextContent'),
+            systemConstraintsHeader: document.getElementById('systemConstraintsHeader'),
+            systemConstraintsContent: document.getElementById('systemConstraintsContent'),
+            negativePromptingHeader: document.getElementById('negativePromptingHeader'),
+            negativePromptingContent: document.getElementById('negativePromptingContent'),
+            reasoningMethodHeader: document.getElementById('reasoningMethodHeader'),
+            reasoningMethodContent: document.getElementById('reasoningMethodContent'),
+            audienceHeader: document.getElementById('audienceHeader'),
+            audienceContent: document.getElementById('audienceContent'),
+            qualityControlsHeader: document.getElementById('qualityControlsHeader'),
+            qualityControlsContent: document.getElementById('qualityControlsContent')
+        };
+    };
+
+})();
+/**
+ * UI utility functions
+ * DOM manipulation helpers
+ */
+(function() {
+    'use strict';
+
+    /**
+     * Show a notification toast
+     * @param {string} message - Message to display
+     */
+    window.showNotification = function(message) {
+        var notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(function() {
+            notification.remove();
+        }, 2000);
+    };
+
+    /**
+     * Toggle collapsible section
+     * @param {HTMLElement} header - Header element
+     * @param {HTMLElement} content - Content element
+     */
+    window.toggleCollapsible = function(header, content) {
+        var toggle = header.querySelector('.collapsible-toggle');
+        var isOpen = content.classList.contains('open');
+        
+        if (isOpen) {
+            content.classList.remove('open');
+            toggle.classList.remove('open');
+            header.classList.remove('active');
+        } else {
+            content.classList.add('open');
+            toggle.classList.add('open');
+            header.classList.add('active');
+        }
+    };
+
+    /**
+     * Toggle persona custom input visibility
+     */
+    window.togglePersonaCustom = function() {
+        if (window.dom.personaSelect.value === 'Other (custom)') {
+            window.dom.personaCustomContainer.classList.remove('hidden');
+        } else {
+            window.dom.personaCustomContainer.classList.add('hidden');
+        }
+    };
+
+    /**
+     * Toggle audience custom input visibility
+     */
+    window.toggleAudienceCustom = function() {
+        if (window.dom.audienceSelect.value === 'Other (custom)') {
+            window.dom.audienceCustomContainer.classList.remove('hidden');
+        } else {
+            window.dom.audienceCustomContainer.classList.add('hidden');
+        }
+    };
+
+    /**
+     * Toggle reasoning method containers
+     */
+    window.toggleReasoningMethod = function() {
+        var selectedReasoning = document.querySelector('input[name="reasoning"]:checked').value;
+        
+        if (selectedReasoning === 'few-shot') {
+            window.dom.fewShotContainer.classList.remove('hidden');
+            window.dom.cotContainer.classList.add('hidden');
+        } else if (selectedReasoning === 'chain-of-thought') {
+            window.dom.fewShotContainer.classList.add('hidden');
+            window.dom.cotContainer.classList.remove('hidden');
+            // Add minimum steps if empty
+            while (window.dom.cotStepsContainer.children.length < window.MIN_COT_STEPS) {
+                window.addCotStep();
+            }
+        } else {
+            window.dom.fewShotContainer.classList.add('hidden');
+            window.dom.cotContainer.classList.add('hidden');
+        }
+    };
+
+    /**
+     * Update character count display
+     */
+    window.updateCharCount = function() {
+        var text = window.dom.generatedPrompt.value;
+        var charCountVal = text.length;
+        var tokenCount = window.calculateTokenCount(charCountVal);
+        var status = window.getTokenCountStatus(tokenCount, charCountVal, false);
+        
+        window.dom.charCount.style.color = status.color;
+        window.dom.charCount.textContent = status.message;
+    };
+
+    /**
+     * Update live token count from form fields
+     */
+    window.updateLiveTokenCount = function() {
+        // Collect CoT steps
+        var cotSteps = [];
+        var cotStepElements = window.dom.cotStepsContainer.querySelectorAll('.workflow-step');
+        cotStepElements.forEach(function(step) {
+            cotSteps.push(step.querySelector('textarea').value);
+        });
+        
+        var formData = {
+            persona: window.dom.personaSelect.value,
+            personaCustom: window.dom.personaCustom.value,
+            instructions: window.dom.instructions.value,
+            inputData: window.dom.inputData.value,
+            outputFormat: window.dom.outputFormat.value,
+            additionalContext: window.dom.additionalContext.value,
+            formatPreferences: window.dom.formatPreferences.value,
+            negativePrompts: window.dom.negativePrompts.value,
+            cotSteps: cotSteps,
+            audience: window.dom.audienceSelect.value,
+            audienceCustom: window.dom.audienceCustom.value
+        };
+        
+        var totalChars = window.calculateLiveCharCount(formData);
+        var tokenCount = window.calculateTokenCount(totalChars);
+        var status = window.getTokenCountStatus(tokenCount, totalChars, true);
+        
+        window.dom.charCount.style.color = status.color;
+        window.dom.charCount.textContent = status.message;
+    };
+
+})();
+/**
+ * Few-shot examples UI management
+ */
+(function() {
+    'use strict';
+
+    /**
+     * Initialize default examples
+     */
+    window.initializeExamples = function() {
+        window.addExample();
+        window.addExample();
+    };
+
+    /**
+     * Add a new example
+     */
+    window.addExample = function() {
+        if (window.exampleCount >= window.MAX_EXAMPLES) {
+            return;
+        }
+
+        window.exampleCount++;
+        var exampleDiv = document.createElement('div');
+        exampleDiv.className = 'example-item';
+        exampleDiv.id = 'example-' + window.exampleCount;
+        
+        exampleDiv.innerHTML = 
+            '<div class="example-header">' +
+                '<span class="example-title">Example ' + window.exampleCount + '</span>' +
+                '<button type="button" class="btn-danger btn-small remove-example" onclick="removeExample(' + window.exampleCount + ')">Remove</button>' +
+            '</div>' +
+            '<div class="example-fields">' +
+                '<div class="example-field">' +
+                    '<label for="exampleInput-' + window.exampleCount + '">Example Input:</label>' +
+                    '<textarea id="exampleInput-' + window.exampleCount + '" placeholder="Enter example input..." aria-label="Example ' + window.exampleCount + ' input"></textarea>' +
+                '</div>' +
+                '<div class="example-field">' +
+                    '<label for="exampleOutput-' + window.exampleCount + '">Example Output:</label>' +
+                    '<textarea id="exampleOutput-' + window.exampleCount + '" placeholder="Enter example output..." aria-label="Example ' + window.exampleCount + ' output"></textarea>' +
+                '</div>' +
+            '</div>';
+        
+        window.dom.examplesContainer.appendChild(exampleDiv);
+        window.updateExampleButtons();
+    };
+
+    /**
+     * Remove an example by ID
+     * @param {number} id - Example ID to remove
+     */
+    window.removeExample = function(id) {
+        var exampleDiv = document.getElementById('example-' + id);
+        if (exampleDiv) {
+            exampleDiv.remove();
+            window.exampleCount--;
+            window.renumberExamples();
+            window.updateExampleButtons();
+        }
+    };
+
+    /**
+     * Renumber examples after removal
+     */
+    window.renumberExamples = function() {
+        var examples = window.dom.examplesContainer.querySelectorAll('.example-item');
+        examples.forEach(function(example, index) {
+            var newNum = index + 1;
+            example.id = 'example-' + newNum;
+            example.querySelector('.example-title').textContent = 'Example ' + newNum;
+            
+            var inputs = example.querySelectorAll('textarea');
+            inputs[0].id = 'exampleInput-' + newNum;
+            inputs[1].id = 'exampleOutput-' + newNum;
+            
+            var labels = example.querySelectorAll('label');
+            labels[0].setAttribute('for', 'exampleInput-' + newNum);
+            labels[1].setAttribute('for', 'exampleOutput-' + newNum);
+            
+            var removeBtn = example.querySelector('.remove-example');
+            removeBtn.setAttribute('onclick', 'removeExample(' + newNum + ')');
+        });
+    };
+
+    /**
+     * Update example button states
+     */
+    window.updateExampleButtons = function() {
+        var examples = window.dom.examplesContainer.querySelectorAll('.example-item');
+        var removeButtons = window.dom.examplesContainer.querySelectorAll('.remove-example');
+        
+        // Disable remove button if only 1 example
+        removeButtons.forEach(function(btn) {
+            btn.disabled = examples.length <= 1;
+        });
+        
+        // Disable add button if at max
+        window.dom.addExampleBtn.disabled = window.exampleCount >= window.MAX_EXAMPLES;
+    };
+
+})();
+/**
+ * Chain-of-Thought steps UI management
+ */
+(function() {
+    'use strict';
+
+    /**
+     * Add a new CoT step
+     */
+    window.addCotStep = function() {
+        if (window.dom.cotStepsContainer.children.length >= window.MAX_COT_STEPS) {
+            alert('Maximum ' + window.MAX_COT_STEPS + ' steps allowed');
+            return;
+        }
+
+        var stepDiv = document.createElement('div');
+        stepDiv.className = 'workflow-step';
+        stepDiv.innerHTML = 
+            '<strong>Step ' + (window.dom.cotStepsContainer.children.length + 1) + ':</strong>' +
+            '<textarea placeholder="Describe this step..."></textarea>' +
+            (window.dom.cotStepsContainer.children.length >= window.MIN_COT_STEPS - 1 ? 
+                '<button type="button" class="remove-step-btn" onclick="window.removeCotStep(this)">Remove</button>' : 
+                '');
+        
+        var textarea = stepDiv.querySelector('textarea');
+        textarea.addEventListener('input', window.updateLiveTokenCount);
+        
+        window.dom.cotStepsContainer.appendChild(stepDiv);
+        window.updateCotStepNumbers();
+    };
+
+    /**
+     * Remove a CoT step
+     * @param {HTMLElement} button - Remove button element
+     */
+    window.removeCotStep = function(button) {
+        if (window.dom.cotStepsContainer.children.length <= window.MIN_COT_STEPS) {
+            alert('Minimum ' + window.MIN_COT_STEPS + ' steps required');
+            return;
+        }
+
+        button.parentElement.remove();
+        window.updateCotStepNumbers();
+        window.updateLiveTokenCount();
+    };
+
+    /**
+     * Update CoT step numbers after changes
+     */
+    window.updateCotStepNumbers = function() {
+        var steps = window.dom.cotStepsContainer.querySelectorAll('.workflow-step');
+        steps.forEach(function(step, index) {
+            step.querySelector('strong').textContent = 'Step ' + (index + 1) + ':';
+        });
+    };
+
+})();
+/**
+ * Validation conditions UI management
+ */
+(function() {
+    'use strict';
+
+    /**
+     * Add a new validation condition
+     */
+    window.addValidationCondition = function() {
+        window.validationCount++;
+        var validationDiv = document.createElement('div');
+        validationDiv.className = 'validation-item';
+        validationDiv.id = 'validation-' + window.validationCount;
+        validationDiv.draggable = true;
+        
+        var index = window.validations.length;
+        window.validations.push({
+            id: window.validationCount,
+            description: '',
+            impact: 'warning'
+        });
+        
+        validationDiv.innerHTML = 
+            '<div class="validation-header">' +
+                '<div style="display: flex; align-items: center;">' +
+                    '<span class="drag-handle">☰</span>' +
+                    '<span class="validation-order">' + (index + 1) + '.</span>' +
+                    '<strong>Validation Condition</strong>' +
+                '</div>' +
+                '<button type="button" class="btn-danger btn-small" onclick="removeValidationCondition(' + window.validationCount + ')">Remove</button>' +
+            '</div>' +
+            '<label for="validationDesc' + window.validationCount + '">Description:</label>' +
+            '<textarea id="validationDesc' + window.validationCount + '" placeholder="E.g., Response must include working code examples" data-validation-id="' + window.validationCount + '"></textarea>' +
+            '<label for="validationImpact' + window.validationCount + '" style="margin-top: 8px;">Impact:</label>' +
+            '<select id="validationImpact' + window.validationCount + '" data-validation-id="' + window.validationCount + '" onchange="updateValidationImpact(' + window.validationCount + ', this.value)">' +
+                '<option value="warning">Warning</option>' +
+                '<option value="blocking">Blocking</option>' +
+            '</select>';
+        
+        window.dom.validationsContainer.appendChild(validationDiv);
+        
+        // Add drag and drop event listeners
+        validationDiv.addEventListener('dragstart', window.handleDragStart);
+        validationDiv.addEventListener('dragover', window.handleDragOver);
+        validationDiv.addEventListener('drop', window.handleDrop);
+        validationDiv.addEventListener('dragend', window.handleDragEnd);
+    };
+
+    /**
+     * Remove a validation condition
+     * @param {number} id - Validation ID to remove
+     */
+    window.removeValidationCondition = function(id) {
+        var validationDiv = document.getElementById('validation-' + id);
+        if (validationDiv) {
+            validationDiv.remove();
+            // Remove from state
+            window.validations = window.validations.filter(function(v) {
+                return v.id !== id;
             });
+            // Renumber remaining validations
+            window.renumberValidations();
         }
+    };
 
-        // Drag and drop handlers
-        let draggedItem = null;
-
-        function handleDragStart(e) {
-            draggedItem = this;
-            this.style.opacity = '0.4';
+    /**
+     * Update validation impact style
+     * @param {number} id - Validation ID
+     * @param {string} impact - Impact value ('warning' or 'blocking')
+     */
+    window.updateValidationImpact = function(id, impact) {
+        var validationDiv = document.getElementById('validation-' + id);
+        if (validationDiv) {
+            validationDiv.classList.remove('blocking', 'warning');
+            validationDiv.classList.add(impact);
         }
+        // Update state
+        var validation = window.validations.find(function(v) {
+            return v.id === id;
+        });
+        if (validation) {
+            validation.impact = impact;
+        }
+    };
 
-        function handleDragOver(e) {
-            if (e.preventDefault) {
-                e.preventDefault();
+    /**
+     * Renumber validations after changes
+     */
+    window.renumberValidations = function() {
+        var items = window.dom.validationsContainer.querySelectorAll('.validation-item');
+        items.forEach(function(item, index) {
+            var orderSpan = item.querySelector('.validation-order');
+            if (orderSpan) {
+                orderSpan.textContent = (index + 1) + '.';
             }
-            return false;
-        }
+        });
+    };
 
-        function handleDrop(e) {
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
+    // Drag and drop handlers
+    window.handleDragStart = function(e) {
+        window.draggedItem = this;
+        this.style.opacity = '0.4';
+    };
+
+    window.handleDragOver = function(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        return false;
+    };
+
+    window.handleDrop = function(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        
+        if (window.draggedItem !== this) {
+            var allItems = Array.from(window.dom.validationsContainer.querySelectorAll('.validation-item'));
+            var draggedIndex = allItems.indexOf(window.draggedItem);
+            var targetIndex = allItems.indexOf(this);
             
-            if (draggedItem !== this) {
-                const allItems = Array.from(validationsContainer.querySelectorAll('.validation-item'));
-                const draggedIndex = allItems.indexOf(draggedItem);
-                const targetIndex = allItems.indexOf(this);
-                
-                if (draggedIndex < targetIndex) {
-                    this.parentNode.insertBefore(draggedItem, this.nextSibling);
-                } else {
-                    this.parentNode.insertBefore(draggedItem, this);
-                }
-                
-                renumberValidations();
-            }
-            
-            return false;
-        }
-
-        function handleDragEnd(e) {
-            this.style.opacity = '1';
-        }
-
-        function initializeExamples() {
-            // Start with 2 examples
-            addExample();
-            addExample();
-        }
-
-        function addExample() {
-            if (exampleCount >= MAX_EXAMPLES) {
-                return;
-            }
-
-            exampleCount++;
-            const exampleDiv = document.createElement('div');
-            exampleDiv.className = 'example-item';
-            exampleDiv.id = `example-${exampleCount}`;
-            
-            exampleDiv.innerHTML = `
-                <div class="example-header">
-                    <span class="example-title">Example ${exampleCount}</span>
-                    <button type="button" class="btn-danger btn-small remove-example" onclick="removeExample(${exampleCount})">Remove</button>
-                </div>
-                <div class="example-fields">
-                    <div class="example-field">
-                        <label for="exampleInput-${exampleCount}">Example Input:</label>
-                        <textarea id="exampleInput-${exampleCount}" placeholder="Enter example input..." aria-label="Example ${exampleCount} input"></textarea>
-                    </div>
-                    <div class="example-field">
-                        <label for="exampleOutput-${exampleCount}">Example Output:</label>
-                        <textarea id="exampleOutput-${exampleCount}" placeholder="Enter example output..." aria-label="Example ${exampleCount} output"></textarea>
-                    </div>
-                </div>
-            `;
-            
-            examplesContainer.appendChild(exampleDiv);
-            updateExampleButtons();
-        }
-
-        function removeExample(id) {
-            const exampleDiv = document.getElementById(`example-${id}`);
-            if (exampleDiv) {
-                exampleDiv.remove();
-                exampleCount--;
-                renumberExamples();
-                updateExampleButtons();
-            }
-        }
-
-        function renumberExamples() {
-            const examples = examplesContainer.querySelectorAll('.example-item');
-            examples.forEach((example, index) => {
-                const newNum = index + 1;
-                example.id = `example-${newNum}`;
-                example.querySelector('.example-title').textContent = `Example ${newNum}`;
-                
-                const inputs = example.querySelectorAll('textarea');
-                inputs[0].id = `exampleInput-${newNum}`;
-                inputs[1].id = `exampleOutput-${newNum}`;
-                
-                const labels = example.querySelectorAll('label');
-                labels[0].setAttribute('for', `exampleInput-${newNum}`);
-                labels[1].setAttribute('for', `exampleOutput-${newNum}`);
-                
-                const removeBtn = example.querySelector('.remove-example');
-                removeBtn.setAttribute('onclick', `removeExample(${newNum})`);
-            });
-        }
-
-        function updateExampleButtons() {
-            const examples = examplesContainer.querySelectorAll('.example-item');
-            const removeButtons = examplesContainer.querySelectorAll('.remove-example');
-            
-            // Disable remove button if only 1 example
-            removeButtons.forEach(btn => {
-                btn.disabled = examples.length <= 1;
-            });
-            
-            // Disable add button if at max
-            addExampleBtn.disabled = exampleCount >= MAX_EXAMPLES;
-        }
-
-        function generatePrompt() {
-            // Validate instructions
-            if (!instructions.value.trim()) {
-                instructions.classList.add('field-error');
-                instructionsError.style.display = 'block';
-                instructions.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return;
+            if (draggedIndex < targetIndex) {
+                this.parentNode.insertBefore(window.draggedItem, this.nextSibling);
             } else {
-                instructions.classList.remove('field-error');
-                instructionsError.style.display = 'none';
-            }
-
-            let prompt = [];
-
-            // 1. Persona
-            const selectedPersona = personaSelect.value;
-            if (selectedPersona && selectedPersona !== 'None (no persona)') {
-                if (selectedPersona === 'Other (custom)') {
-                    if (personaCustom.value.trim()) {
-                        prompt.push(personaCustom.value.trim());
-                    }
-                } else if (personaTemplates[selectedPersona]) {
-                    prompt.push(personaTemplates[selectedPersona]);
-                }
-            }
-
-            // 2. Audience
-            const selectedAudience = audienceSelect.value;
-            if (selectedAudience && selectedAudience !== 'General (not specified)') {
-                if (selectedAudience === 'Other (custom)') {
-                    if (audienceCustom.value.trim()) {
-                        prompt.push(audienceCustom.value.trim());
-                    }
-                } else if (audienceTemplates[selectedAudience]) {
-                    prompt.push(audienceTemplates[selectedAudience]);
-                }
-            }
-
-            // 3. System Constraints
-            const responseLengthValue = responseLength.value;
-            const toneStyleValue = toneStyle.value;
-            const formatPreferencesValue = formatPreferences.value.trim();
-            
-            if (responseLengthValue || toneStyleValue || formatPreferencesValue) {
-                let constraintsSection = 'System Constraints:';
-                
-                if (responseLengthValue) {
-                    const lengthTexts = {
-                        'brief': 'Keep response brief and concise (under 200 words)',
-                        'moderate': 'Provide moderate detail (200-500 words)',
-                        'detailed': 'Provide detailed analysis (500-1000 words)',
-                        'comprehensive': 'Provide comprehensive coverage (over 1000 words)'
-                    };
-                    constraintsSection += '\n- Length: ' + lengthTexts[responseLengthValue];
-                }
-                
-                if (toneStyleValue) {
-                    constraintsSection += '\n- Tone: ' + toneStyleValue.charAt(0).toUpperCase() + toneStyleValue.slice(1);
-                }
-                
-                if (formatPreferencesValue) {
-                    constraintsSection += '\n- Format: ' + formatPreferencesValue;
-                }
-                
-                prompt.push(constraintsSection);
-            }
-
-            // 4. Safety & Ethics Guidelines
-            if (checkBias.checked || accessibilityRequirements.checked || privacyDataProtection.checked || ethicalImplications.checked) {
-                let safetySection = 'Safety & Ethics Considerations:';
-                
-                if (checkBias.checked) {
-                    safetySection += '\n- Check for and eliminate bias in recommendations';
-                }
-                
-                if (accessibilityRequirements.checked) {
-                    safetySection += '\n- Ensure solutions meet accessibility requirements (WCAG 2.1 AA minimum)';
-                }
-                
-                if (privacyDataProtection.checked) {
-                    safetySection += '\n- Address privacy and data protection concerns (GDPR compliance)';
-                }
-                
-                if (ethicalImplications.checked) {
-                    safetySection += '\n- Consider and discuss ethical implications of the solution';
-                }
-                
-                prompt.push(safetySection);
-            }
-
-            // 5. Additional Context
-            if (additionalContext.value.trim()) {
-                prompt.push('Additional context:\n' + additionalContext.value.trim());
-            }
-
-            // 6. Input Data
-            if (inputData.value.trim()) {
-                prompt.push(inputData.value.trim());
-            }
-
-            // 7. Instructions (always included)
-            prompt.push(instructions.value.trim());
-
-            // 8. Reasoning Method
-            const selectedReasoning = document.querySelector('input[name="reasoning"]:checked').value;
-            
-            // Chain-of-Thought
-            if (selectedReasoning === 'chain-of-thought') {
-                const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
-                if (cotSteps.length >= MIN_COT_STEPS) {
-                    let cotSection = 'Think through this step-by-step:';
-                    
-                    cotSteps.forEach((step, index) => {
-                        const desc = step.querySelector('textarea').value.trim();
-                        if (desc) {
-                            cotSection += `\nStep ${index + 1}: ${desc}`;
-                        }
-                    });
-                    
-                    if (cotXmlTags.checked) {
-                        cotSection += '\nShow your reasoning in <thinking> tags before providing the final answer.';
-                    }
-                    
-                    prompt.push(cotSection);
-                }
+                this.parentNode.insertBefore(window.draggedItem, this);
             }
             
-            // Few-shot Examples
-            if (selectedReasoning === 'few-shot') {
-                const examples = examplesContainer.querySelectorAll('.example-item');
-                if (examples.length > 0) {
-                    let fewShotSection = 'Here are examples of the desired output:\n';
-                    
-                    examples.forEach((example, index) => {
-                        const inputField = example.querySelector(`textarea[id^="exampleInput"]`);
-                        const outputField = example.querySelector(`textarea[id^="exampleOutput"]`);
-                        
-                        if (inputField.value.trim() || outputField.value.trim()) {
-                            fewShotSection += `\nExample ${index + 1}:\n`;
-                            fewShotSection += `Input: ${inputField.value.trim()}\n`;
-                            fewShotSection += `Output: ${outputField.value.trim()}`;
-                            if (index < examples.length - 1) {
-                                fewShotSection += '\n';
-                            }
-                        }
-                    });
-                    
-                    fewShotSection += '\n\nNow, apply the same pattern to the following:';
-                    prompt.push(fewShotSection);
-                }
-            }
-
-            // 9. Code-Specific Options
-            const progLang = programmingLanguage.value.trim();
-            const framework = frameworkLibrary.value.trim();
-            const tests = includeTests.checked;
-            const docs = includeDocumentation.checked;
-            const testFw = testFramework.value.trim();
-            
-            if (progLang || framework || tests || docs) {
-                let codeSection = 'Code-Specific Requirements:';
-                
-                if (progLang) {
-                    codeSection += '\n- Programming Language: ' + progLang;
-                }
-                
-                if (framework) {
-                    codeSection += '\n- Framework/Library: ' + framework;
-                }
-                
-                if (tests) {
-                    codeSection += '\n- Include comprehensive unit tests';
-                    if (testFw) {
-                        codeSection += ' using ' + testFw;
-                    }
-                }
-                
-                if (docs) {
-                    codeSection += '\n- Include detailed documentation with docstrings and inline comments';
-                }
-                
-                prompt.push(codeSection);
-            }
-
-            // 10. Research Instructions
-            if (searchLatestInfo.checked || citeSources.checked || compareMultipleSources.checked || verifyFacts.checked || includeConfidence.checked) {
-                let researchSection = 'Research Guidelines:';
-                
-                if (searchLatestInfo.checked) {
-                    researchSection += '\n- Search for and incorporate the latest information before answering';
-                }
-                
-                if (citeSources.checked) {
-                    researchSection += '\n- Cite specific sources with dates and URLs where applicable';
-                }
-                
-                if (compareMultipleSources.checked) {
-                    researchSection += '\n- Compare information from multiple authoritative sources';
-                }
-                
-                if (verifyFacts.checked) {
-                    researchSection += '\n- Verify facts before presenting them and flag any uncertain information';
-                }
-                
-                if (includeConfidence.checked) {
-                    researchSection += '\n- Include confidence levels for key claims and findings';
-                }
-                
-                prompt.push(researchSection);
-            }
-
-            // 11. Creative Content Options
-            const writingStyleValue = writingStyle.value;
-            const povValue = pointOfView.value;
-            const wordCountValue = wordCountTarget.value.trim();
-            const readingLevelValue = readingLevel.value;
-            
-            if (writingStyleValue || povValue || wordCountValue || readingLevelValue) {
-                let creativeSection = 'Creative Content Guidelines:';
-                
-                if (writingStyleValue) {
-                    creativeSection += '\n- Writing Style: ' + writingStyleValue;
-                }
-                
-                if (povValue) {
-                    creativeSection += '\n- Point of View: ' + povValue;
-                }
-                
-                if (wordCountValue) {
-                    creativeSection += '\n- Target Word Count: ' + wordCountValue;
-                }
-                
-                if (readingLevelValue) {
-                    creativeSection += '\n- Reading Level: ' + readingLevelValue;
-                }
-                
-                prompt.push(creativeSection);
-            }
-
-            // 12. Output Format
-            if (outputFormat.value.trim()) {
-                prompt.push('Output format:\n' + outputFormat.value.trim());
-            }
-
-            // 13. Quality Controls
-            if (selfReflection.checked) {
-                prompt.push('After providing your solution, perform a self-review:\n1. Check for logical errors\n2. Verify all requirements are met\n3. Identify any assumptions made\n4. Rate your confidence (1-10)');
-            }
-
-            if (antiHallucination.checked) {
-                prompt.push('Important guidelines:\n- If you don\'t know something, explicitly say "I don\'t know"\n- Cite specific sources when making factual claims\n- Distinguish between facts and opinions\n- State assumptions explicitly\n- Only use well-documented, standard approaches');
-            }
-
-            // 14. Validation/Verification Conditions
-            const validationItems = validationsContainer.querySelectorAll('.validation-item');
-            if (validationItems.length > 0) {
-                let validationSection = 'Success Criteria - Validate that the response meets these conditions:';
-                
-                validationItems.forEach((item, index) => {
-                    const desc = item.querySelector('textarea').value.trim();
-                    const impact = item.querySelector('select').value;
-                    
-                    if (desc) {
-                        const impactLabel = impact === 'blocking' ? '[REQUIRED]' : '[RECOMMENDED]';
-                        validationSection += `\n${index + 1}. ${impactLabel} ${desc}`;
-                    }
-                });
-                
-                prompt.push(validationSection);
-            }
-
-            // 15. Negative Prompting
-            if (negativePrompts.value.trim()) {
-                prompt.push('IMPORTANT - Do NOT:\n' + negativePrompts.value.trim());
-            }
-
-            // 16. Iterative Refinement
-            if (askClarifyingQuestions.checked || provideAlternatives.checked || requestFeedback.checked || suggestImprovements.checked || identifyAssumptions.checked) {
-                let iterativeSection = 'Iterative Approach:';
-                
-                if (askClarifyingQuestions.checked) {
-                    iterativeSection += '\n- Ask clarifying questions before providing the final answer if anything is ambiguous';
-                }
-                
-                if (provideAlternatives.checked) {
-                    iterativeSection += '\n- Provide multiple solution approaches or alternatives when applicable';
-                }
-                
-                if (requestFeedback.checked) {
-                    iterativeSection += '\n- Request feedback and be prepared to iterate based on responses';
-                }
-                
-                if (suggestImprovements.checked) {
-                    iterativeSection += '\n- Proactively suggest improvements or optimizations';
-                }
-                
-                if (identifyAssumptions.checked) {
-                    iterativeSection += '\n- Clearly identify any assumptions made and ask for confirmation';
-                }
-                
-                prompt.push(iterativeSection);
-            }
-
-            // Join with blank lines and display
-            const finalPrompt = prompt.join('\n\n');
-            generatedPrompt.value = finalPrompt;
-            updateCharCount();
-
-            // Scroll to output
-            document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+            window.renumberValidations();
         }
+        
+        return false;
+    };
 
-        function updateCharCount() {
-            const text = generatedPrompt.value;
-            const charCount_val = text.length;
-            const tokenCount = Math.ceil(charCount_val / 4); // Rough estimate: ~1 token per 4 characters
-            
-            // Apply color coding based on token count
-            if (tokenCount > 2000) {
-                charCount.style.color = 'var(--error)';
-                charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens ⚠️ Large prompt - consider reducing`;
-            } else if (tokenCount > 1000) {
-                charCount.style.color = 'orange';
-                charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens ⚠️ Getting large`;
-            } else {
-                charCount.style.color = 'var(--text-light)';
-                charCount.textContent = `${charCount_val} characters • ${tokenCount} tokens`;
-            }
-        }
+    window.handleDragEnd = function(e) {
+        this.style.opacity = '1';
+    };
 
-        function updateLiveTokenCount() {
-            // Calculate approximate token count from all form fields
-            let totalChars = 0;
-            
-            // Collect text from all relevant fields
-            if (personaSelect.value && personaSelect.value !== 'None (no persona)') {
-                if (personaSelect.value === 'Other (custom)') {
-                    totalChars += personaCustom.value.length;
-                } else if (personaTemplates[personaSelect.value]) {
-                    totalChars += personaTemplates[personaSelect.value].length;
-                }
-            }
-            
-            totalChars += instructions.value.length;
-            totalChars += inputData.value.length;
-            totalChars += outputFormat.value.length;
-            totalChars += additionalContext.value.length;
-            totalChars += formatPreferences.value.length;
-            totalChars += negativePrompts.value.length;
-            
-            // Add CoT steps
-            const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
-            cotSteps.forEach(step => {
-                totalChars += step.querySelector('textarea').value.length;
+})();
+/**
+ * Form action handlers
+ * Generate prompt, export, copy, clear
+ */
+(function() {
+    'use strict';
+
+    /**
+     * Collect all form data into an object
+     * @returns {Object} Form data object
+     */
+    window.collectFormData = function() {
+        // Collect examples
+        var examples = [];
+        var exampleItems = window.dom.examplesContainer.querySelectorAll('.example-item');
+        exampleItems.forEach(function(example) {
+            var inputField = example.querySelector('textarea[id^="exampleInput"]');
+            var outputField = example.querySelector('textarea[id^="exampleOutput"]');
+            examples.push({
+                input: inputField ? inputField.value : '',
+                output: outputField ? outputField.value : ''
             });
-            
-            if (audienceSelect.value && audienceSelect.value !== 'General (not specified)') {
-                if (audienceSelect.value === 'Other (custom)') {
-                    totalChars += audienceCustom.value.length;
-                } else if (audienceTemplates[audienceSelect.value]) {
-                    totalChars += audienceTemplates[audienceSelect.value].length;
-                }
-            }
-            
-            // Add approximate overhead for formatting, labels, and quality controls
-            const overhead = 500; // Rough estimate for section labels and quality control text
-            totalChars += overhead;
-            
-            const tokenCount = Math.ceil(totalChars / 4);
-            
-            // Update the display with live preview
-            if (tokenCount > 2000) {
-                charCount.style.color = 'var(--error)';
-                charCount.textContent = `~${totalChars} characters • ~${tokenCount} tokens ⚠️ Large prompt - consider reducing`;
-            } else if (tokenCount > 1000) {
-                charCount.style.color = 'orange';
-                charCount.textContent = `~${totalChars} characters • ~${tokenCount} tokens ⚠️ Getting large`;
-            } else {
-                charCount.style.color = 'var(--text-light)';
-                charCount.textContent = `~${totalChars} characters • ~${tokenCount} tokens`;
-            }
-        }
-
-        function clearForm() {
-            if (confirm('Are you sure you want to clear all fields?')) {
-                document.getElementById('promptForm').reset();
-                personaCustomContainer.classList.add('hidden');
-                audienceCustomContainer.classList.add('hidden');
-                fewShotContainer.classList.add('hidden');
-                cotContainer.classList.add('hidden');
-                generatedPrompt.value = '';
-                charCount.style.color = 'var(--text-light)';
-                charCount.textContent = '~0 characters • ~0 tokens';
-                instructions.classList.remove('field-error');
-                instructionsError.style.display = 'none';
-                
-                // Reset examples
-                examplesContainer.innerHTML = '';
-                exampleCount = 0;
-                initializeExamples();
-                
-                // Reset CoT steps
-                cotStepsContainer.innerHTML = '';
-                cotStepCount = 0;
-                
-                // Reset validation conditions
-                validationsContainer.innerHTML = '';
-                validationCount = 0;
-                validations = [];
-                
-                // Reset collapsible sections to collapsed state
-                document.querySelectorAll('.collapsible-content').forEach(content => {
-                    content.classList.remove('open');
-                });
-                document.querySelectorAll('.collapsible-header').forEach(header => {
-                    header.classList.remove('active');
-                });
-                document.querySelectorAll('.collapsible-toggle').forEach(toggle => {
-                    toggle.classList.remove('open');
-                });
-                
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
-
-        function exportToRequirements() {
-            const prompt = generatedPrompt.value;
-            if (!prompt) {
-                showNotification('Please generate a prompt first');
-                return;
-            }
-
-            // Create markdown content
-            const markdown = `# AI Agent Requirements
-
-## Generated Prompt
-
-${prompt}
-
----
-
-*Generated by AI Prompt Engineering Wizard on ${new Date().toLocaleDateString()}*
-`;
-
-            // Create blob and download
-            const blob = new Blob([markdown], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'REQUIREMENTS.md';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showNotification('Exported to REQUIREMENTS.md');
-        }
-
-        function copyToClipboard() {
-            const text = generatedPrompt.value;
-            if (!text) {
-                return;
-            }
-
-            navigator.clipboard.writeText(text).then(() => {
-                showNotification('Copied!');
-                copyBtn.textContent = 'Copied!';
-                setTimeout(() => {
-                    copyBtn.textContent = 'Copy to Clipboard';
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy:', err);
+        });
+        
+        // Collect CoT steps
+        var cotSteps = [];
+        var cotStepElements = window.dom.cotStepsContainer.querySelectorAll('.workflow-step');
+        cotStepElements.forEach(function(step) {
+            cotSteps.push(step.querySelector('textarea').value);
+        });
+        
+        // Collect validations
+        var validationItems = window.dom.validationsContainer.querySelectorAll('.validation-item');
+        var validationsData = [];
+        validationItems.forEach(function(item) {
+            validationsData.push({
+                description: item.querySelector('textarea').value,
+                impact: item.querySelector('select').value
             });
+        });
+        
+        // Get selected reasoning method
+        var reasoningRadio = document.querySelector('input[name="reasoning"]:checked');
+        var reasoning = reasoningRadio ? reasoningRadio.value : 'zero-shot';
+        
+        return {
+            // Persona
+            persona: window.dom.personaSelect.value,
+            personaCustom: window.dom.personaCustom.value,
+            
+            // Core content
+            instructions: window.dom.instructions.value,
+            inputData: window.dom.inputData.value,
+            outputFormat: window.dom.outputFormat.value,
+            additionalContext: window.dom.additionalContext.value,
+            
+            // Constraints
+            responseLength: window.dom.responseLength.value,
+            toneStyle: window.dom.toneStyle.value,
+            formatPreferences: window.dom.formatPreferences.value,
+            
+            // Negative prompts
+            negativePrompts: window.dom.negativePrompts.value,
+            
+            // Reasoning
+            reasoning: reasoning,
+            examples: examples,
+            cotSteps: cotSteps,
+            cotXmlTags: window.dom.cotXmlTags.checked,
+            
+            // Audience
+            audience: window.dom.audienceSelect.value,
+            audienceCustom: window.dom.audienceCustom.value,
+            
+            // Quality
+            selfReflection: window.dom.selfReflection.checked,
+            antiHallucination: window.dom.antiHallucination.checked,
+            
+            // Code options
+            programmingLanguage: window.dom.programmingLanguage.value,
+            framework: window.dom.frameworkLibrary.value,
+            includeTests: window.dom.includeTests.checked,
+            includeDocs: window.dom.includeDocumentation.checked,
+            testFramework: window.dom.testFramework.value,
+            
+            // Safety
+            checkBias: window.dom.checkBias.checked,
+            accessibility: window.dom.accessibilityRequirements.checked,
+            privacy: window.dom.privacyDataProtection.checked,
+            ethical: window.dom.ethicalImplications.checked,
+            
+            // Validations
+            validations: validationsData,
+            
+            // Creative
+            writingStyle: window.dom.writingStyle.value,
+            pointOfView: window.dom.pointOfView.value,
+            wordCount: window.dom.wordCountTarget.value,
+            readingLevel: window.dom.readingLevel.value,
+            
+            // Research
+            searchLatest: window.dom.searchLatestInfo.checked,
+            citeSources: window.dom.citeSources.checked,
+            compareSources: window.dom.compareMultipleSources.checked,
+            verifyFacts: window.dom.verifyFacts.checked,
+            includeConfidence: window.dom.includeConfidence.checked,
+            
+            // Iterative
+            askClarifying: window.dom.askClarifyingQuestions.checked,
+            provideAlternatives: window.dom.provideAlternatives.checked,
+            requestFeedback: window.dom.requestFeedback.checked,
+            suggestImprovements: window.dom.suggestImprovements.checked,
+            identifyAssumptions: window.dom.identifyAssumptions.checked
+        };
+    };
+
+    /**
+     * Generate prompt from form data
+     */
+    window.generatePrompt = function() {
+        // Validate instructions
+        if (!window.validateInstructions(window.dom.instructions.value)) {
+            window.dom.instructions.classList.add('field-error');
+            window.dom.instructionsError.style.display = 'block';
+            window.dom.instructions.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        } else {
+            window.dom.instructions.classList.remove('field-error');
+            window.dom.instructionsError.style.display = 'none';
         }
 
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = message;
-            document.body.appendChild(notification);
+        var formData = window.collectFormData();
+        var finalPrompt = window.assemblePrompt(formData);
+        
+        window.dom.generatedPrompt.value = finalPrompt;
+        window.updateCharCount();
 
-            setTimeout(() => {
-                notification.remove();
+        // Scroll to output
+        document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    /**
+     * Export prompt to REQUIREMENTS.md file
+     */
+    window.exportToRequirements = function() {
+        var prompt = window.dom.generatedPrompt.value;
+        if (!prompt) {
+            window.showNotification('Please generate a prompt first');
+            return;
+        }
+
+        var markdown = window.formatMarkdownExport(prompt);
+
+        // Create blob and download
+        var blob = new Blob([markdown], { type: 'text/markdown' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'REQUIREMENTS.md';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        window.showNotification('Exported to REQUIREMENTS.md');
+    };
+
+    /**
+     * Copy prompt to clipboard
+     */
+    window.copyToClipboard = function() {
+        var text = window.dom.generatedPrompt.value;
+        if (!text) {
+            return;
+        }
+
+        navigator.clipboard.writeText(text).then(function() {
+            window.showNotification('Copied!');
+            window.dom.copyBtn.textContent = 'Copied!';
+            setTimeout(function() {
+                window.dom.copyBtn.textContent = 'Copy to Clipboard';
             }, 2000);
-        }
+        }).catch(function(err) {
+            console.error('Failed to copy:', err);
+        });
+    };
 
-        function loadExampleScenario() {
-            const scenario = loadExample.value;
-            if (!scenario) return;
-
-            // Clear form first
-            document.getElementById('promptForm').reset();
-            personaCustomContainer.classList.add('hidden');
-            audienceCustomContainer.classList.add('hidden');
-            examplesContainer.innerHTML = '';
-            exampleCount = 0;
+    /**
+     * Clear all form fields
+     */
+    window.clearForm = function() {
+        if (confirm('Are you sure you want to clear all fields?')) {
+            window.dom.promptForm.reset();
+            window.dom.personaCustomContainer.classList.add('hidden');
+            window.dom.audienceCustomContainer.classList.add('hidden');
+            window.dom.fewShotContainer.classList.add('hidden');
+            window.dom.cotContainer.classList.add('hidden');
+            window.dom.generatedPrompt.value = '';
+            window.dom.charCount.style.color = 'var(--text-light)';
+            window.dom.charCount.textContent = '~0 characters • ~0 tokens';
+            window.dom.instructions.classList.remove('field-error');
+            window.dom.instructionsError.style.display = 'none';
+            
+            // Reset examples
+            window.dom.examplesContainer.innerHTML = '';
+            window.exampleCount = 0;
+            window.initializeExamples();
             
             // Reset CoT steps
-            cotStepsContainer.innerHTML = '';
-            cotStepCount = 0;
+            window.dom.cotStepsContainer.innerHTML = '';
+            window.cotStepCount = 0;
             
             // Reset validation conditions
-            validationsContainer.innerHTML = '';
-            validationCount = 0;
-            validations = [];
+            window.dom.validationsContainer.innerHTML = '';
+            window.validationCount = 0;
+            window.validations = [];
             
             // Reset collapsible sections to collapsed state
-            document.querySelectorAll('.collapsible-content').forEach(content => {
+            document.querySelectorAll('.collapsible-content').forEach(function(content) {
                 content.classList.remove('open');
             });
-            document.querySelectorAll('.collapsible-header').forEach(header => {
+            document.querySelectorAll('.collapsible-header').forEach(function(header) {
                 header.classList.remove('active');
             });
-            document.querySelectorAll('.collapsible-toggle').forEach(toggle => {
+            document.querySelectorAll('.collapsible-toggle').forEach(function(toggle) {
                 toggle.classList.remove('open');
             });
-
-            switch(scenario) {
-                case 'code-security':
-                    personaSelect.value = 'Security Engineer';
-                    instructions.value = 'Review the following Python Flask endpoint for security issues. Prioritize critical vulnerabilities and provide specific recommendations.';
-                    inputData.value = `<code>
-@app.route('/user/<id>')
-def get_user(id):
-    query = f"SELECT * FROM users WHERE id = {id}"
-    user = db.execute(query)
-    return jsonify(user)
-</code>`;
-                    outputFormat.value = `1. Vulnerability Summary (with severity levels)
-2. Detailed Explanation of each issue
-3. Secure Code Example
-4. Additional Security Recommendations`;
-                    additionalContext.value = 'This endpoint handles authentication-related user data. The application uses PostgreSQL database. Performance is critical (10k requests/minute).';
-                    document.getElementById('chainOfThought').checked = true;
-                    toggleReasoningMethod();
-                    setTimeout(() => {
-                        // Add 3 more steps to reach 5 total
-                        addCotStep();
-                        addCotStep();
-                        addCotStep();
-                        const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
-                        if (cotSteps.length >= 5) {
-                            cotSteps[0].querySelector('textarea').value = 'Identify potential SQL injection vectors';
-                            cotSteps[1].querySelector('textarea').value = 'Check for authentication and authorization issues';
-                            cotSteps[2].querySelector('textarea').value = 'Evaluate data exposure risks';
-                            cotSteps[3].querySelector('textarea').value = 'Consider input validation and sanitization';
-                            cotSteps[4].querySelector('textarea').value = 'Review error handling';
-                        }
-                    }, 100);
-                    cotXmlTags.checked = true;
-                    audienceSelect.value = 'Technical - Software Developers';
-                    selfReflection.checked = true;
-                    antiHallucination.checked = true;
-                    break;
-
-                case 'email-classification':
-                    personaSelect.value = 'Data Scientist';
-                    instructions.value = 'Classify the following email into one of these categories: Sales, Support, Billing, HR, General. Provide a confidence score and brief reasoning.';
-                    inputData.value = '[Email content will be inserted here]';
-                    outputFormat.value = 'Category: [category name], Confidence: [percentage], Reasoning: [one sentence explanation]';
-                    document.getElementById('fewShot').checked = true;
-                    toggleReasoningMethod();
-                    addExample();
-                    addExample();
-                    addExample();
-                    setTimeout(() => {
-                        document.getElementById('exampleInput-1').value = "Hi, I'd like to upgrade my subscription to the premium plan. What are my options?";
-                        document.getElementById('exampleOutput-1').value = "Category: Billing, Confidence: 95%, Reasoning: Direct mention of subscription upgrade indicates billing inquiry";
-                        document.getElementById('exampleInput-2').value = "My account isn't loading properly. I keep getting error 404 when I try to access the dashboard.";
-                        document.getElementById('exampleOutput-2').value = "Category: Support, Confidence: 98%, Reasoning: Technical issue requiring troubleshooting assistance";
-                        document.getElementById('exampleInput-3').value = "I'm interested in your enterprise solution for our team of 50 people. Can we schedule a demo?";
-                        document.getElementById('exampleOutput-3').value = "Category: Sales, Confidence: 97%, Reasoning: New business opportunity with demo request";
-                    }, 100);
-                    audienceSelect.value = 'Semi-Technical - Product Managers';
-                    selfReflection.checked = false;
-                    antiHallucination.checked = true;
-                    break;
-
-                case 'research-summary':
-                    personaSelect.value = 'Business Analyst';
-                    instructions.value = 'Summarize the current state of solid-state battery technology, focusing on commercial viability and recent breakthroughs.';
-                    outputFormat.value = `## Executive Summary (3-4 sentences)
-## Key Technologies
-## Recent Breakthroughs (2023-2025)
-## Commercial Readiness Assessment
-## Major Players and Investments
-## Timeline to Market`;
-                    additionalContext.value = 'Focus on automotive applications. Include specific companies and their announced timelines. Data should be from credible sources.';
-                    document.getElementById('zeroShot').checked = true;
-                    toggleReasoningMethod();
-                    audienceSelect.value = 'Non-Technical - C-Level Executives';
-                    selfReflection.checked = true;
-                    antiHallucination.checked = true;
-                    break;
-
-                case 'api-documentation':
-                    personaSelect.value = 'Technical Writer';
-                    instructions.value = 'Create comprehensive API documentation for the following endpoint. Include all necessary details for developers to successfully integrate this API.';
-                    inputData.value = `<code>
-POST /api/v1/users
-Creates a new user account
-Parameters: email (string, required), name (string, required), role (string, optional)
-Returns: user object with id, created_at timestamp
-Authentication: Bearer token required
-Rate limit: 100 requests per hour
-</code>`;
-                    outputFormat.value = `# Endpoint Overview
-## HTTP Method and URL
-## Description
-## Authentication
-## Request Parameters (table format)
-## Request Example (curl and JavaScript)
-## Response Format
-## Response Example (JSON)
-## Error Codes
-## Rate Limits`;
-                    additionalContext.value = 'REST API following OpenAPI 3.0 specification. Target framework: Node.js with Express. Must include examples in both curl and JavaScript fetch.';
-                    document.getElementById('zeroShot').checked = true;
-                    toggleReasoningMethod();
-                    audienceSelect.value = 'Technical - Software Developers';
-                    selfReflection.checked = true;
-                    antiHallucination.checked = true;
-                    break;
-
-                case 'user-story':
-                    personaSelect.value = 'Product Manager';
-                    instructions.value = 'Write a detailed user story with acceptance criteria for the described feature. Follow standard Agile format.';
-                    inputData.value = 'Feature request: Allow users to export their data in CSV format from the dashboard. Users should be able to select date ranges and specific data fields to include.';
-                    outputFormat.value = `**User Story:**
-As a [user type]
-I want [goal]
-So that [benefit]
-
-**Acceptance Criteria:**
-- [ ] Criterion 1
-- [ ] Criterion 2
-[etc.]
-
-**Technical Notes:**
-[Any technical considerations]`;
-                    additionalContext.value = 'B2B SaaS product. GDPR compliance required (data export is a regulatory requirement). Target implementation: Q2 2025. Current tech stack: React frontend, Python Django backend.';
-                    document.getElementById('fewShot').checked = true;
-                    toggleReasoningMethod();
-                    addExample();
-                    addExample();
-                    setTimeout(() => {
-                        document.getElementById('exampleInput-1').value = "Feature: Dark mode toggle";
-                        document.getElementById('exampleOutput-1').value = `**User Story:**
-As a user who works late hours
-I want to switch the interface to dark mode
-So that I can reduce eye strain and work more comfortably
-
-**Acceptance Criteria:**
-- [ ] Toggle switch appears in user settings menu
-- [ ] Dark mode preference persists across sessions
-- [ ] Mode change applies immediately without page reload
-- [ ] All UI components render properly in dark mode
-
-**Technical Notes:**
-Use CSS custom properties for theming. Store preference in localStorage.`;
-                        document.getElementById('exampleInput-2').value = "Feature: Password reset via email";
-                        document.getElementById('exampleOutput-2').value = `**User Story:**
-As a user who forgot my password
-I want to reset it using my email address
-So that I can regain access to my account securely
-
-**Acceptance Criteria:**
-- [ ] Reset link sent to registered email within 1 minute
-- [ ] Link expires after 24 hours
-- [ ] User must create a new password (cannot reuse old one)
-- [ ] Confirmation email sent after successful reset
-
-**Technical Notes:**
-Use secure token generation. Implement rate limiting to prevent abuse.`;
-                    }, 100);
-                    audienceSelect.value = 'Semi-Technical - Technical Project Managers';
-                    selfReflection.checked = true;
-                    antiHallucination.checked = false;
-                    break;
-
-                case 'feature-request':
-                    personaSelect.value = 'Product Manager';
-                    instructions.value = 'Analyze the following feature request and create a comprehensive specification. Include technical feasibility, user impact, and implementation recommendations.';
-                    inputData.value = `Feature Request: Add real-time collaboration features to our document editor, similar to Google Docs. Multiple users should be able to edit simultaneously with cursor positions visible and changes synced instantly.`;
-                    outputFormat.value = `## Feature Overview
-## User Stories
-## Technical Requirements
-- Frontend changes
-- Backend changes
-- Infrastructure needs
-## Implementation Approach
-## Challenges and Risks
-## Success Metrics
-## Timeline Estimate`;
-                    additionalContext.value = 'Current stack: React frontend, Node.js backend, MongoDB database. Target users: teams of 5-50 people. Performance requirement: <100ms latency for edits.';
-                    document.getElementById('chainOfThought').checked = true;
-                    toggleReasoningMethod();
-                    setTimeout(() => {
-                        // Add 3 more steps to reach 5 total
-                        addCotStep();
-                        addCotStep();
-                        addCotStep();
-                        const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
-                        if (cotSteps.length >= 5) {
-                            cotSteps[0].querySelector('textarea').value = 'Analyze user needs and use cases';
-                            cotSteps[1].querySelector('textarea').value = 'Identify technical requirements and dependencies';
-                            cotSteps[2].querySelector('textarea').value = 'Evaluate existing solutions and technologies';
-                            cotSteps[3].querySelector('textarea').value = 'Consider scalability and performance implications';
-                            cotSteps[4].querySelector('textarea').value = 'Assess implementation complexity and timeline';
-                        }
-                    }, 100);
-                    cotXmlTags.checked = true;
-                    audienceSelect.value = 'Semi-Technical - Product Managers';
-                    selfReflection.checked = true;
-                    antiHallucination.checked = true;
-                    break;
-
-                case 'bug-analysis':
-                    personaSelect.value = 'Senior Software Engineer';
-                    instructions.value = 'Analyze the following bug report, identify root cause, and provide a detailed fix with testing approach.';
-                    inputData.value = `<bug_report>
-Title: Application crashes when uploading files larger than 10MB
-Environment: Production, Chrome 120, Windows 11
-Steps to reproduce:
-1. Navigate to /upload page
-2. Select a file larger than 10MB
-3. Click "Upload" button
-4. Browser tab becomes unresponsive
-
-Error log:
-Uncaught RangeError: Maximum call stack size exceeded
-  at FileReader.onload (upload.js:45)
-  at convertToBase64 (utils.js:123)
-</bug_report>`;
-                    outputFormat.value = `## Root Cause Analysis
-## Impact Assessment
-## Proposed Solution
-- Code changes
-- Configuration changes
-## Testing Strategy
-## Prevention Measures`;
-                    additionalContext.value = 'File upload uses Base64 encoding. Current implementation loads entire file into memory. Production handles 1000+ uploads daily. Quick fix needed but should be production-ready.';
-                    document.getElementById('chainOfThought').checked = true;
-                    toggleReasoningMethod();
-                    setTimeout(() => {
-                        // Add 3 more steps to reach 5 total
-                        addCotStep();
-                        addCotStep();
-                        addCotStep();
-                        const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
-                        if (cotSteps.length >= 5) {
-                            cotSteps[0].querySelector('textarea').value = 'Analyze error message and stack trace';
-                            cotSteps[1].querySelector('textarea').value = 'Identify code location and logic flow';
-                            cotSteps[2].querySelector('textarea').value = 'Determine why the issue occurs';
-                            cotSteps[3].querySelector('textarea').value = 'Evaluate potential solutions';
-                            cotSteps[4].querySelector('textarea').value = 'Recommend fix with minimal risk';
-                        }
-                    }, 100);
-                    cotXmlTags.checked = true;
-                    audienceSelect.value = 'Technical - Software Developers';
-                    selfReflection.checked = true;
-                    antiHallucination.checked = true;
-                    break;
-
-                case 'project-familiarization':
-                    personaSelect.value = 'Senior Software Engineer';
-                    instructions.value = 'You are working as an AI agent inside this codebase. Familiarize yourself with the project structure, architecture, and key components. Prepare to answer questions and assist with development tasks.';
-                    inputData.value = `<project_context>
-Repository: teleprompter
-Purpose: AI Prompt Engineering Wizard - a single-page application for building structured AI prompts
-Technology: Vanilla HTML/CSS/JavaScript (no frameworks)
-File structure:
-- index.html (main application file)
-- README.md (project documentation)
-- REQUIREMENTS.md (detailed specifications)
-</project_context>`;
-                    outputFormat.value = `## Project Summary
-Brief overview of what this project does
-
-## Architecture Overview
-Key technical decisions and structure
-
-## Main Components
-List and describe major parts of the codebase
-
-## How to Work with This Project
-Development workflow and guidelines
-
-## Questions I Can Help With
-Types of tasks I'm ready to assist with`;
-                    additionalContext.value = 'Focus on understanding the codebase well enough to make contributions, fix bugs, or add features. Be ready to explain any part of the code or suggest improvements.';
-                    document.getElementById('zeroShot').checked = true;
-                    toggleReasoningMethod();
-                    audienceSelect.value = 'Technical - Software Developers';
-                    selfReflection.checked = true;
-                    antiHallucination.checked = true;
-                    break;
-            }
-
-            showNotification(`Loaded: ${loadExample.options[loadExample.selectedIndex].text}`);
-            loadExample.value = '';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+    };
+
+})();
+/**
+ * Example scenario loader
+ * Loads predefined scenarios into the form
+ */
+(function() {
+    'use strict';
+
+    /**
+     * Load an example scenario into the form
+     */
+    window.loadExampleScenario = function() {
+        var scenarioKey = window.dom.loadExample.value;
+        if (!scenarioKey) return;
+
+        var scenario = window.exampleScenarios[scenarioKey];
+        if (!scenario) return;
+
+        // Clear form first
+        window.dom.promptForm.reset();
+        window.dom.personaCustomContainer.classList.add('hidden');
+        window.dom.audienceCustomContainer.classList.add('hidden');
+        window.dom.examplesContainer.innerHTML = '';
+        window.exampleCount = 0;
+        
+        // Reset CoT steps
+        window.dom.cotStepsContainer.innerHTML = '';
+        window.cotStepCount = 0;
+        
+        // Reset validation conditions
+        window.dom.validationsContainer.innerHTML = '';
+        window.validationCount = 0;
+        window.validations = [];
+        
+        // Reset collapsible sections to collapsed state
+        document.querySelectorAll('.collapsible-content').forEach(function(content) {
+            content.classList.remove('open');
+        });
+        document.querySelectorAll('.collapsible-header').forEach(function(header) {
+            header.classList.remove('active');
+        });
+        document.querySelectorAll('.collapsible-toggle').forEach(function(toggle) {
+            toggle.classList.remove('open');
+        });
+
+        // Apply scenario data
+        if (scenario.persona) {
+            window.dom.personaSelect.value = scenario.persona;
+        }
+        
+        if (scenario.instructions) {
+            window.dom.instructions.value = scenario.instructions;
+        }
+        
+        if (scenario.inputData) {
+            window.dom.inputData.value = scenario.inputData;
+        }
+        
+        if (scenario.outputFormat) {
+            window.dom.outputFormat.value = scenario.outputFormat;
+        }
+        
+        if (scenario.additionalContext) {
+            window.dom.additionalContext.value = scenario.additionalContext;
+        }
+        
+        if (scenario.audience) {
+            window.dom.audienceSelect.value = scenario.audience;
+        }
+        
+        if (scenario.selfReflection !== undefined) {
+            window.dom.selfReflection.checked = scenario.selfReflection;
+        }
+        
+        if (scenario.antiHallucination !== undefined) {
+            window.dom.antiHallucination.checked = scenario.antiHallucination;
+        }
+        
+        // Handle reasoning method
+        if (scenario.reasoning) {
+            var reasoningRadio = document.getElementById(
+                scenario.reasoning === 'chain-of-thought' ? 'chainOfThought' :
+                scenario.reasoning === 'few-shot' ? 'fewShot' : 'zeroShot'
+            );
+            if (reasoningRadio) {
+                reasoningRadio.checked = true;
+            }
+            window.toggleReasoningMethod();
+            
+            // Handle CoT steps
+            if (scenario.reasoning === 'chain-of-thought' && scenario.cotSteps) {
+                setTimeout(function() {
+                    // Add steps to reach the required count
+                    while (window.dom.cotStepsContainer.children.length < scenario.cotSteps.length) {
+                        window.addCotStep();
+                    }
+                    
+                    // Fill in step values
+                    var cotStepElements = window.dom.cotStepsContainer.querySelectorAll('.workflow-step');
+                    scenario.cotSteps.forEach(function(stepText, index) {
+                        if (cotStepElements[index]) {
+                            cotStepElements[index].querySelector('textarea').value = stepText;
+                        }
+                    });
+                    
+                    if (scenario.cotXmlTags !== undefined) {
+                        window.dom.cotXmlTags.checked = scenario.cotXmlTags;
+                    }
+                }, 100);
+            }
+            
+            // Handle few-shot examples
+            if (scenario.reasoning === 'few-shot' && scenario.examples) {
+                setTimeout(function() {
+                    // Add examples to reach the required count
+                    while (window.exampleCount < scenario.examples.length) {
+                        window.addExample();
+                    }
+                    
+                    // Fill in example values
+                    scenario.examples.forEach(function(example, index) {
+                        var inputField = document.getElementById('exampleInput-' + (index + 1));
+                        var outputField = document.getElementById('exampleOutput-' + (index + 1));
+                        if (inputField) inputField.value = example.input || '';
+                        if (outputField) outputField.value = example.output || '';
+                    });
+                }, 100);
+            }
+        }
+
+        window.showNotification('Loaded: ' + window.dom.loadExample.options[window.dom.loadExample.selectedIndex].text);
+        window.dom.loadExample.value = '';
+    };
+
+})();
+/**
+ * Event listeners setup
+ * Binds all event handlers after DOM is ready
+ */
+(function() {
+    'use strict';
+
+    window.setupEventListeners = function() {
+        var dom = window.dom;
+        
+        // Persona and audience toggles
+        dom.personaSelect.addEventListener('change', window.togglePersonaCustom);
+        dom.personaSelect.addEventListener('change', window.updateLiveTokenCount);
+        dom.personaCustom.addEventListener('input', window.updateLiveTokenCount);
+        dom.audienceSelect.addEventListener('change', window.toggleAudienceCustom);
+        dom.audienceSelect.addEventListener('change', window.updateLiveTokenCount);
+        dom.audienceCustom.addEventListener('input', window.updateLiveTokenCount);
+        
+        // Reasoning method
+        dom.reasoningRadios.forEach(function(radio) {
+            radio.addEventListener('change', window.toggleReasoningMethod);
+        });
+        
+        // Buttons
+        dom.addExampleBtn.addEventListener('click', window.addExample);
+        dom.addCotStepBtn.addEventListener('click', window.addCotStep);
+        dom.generateBtn.addEventListener('click', window.generatePrompt);
+        dom.exportBtn.addEventListener('click', window.exportToRequirements);
+        dom.clearBtn.addEventListener('click', window.clearForm);
+        dom.copyBtn.addEventListener('click', window.copyToClipboard);
+        dom.loadExample.addEventListener('change', window.loadExampleScenario);
+        dom.generatedPrompt.addEventListener('input', window.updateCharCount);
+        
+        // Live token count updates on field changes
+        dom.instructions.addEventListener('input', window.updateLiveTokenCount);
+        dom.inputData.addEventListener('input', window.updateLiveTokenCount);
+        dom.outputFormat.addEventListener('input', window.updateLiveTokenCount);
+        dom.additionalContext.addEventListener('input', window.updateLiveTokenCount);
+        dom.responseLength.addEventListener('change', window.updateLiveTokenCount);
+        dom.toneStyle.addEventListener('change', window.updateLiveTokenCount);
+        dom.formatPreferences.addEventListener('input', window.updateLiveTokenCount);
+        dom.negativePrompts.addEventListener('input', window.updateLiveTokenCount);
+        dom.selfReflection.addEventListener('change', window.updateLiveTokenCount);
+        dom.antiHallucination.addEventListener('change', window.updateLiveTokenCount);
+
+        // Collapsible sections
+        dom.personaHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.personaHeader, dom.personaContent);
+        });
+        dom.inputDataHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.inputDataHeader, dom.inputDataContent);
+        });
+        dom.outputFormatHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.outputFormatHeader, dom.outputFormatContent);
+        });
+        dom.additionalContextHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.additionalContextHeader, dom.additionalContextContent);
+        });
+        dom.systemConstraintsHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.systemConstraintsHeader, dom.systemConstraintsContent);
+        });
+        dom.negativePromptingHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.negativePromptingHeader, dom.negativePromptingContent);
+        });
+        dom.codeOptionsHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.codeOptionsHeader, dom.codeOptionsContent);
+        });
+        dom.safetyEthicsHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.safetyEthicsHeader, dom.safetyEthicsContent);
+        });
+        dom.reasoningMethodHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.reasoningMethodHeader, dom.reasoningMethodContent);
+        });
+        dom.audienceHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.audienceHeader, dom.audienceContent);
+        });
+        dom.qualityControlsHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.qualityControlsHeader, dom.qualityControlsContent);
+        });
+        dom.validationConditionsHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.validationConditionsHeader, dom.validationConditionsContent);
+        });
+        dom.addValidationBtn.addEventListener('click', window.addValidationCondition);
+
+        dom.creativeContentHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.creativeContentHeader, dom.creativeContentContent);
+        });
+        dom.researchInstructionsHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.researchInstructionsHeader, dom.researchInstructionsContent);
+        });
+        dom.iterativeRefinementHeader.addEventListener('click', function() {
+            window.toggleCollapsible(dom.iterativeRefinementHeader, dom.iterativeRefinementContent);
+        });
+
+        // Phase 3 live token count updates
+        dom.writingStyle.addEventListener('change', window.updateLiveTokenCount);
+        dom.pointOfView.addEventListener('change', window.updateLiveTokenCount);
+        dom.wordCountTarget.addEventListener('input', window.updateLiveTokenCount);
+        dom.readingLevel.addEventListener('change', window.updateLiveTokenCount);
+        dom.searchLatestInfo.addEventListener('change', window.updateLiveTokenCount);
+        dom.citeSources.addEventListener('change', window.updateLiveTokenCount);
+        dom.compareMultipleSources.addEventListener('change', window.updateLiveTokenCount);
+        dom.verifyFacts.addEventListener('change', window.updateLiveTokenCount);
+        dom.includeConfidence.addEventListener('change', window.updateLiveTokenCount);
+        dom.askClarifyingQuestions.addEventListener('change', window.updateLiveTokenCount);
+        dom.provideAlternatives.addEventListener('change', window.updateLiveTokenCount);
+        dom.requestFeedback.addEventListener('change', window.updateLiveTokenCount);
+        dom.suggestImprovements.addEventListener('change', window.updateLiveTokenCount);
+        dom.identifyAssumptions.addEventListener('change', window.updateLiveTokenCount);
+
+        // Phase 2 live token count updates
+        dom.programmingLanguage.addEventListener('input', window.updateLiveTokenCount);
+        dom.frameworkLibrary.addEventListener('input', window.updateLiveTokenCount);
+        dom.includeTests.addEventListener('change', window.updateLiveTokenCount);
+        dom.includeDocumentation.addEventListener('change', window.updateLiveTokenCount);
+        dom.testFramework.addEventListener('input', window.updateLiveTokenCount);
+    };
+
+})();
+/**
+ * Application initialization
+ * Entry point that wires everything together
+ */
+(function() {
+    'use strict';
+
+    /**
+     * Initialize the application
+     */
+    window.initApp = function() {
+        // Initialize DOM references
+        window.initDomRefs();
+        
+        // Setup event listeners
+        window.setupEventListeners();
+        
+        // Initialize examples
+        window.initializeExamples();
+        
+        // Initialize token count display
+        window.updateLiveTokenCount();
+    };
+
+    // Auto-initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', window.initApp);
+    } else {
+        window.initApp();
+    }
+
+})();
+
     </script>
 </body>
 </html>

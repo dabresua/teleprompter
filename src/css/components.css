@@ -1,0 +1,250 @@
+/* ===== Button Styles ===== */
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+.btn-success {
+    background: var(--success);
+    color: var(--white);
+}
+
+.btn-success:hover {
+    background: #059669;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+.btn-danger {
+    background: var(--error);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+/* ===== Collapsible Sections ===== */
+.collapsible-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: var(--border-radius);
+    margin-bottom: 12px;
+    transition: var(--transition);
+}
+
+.collapsible-header:hover {
+    background: #f3f4f6;
+}
+
+.collapsible-header.active {
+    background: #e5e7eb;
+}
+
+.collapsible-title {
+    flex: 1;
+}
+
+.collapsible-toggle {
+    font-size: 1.2em;
+    transition: transform var(--transition);
+}
+
+.collapsible-toggle.open {
+    transform: rotate(90deg);
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.collapsible-content.open {
+    max-height: 2000px;
+}
+
+/* ===== Few-Shot Examples ===== */
+.example-container {
+    margin-top: var(--spacing-md);
+}
+
+.example-item {
+    background: #f9fafb;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    margin-bottom: var(--spacing-md);
+    position: relative;
+}
+
+.example-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.example-title {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.example-fields {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.example-field label {
+    font-size: 0.9rem;
+}
+
+/* ===== Validation Conditions ===== */
+.validation-item {
+    background: #f9fafb;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    margin-bottom: var(--spacing-md);
+    position: relative;
+    cursor: move;
+}
+
+.validation-item.blocking {
+    border-left: 4px solid var(--error);
+}
+
+.validation-item.warning {
+    border-left: 4px solid orange;
+}
+
+.validation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.validation-order {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-right: 8px;
+}
+
+.drag-handle {
+    cursor: move;
+    color: var(--text-light);
+    margin-right: 8px;
+}
+
+/* ===== Workflow Steps (for Chain-of-Thought) ===== */
+.workflow-step {
+    background: #f9fafb;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border);
+    margin-bottom: var(--spacing-md);
+    position: relative;
+}
+
+.workflow-step strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.workflow-step textarea {
+    width: 100%;
+    min-height: 80px;
+    margin-bottom: 8px;
+}
+
+.remove-step-btn {
+    background: var(--error);
+    color: var(--white);
+    border: none;
+    padding: 6px 12px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.remove-step-btn:hover {
+    background: #dc2626;
+}
+
+/* ===== Notification ===== */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--success);
+    color: var(--white);
+    padding: 16px 24px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

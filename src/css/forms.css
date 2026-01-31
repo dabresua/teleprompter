@@ -1,0 +1,111 @@
+/* ===== Form Element Styles ===== */
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.helper-text {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 6px;
+}
+
+select, textarea, input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color var(--transition);
+}
+
+select:focus, textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+}
+
+.required::after {
+    content: " *";
+    color: var(--error);
+}
+
+.error-message {
+    color: var(--error);
+    font-size: 0.9rem;
+    margin-top: 8px;
+    display: none;
+}
+
+.field-error {
+    border-color: var(--error) !important;
+}
+
+/* ===== Radio and Checkbox Styles ===== */
+.radio-group, .checkbox-group {
+    margin: var(--spacing-md) 0;
+}
+
+.radio-option, .checkbox-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    padding: 12px;
+    border-radius: var(--border-radius);
+    transition: background-color var(--transition);
+}
+
+.radio-option:hover, .checkbox-option:hover {
+    background-color: #f3f4f6;
+}
+
+.radio-option input[type="radio"],
+.checkbox-option input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.radio-option label,
+.checkbox-option label {
+    margin: 0;
+    cursor: pointer;
+    flex: 1;
+}
+
+/* ===== Custom Select Styling ===== */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+/* ===== Load Example Dropdown ===== */
+.load-example-section {
+    background: #fef3c7;
+    border: 2px solid #fbbf24;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-md);
+}
+
+.load-example-section label {
+    color: #92400e;
+    font-weight: 600;
+}
+
+.load-example-section select {
+    margin-top: var(--spacing-sm);
+}
