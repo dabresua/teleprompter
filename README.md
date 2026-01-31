@@ -30,9 +30,10 @@ xdg-open index.html
 ### Building
 
 ```bash
-make build      # Combine source files into index.html
-make clean      # Remove generated index.html
-make validate   # Show manual testing checklist
+make build         # Combine source files into index.html
+make clean         # Remove generated index.html
+make test          # Run unit tests
+make test-coverage # Run tests with coverage report
 ```
 
 ### Source File Structure
@@ -40,9 +41,19 @@ make validate   # Show manual testing checklist
 ```
 teleprompter/
 ├── index.html              # Generated output (do not edit directly)
-├── old_index.html          # Reference file for validation
 ├── Makefile                # Build system
+├── package.json            # Test dependencies (Jest)
+├── jest.config.js          # Jest configuration
 ├── README.md
+├── tests/                  # Unit tests
+│   ├── setup.js            # Test setup and mocking
+│   ├── state.test.js
+│   ├── core/
+│   │   ├── tokenCounter.test.js
+│   │   └── promptGenerator.test.js
+│   └── config/
+│       ├── constants.test.js
+│       └── scenarios.test.js
 └── src/
     ├── template.html       # HTML skeleton with {{CSS}} and {{JS}} placeholders
     ├── css/
@@ -101,23 +112,34 @@ teleprompter/
 4. Output written to `index.html`
 5. Temporary files cleaned up
 
-No Node.js, npm, or webpack required. Just standard Unix tools.
+No webpack or bundler required. Just standard Unix tools.
 
-## Validation
+## Testing
 
-After making changes, run the manual validation checklist:
+Unit tests cover the pure business logic in `core/` and `config/` modules.
+
+### Running Tests
 
 ```bash
-make validate
+make test          # Run all unit tests
+make test-coverage # Run tests with coverage report
 ```
 
-This displays a checklist to compare the new `index.html` against `old_index.html`:
+On first run, this installs Jest via npm. Subsequent runs skip installation.
 
-1. **Visual comparison**: Both should look identical
-2. **All 8 scenarios**: Load each and verify generated prompts match
-3. **Interactive features**: Collapsibles, add/remove buttons, drag-drop
-4. **Form operations**: Generate, copy, export, clear
-5. **Responsive design**: Test at various viewport widths
+### Test Coverage
+
+Tests focus on testable pure functions:
+
+| Module | Functions Tested |
+|--------|------------------|
+| `core/tokenCounter.js` | `calculateTokenCount`, `getTokenCountStatus`, `calculateLiveCharCount` |
+| `core/promptGenerator.js` | All 15 `build*` functions, `assemblePrompt`, `validateInstructions` |
+| `config/constants.js` | Data integrity validation |
+| `config/scenarios.js` | Schema validation for all 8 scenarios |
+| `state.js` | Initial values, `resetState` |
+
+DOM-dependent functions (`ui/`, `dom.js`, `events.js`) are not unit tested - they require browser integration testing.
 
 ## Design Decisions
 
@@ -142,9 +164,9 @@ Easier to locate styles related to specific UI elements. Each file is self-conta
 ## Contributing
 
 1. Edit files in `src/` directory
-2. Run `make build`
-3. Test changes in browser
-4. Run `make validate` and complete the checklist
+2. Run `make test` to verify changes don't break existing functionality
+3. Run `make build` to generate `index.html`
+4. Test changes in browser
 5. Commit both source files and generated `index.html`
 
 ## License

@@ -6,7 +6,7 @@
 # Usage:
 #   make build    - Build index.html from source files
 #   make clean    - Remove generated index.html
-#   make validate - Show manual validation checklist
+#   make test     - Run unit tests
 #   make help     - Show this help message
 
 # Configuration
@@ -44,7 +44,7 @@ JS_FILES := \
 TMP_CSS := .tmp_css.txt
 TMP_JS := .tmp_js.txt
 
-.PHONY: all build clean validate help
+.PHONY: all build clean test test-coverage help
 
 # Default target
 all: build
@@ -87,54 +87,21 @@ clean:
 	@rm -f $(OUTPUT) $(TMP_CSS) $(TMP_JS)
 	@echo "Clean complete"
 
-# Manual validation checklist
-validate:
-	@echo ""
-	@echo "========================================"
-	@echo "  VALIDATION CHECKLIST"
-	@echo "========================================"
-	@echo ""
-	@echo "Compare $(OUTPUT) against $(REFERENCE) for functional equivalence:"
-	@echo ""
-	@echo "1. BASIC FUNCTIONALITY"
-	@echo "   [ ] Open both files in browser side-by-side"
-	@echo "   [ ] Both load without JavaScript errors (check console)"
-	@echo "   [ ] Visual appearance matches"
-	@echo ""
-	@echo "2. EXAMPLE SCENARIOS (test all 8)"
-	@echo "   [ ] code-security - Load and generate prompt"
-	@echo "   [ ] email-classification - Load and generate prompt"
-	@echo "   [ ] research-summary - Load and generate prompt"
-	@echo "   [ ] api-documentation - Load and generate prompt"
-	@echo "   [ ] user-story - Load and generate prompt"
-	@echo "   [ ] feature-request - Load and generate prompt"
-	@echo "   [ ] bug-analysis - Load and generate prompt"
-	@echo "   [ ] project-familiarization - Load and generate prompt"
-	@echo ""
-	@echo "3. INTERACTIVE FEATURES"
-	@echo "   [ ] Token count updates live as you type"
-	@echo "   [ ] Collapsible sections expand/collapse"
-	@echo "   [ ] Few-shot examples: add/remove works"
-	@echo "   [ ] Chain-of-thought: add/remove steps works"
-	@echo "   [ ] Validation conditions: add/remove/reorder works"
-	@echo "   [ ] Drag-drop reordering of validations works"
-	@echo ""
-	@echo "4. FORM OPERATIONS"
-	@echo "   [ ] Generate Prompt button produces output"
-	@echo "   [ ] Copy to Clipboard works"
-	@echo "   [ ] Export to REQUIREMENTS.md downloads file"
-	@echo "   [ ] Clear All resets form"
-	@echo ""
-	@echo "5. RESPONSIVE DESIGN"
-	@echo "   [ ] Resize window - layout adapts properly"
-	@echo "   [ ] Test at 768px width (mobile breakpoint)"
-	@echo ""
-	@echo "6. GENERATED PROMPT COMPARISON"
-	@echo "   For each scenario, generated prompts should be identical"
-	@echo "   (function order in JS doesn't matter, only output)"
-	@echo ""
-	@echo "========================================"
-	@echo ""
+# Run unit tests
+test:
+	@if [ ! -d "node_modules" ]; then \
+		echo "Installing test dependencies..."; \
+		npm install --silent; \
+	fi
+	@npm test
+
+# Run tests with coverage report
+test-coverage:
+	@if [ ! -d "node_modules" ]; then \
+		echo "Installing test dependencies..."; \
+		npm install --silent; \
+	fi
+	@npm test -- --coverage
 
 # Help message
 help:
@@ -142,10 +109,11 @@ help:
 	@echo "AI Prompt Engineering Wizard - Build System"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  make build    - Build index.html from source files"
-	@echo "  make clean    - Remove generated index.html"
-	@echo "  make validate - Show manual validation checklist"
-	@echo "  make help     - Show this help message"
+	@echo "  make build         - Build index.html from source files"
+	@echo "  make clean         - Remove generated index.html"
+	@echo "  make test          - Run unit tests"
+	@echo "  make test-coverage - Run tests with coverage report"
+	@echo "  make help          - Show this help message"
 	@echo ""
 	@echo "Source structure:"
 	@echo "  src/template.html     - HTML template with {{CSS}} and {{JS}} placeholders"
@@ -154,4 +122,5 @@ help:
 	@echo "  src/js/core/          - Pure business logic (testable without DOM)"
 	@echo "  src/js/ui/            - UI manipulation functions"
 	@echo "  src/js/               - State, DOM refs, events, app initialization"
-	@echo ""
+	@echo "  tests/                - Unit tests (run with make test)"
+	@echo "

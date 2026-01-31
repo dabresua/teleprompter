@@ -1,0 +1,14 @@
+{
+  "name": "teleprompter-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Unit tests for AI Prompt Engineering Wizard",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
