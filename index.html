@@ -420,6 +420,42 @@
             margin-right: 8px;
         }
 
+        /* ===== Workflow Steps (for Chain-of-Thought) ===== */
+        .workflow-step {
+            background: #f9fafb;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            margin-bottom: var(--spacing-md);
+            position: relative;
+        }
+
+        .workflow-step strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .workflow-step textarea {
+            width: 100%;
+            min-height: 80px;
+            margin-bottom: 8px;
+        }
+
+        .remove-step-btn {
+            background: var(--error);
+            color: var(--white);
+            border: none;
+            padding: 6px 12px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .remove-step-btn:hover {
+            background: #dc2626;
+        }
+
         /* ===== Notification ===== */
         .notification {
             position: fixed;
@@ -565,11 +601,13 @@
                 </div>
             </section>
 
-            <!-- Section 2: Instructions -->
+            <!-- Section 2: Audience -->
             <section class="form-section">
-                <h2 class="section-header">
-                    <span class="section-number">2</span>
-                    Instructions
+                <div class="collapsible-header" id="instructionsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">2</span>
+                            Audience
                 </h2>
                 <p class="section-description">Main task description</p>
                 
@@ -836,11 +874,12 @@
 
                 <!-- Chain-of-thought container -->
                 <div id="cotContainer" class="hidden">
-                    <label for="cotSteps">Reasoning Steps:</label>
-                    <textarea id="cotSteps" placeholder="List the steps:&#10;1. Identify the problem requirements&#10;2. Break down into components&#10;3. Consider edge cases&#10;4. Propose solution" aria-label="Chain of thought steps"></textarea>
-                    <small class="helper-text">Define the reasoning steps the AI should follow</small>
+                    <label>Reasoning Steps:</label>
+                    <small class="helper-text">Define the step-by-step reasoning process the AI should follow</small>
+                    <div id="cotStepsContainer" style="margin-top: 16px;"></div>
+                    <button type="button" id="addCotStepBtn" class="btn-secondary btn-small" style="margin-top: 12px;">+ Add Step</button>
                     
-                    <div class="checkbox-option" style="margin-top: 12px;">
+                    <div class="checkbox-option" style="margin-top: 16px;">
                         <input type="checkbox" id="cotXmlTags" checked>
                         <label for="cotXmlTags">Use XML tags for thinking process</label>
                     </div>
@@ -941,41 +980,12 @@
                 </div>
             </section>
 
-            <!-- Section 14: Multi-Step Workflows -->
-            <section class="form-section">
-                <div class="collapsible-header" id="multiStepHeader">
-                    <div class="collapsible-title">
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">14</span>
-                            Multi-Step Workflows
-                        </h2>
-                        <p class="section-description" style="margin: 0;">Define a step-by-step process for the AI to follow (optional)</p>
-                    </div>
-                    <span class="collapsible-toggle">▶</span>
-                </div>
-                
-                <div class="collapsible-content" id="multiStepContent">
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="enableMultiStep">
-                        <label for="enableMultiStep">
-                            <strong>Enable multi-step workflow</strong>
-                            <small class="helper-text">Break down the task into sequential steps</small>
-                        </label>
-                    </div>
-                    
-                    <div id="multiStepContainer" class="hidden" style="margin-top: 16px;">
-                        <div id="stepsContainer"></div>
-                        <button type="button" id="addStepBtn" class="btn-secondary btn-small">+ Add Step</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section 15: Creative Content Options -->
+            <!-- Section 14: Creative Content Options -->
             <section class="form-section">
                 <div class="collapsible-header" id="creativeContentHeader">
                     <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">15</span>
+                            <span class="section-number">14</span>
                             Creative Content Options
                         </h2>
                         <p class="section-description" style="margin: 0;">Customize writing style and content preferences (optional)</p>
@@ -1026,7 +1036,7 @@
                 <div class="collapsible-header" id="researchInstructionsHeader">
                     <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">16</span>
+                            <span class="section-number">15</span>
                             Research Instructions
                         </h2>
                         <p class="section-description" style="margin: 0;">Guide AI research and fact-checking behavior (optional)</p>
@@ -1082,7 +1092,7 @@
                 <div class="collapsible-header" id="iterativeRefinementHeader">
                     <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">17</span>
+                            <span class="section-number">16</span>
                             Iterative Refinement
                         </h2>
                         <p class="section-description" style="margin: 0;">Enable collaborative refinement and iteration (optional)</p>
@@ -1133,10 +1143,10 @@
                 </div>
             </section>
 
-            <!-- Section 18: Generate Prompt -->
+            <!-- Section 17: Generate Prompt -->
             <section class="form-section">
                 <h2 class="section-header">
-                    <span class="section-number">18</span>
+                    <span class="section-number">17</span>
                     Generate Prompt
                 </h2>
                 <p class="section-description">Generate and display the final prompt</p>
@@ -1237,7 +1247,8 @@
         const cotContainer = document.getElementById('cotContainer');
         const examplesContainer = document.getElementById('examplesContainer');
         const addExampleBtn = document.getElementById('addExampleBtn');
-        const cotSteps = document.getElementById('cotSteps');
+        const cotStepsContainer = document.getElementById('cotStepsContainer');
+        const addCotStepBtn = document.getElementById('addCotStepBtn');
         const cotXmlTags = document.getElementById('cotXmlTags');
         const audienceSelect = document.getElementById('audience');
         const audienceCustomContainer = document.getElementById('audienceCustomContainer');
@@ -1273,14 +1284,6 @@
         const validationsContainer = document.getElementById('validationsContainer');
         const addValidationBtn = document.getElementById('addValidationBtn');
 
-        // Phase 3 DOM Elements
-        const multiStepHeader = document.getElementById('multiStepHeader');
-        const multiStepContent = document.getElementById('multiStepContent');
-        const enableMultiStep = document.getElementById('enableMultiStep');
-        const multiStepContainer = document.getElementById('multiStepContainer');
-        const stepsContainer = document.getElementById('stepsContainer');
-        const addStepBtn = document.getElementById('addStepBtn');
-
         const creativeContentHeader = document.getElementById('creativeContentHeader');
         const creativeContentContent = document.getElementById('creativeContentContent');
         const writingStyle = document.getElementById('writingStyle');
@@ -1312,11 +1315,10 @@
         let validationCount = 0;
         let validations = [];
 
-        // ===== Multi-Step Workflows State =====
-        let stepCount = 0;
-        let steps = [];
-        const MIN_STEPS = 2;
-        const MAX_STEPS = 10;
+        // ===== Chain-of-Thought Steps State =====
+        let cotStepCount = 0;
+        const MIN_COT_STEPS = 2;
+        const MAX_COT_STEPS = 10;
 
         // ===== Event Listeners =====
         personaSelect.addEventListener('change', togglePersonaCustom);
@@ -1327,6 +1329,7 @@
         audienceCustom.addEventListener('input', updateLiveTokenCount);
         reasoningRadios.forEach(radio => radio.addEventListener('change', toggleReasoningMethod));
         addExampleBtn.addEventListener('click', addExample);
+        addCotStepBtn.addEventListener('click', addCotStep);
         generateBtn.addEventListener('click', generatePrompt);
         exportBtn.addEventListener('click', exportToRequirements);
         clearBtn.addEventListener('click', clearForm);
@@ -1343,7 +1346,6 @@
         toneStyle.addEventListener('change', updateLiveTokenCount);
         formatPreferences.addEventListener('input', updateLiveTokenCount);
         negativePrompts.addEventListener('input', updateLiveTokenCount);
-        cotSteps.addEventListener('input', updateLiveTokenCount);
         selfReflection.addEventListener('change', updateLiveTokenCount);
         antiHallucination.addEventListener('change', updateLiveTokenCount);
 
@@ -1381,18 +1383,11 @@
         validationConditionsHeader.addEventListener('click', () => toggleCollapsible(validationConditionsHeader, validationConditionsContent));
         addValidationBtn.addEventListener('click', addValidationCondition);
 
-        // Phase 3 collapsible sections
-        multiStepHeader.addEventListener('click', () => toggleCollapsible(multiStepHeader, multiStepContent));
         creativeContentHeader.addEventListener('click', () => toggleCollapsible(creativeContentHeader, creativeContentContent));
         researchInstructionsHeader.addEventListener('click', () => toggleCollapsible(researchInstructionsHeader, researchInstructionsContent));
         iterativeRefinementHeader.addEventListener('click', () => toggleCollapsible(iterativeRefinementHeader, iterativeRefinementContent));
 
-        // Phase 3 event listeners
-        enableMultiStep.addEventListener('change', toggleMultiStepContainer);
-        addStepBtn.addEventListener('click', addStep);
-
         // Phase 3 live token count updates
-        enableMultiStep.addEventListener('change', updateLiveTokenCount);
         writingStyle.addEventListener('change', updateLiveTokenCount);
         pointOfView.addEventListener('change', updateLiveTokenCount);
         wordCountTarget.addEventListener('input', updateLiveTokenCount);
@@ -1445,6 +1440,10 @@
             } else if (selectedReasoning === 'chain-of-thought') {
                 fewShotContainer.classList.add('hidden');
                 cotContainer.classList.remove('hidden');
+                // Add minimum steps if empty
+                while (cotStepsContainer.children.length < MIN_COT_STEPS) {
+                    addCotStep();
+                }
             } else {
                 fewShotContainer.classList.add('hidden');
                 cotContainer.classList.add('hidden');
@@ -1466,54 +1465,41 @@
             }
         }
 
-        // Phase 3: Multi-Step Workflows functions
-        function toggleMultiStepContainer() {
-            if (enableMultiStep.checked) {
-                multiStepContainer.classList.remove('hidden');
-                // Add minimum steps if empty
-                while (stepsContainer.children.length < MIN_STEPS) {
-                    addStep();
-                }
-            } else {
-                multiStepContainer.classList.add('hidden');
-            }
-        }
-
-        function addStep() {
-            if (stepsContainer.children.length >= MAX_STEPS) {
-                alert(`Maximum ${MAX_STEPS} steps allowed`);
+        // Phase 3: Chain-of-Thought Steps functions
+        function addCotStep() {
+            if (cotStepsContainer.children.length >= MAX_COT_STEPS) {
+                alert(`Maximum ${MAX_COT_STEPS} steps allowed`);
                 return;
             }
 
-            stepCount++;
             const stepDiv = document.createElement('div');
             stepDiv.className = 'workflow-step';
             stepDiv.innerHTML = `
-                <strong>Step ${stepsContainer.children.length + 1}:</strong>
+                <strong>Step ${cotStepsContainer.children.length + 1}:</strong>
                 <textarea placeholder="Describe this step..."></textarea>
-                ${stepsContainer.children.length >= MIN_STEPS - 1 ? '<button type="button" class="remove-step-btn" onclick="window.removeStep(this)">Remove</button>' : ''}
+                ${cotStepsContainer.children.length >= MIN_COT_STEPS - 1 ? '<button type="button" class="remove-step-btn" onclick="window.removeCotStep(this)">Remove</button>' : ''}
             `;
             
             const textarea = stepDiv.querySelector('textarea');
             textarea.addEventListener('input', updateLiveTokenCount);
             
-            stepsContainer.appendChild(stepDiv);
-            updateStepNumbers();
+            cotStepsContainer.appendChild(stepDiv);
+            updateCotStepNumbers();
         }
 
-        window.removeStep = function(button) {
-            if (stepsContainer.children.length <= MIN_STEPS) {
-                alert(`Minimum ${MIN_STEPS} steps required`);
+        window.removeCotStep = function(button) {
+            if (cotStepsContainer.children.length <= MIN_COT_STEPS) {
+                alert(`Minimum ${MIN_COT_STEPS} steps required`);
                 return;
             }
 
             button.parentElement.remove();
-            updateStepNumbers();
+            updateCotStepNumbers();
             updateLiveTokenCount();
         }
 
-        function updateStepNumbers() {
-            const steps = stepsContainer.querySelectorAll('.workflow-step');
+        function updateCotStepNumbers() {
+            const steps = cotStepsContainer.querySelectorAll('.workflow-step');
             steps.forEach((step, index) => {
                 step.querySelector('strong').textContent = `Step ${index + 1}:`;
             });
@@ -1729,7 +1715,7 @@
 
             let prompt = [];
 
-            // Persona
+            // 1. Persona
             const selectedPersona = personaSelect.value;
             if (selectedPersona && selectedPersona !== 'None (no persona)') {
                 if (selectedPersona === 'Other (custom)') {
@@ -1741,60 +1727,19 @@
                 }
             }
 
-            // Chain-of-Thought
-            const selectedReasoning = document.querySelector('input[name="reasoning"]:checked').value;
-            if (selectedReasoning === 'chain-of-thought' && cotSteps.value.trim()) {
-                let cotSection = 'Think through this step-by-step:\n' + cotSteps.value.trim();
-                if (cotXmlTags.checked) {
-                    cotSection += '\nShow your reasoning in <thinking> tags before providing the final answer.';
-                }
-                prompt.push(cotSection);
-            }
-
-            // Instructions (always included)
-            prompt.push(instructions.value.trim());
-
-            // Input Data
-            if (inputData.value.trim()) {
-                prompt.push(inputData.value.trim());
-            }
-
-            // Few-shot Examples
-            if (selectedReasoning === 'few-shot') {
-                const examples = examplesContainer.querySelectorAll('.example-item');
-                if (examples.length > 0) {
-                    let fewShotSection = 'Here are examples of the desired output:\n';
-                    
-                    examples.forEach((example, index) => {
-                        const inputField = example.querySelector(`textarea[id^="exampleInput"]`);
-                        const outputField = example.querySelector(`textarea[id^="exampleOutput"]`);
-                        
-                        if (inputField.value.trim() || outputField.value.trim()) {
-                            fewShotSection += `\nExample ${index + 1}:\n`;
-                            fewShotSection += `Input: ${inputField.value.trim()}\n`;
-                            fewShotSection += `Output: ${outputField.value.trim()}`;
-                            if (index < examples.length - 1) {
-                                fewShotSection += '\n';
-                            }
-                        }
-                    });
-                    
-                    fewShotSection += '\n\nNow, apply the same pattern to the following:';
-                    prompt.push(fewShotSection);
+            // 2. Audience
+            const selectedAudience = audienceSelect.value;
+            if (selectedAudience && selectedAudience !== 'General (not specified)') {
+                if (selectedAudience === 'Other (custom)') {
+                    if (audienceCustom.value.trim()) {
+                        prompt.push(audienceCustom.value.trim());
+                    }
+                } else if (audienceTemplates[selectedAudience]) {
+                    prompt.push(audienceTemplates[selectedAudience]);
                 }
             }
 
-            // Output Format
-            if (outputFormat.value.trim()) {
-                prompt.push('Output format:\n' + outputFormat.value.trim());
-            }
-
-            // Additional Context
-            if (additionalContext.value.trim()) {
-                prompt.push('Additional context:\n' + additionalContext.value.trim());
-            }
-
-            // System Constraints
+            // 3. System Constraints
             const responseLengthValue = responseLength.value;
             const toneStyleValue = toneStyle.value;
             const formatPreferencesValue = formatPreferences.value.trim();
@@ -1823,12 +1768,92 @@
                 prompt.push(constraintsSection);
             }
 
-            // Negative Prompting
-            if (negativePrompts.value.trim()) {
-                prompt.push('IMPORTANT - Do NOT:\n' + negativePrompts.value.trim());
+            // 4. Safety & Ethics Guidelines
+            if (checkBias.checked || accessibilityRequirements.checked || privacyDataProtection.checked || ethicalImplications.checked) {
+                let safetySection = 'Safety & Ethics Considerations:';
+                
+                if (checkBias.checked) {
+                    safetySection += '\n- Check for and eliminate bias in recommendations';
+                }
+                
+                if (accessibilityRequirements.checked) {
+                    safetySection += '\n- Ensure solutions meet accessibility requirements (WCAG 2.1 AA minimum)';
+                }
+                
+                if (privacyDataProtection.checked) {
+                    safetySection += '\n- Address privacy and data protection concerns (GDPR compliance)';
+                }
+                
+                if (ethicalImplications.checked) {
+                    safetySection += '\n- Consider and discuss ethical implications of the solution';
+                }
+                
+                prompt.push(safetySection);
             }
 
-            // Code-Specific Options
+            // 5. Additional Context
+            if (additionalContext.value.trim()) {
+                prompt.push('Additional context:\n' + additionalContext.value.trim());
+            }
+
+            // 6. Input Data
+            if (inputData.value.trim()) {
+                prompt.push(inputData.value.trim());
+            }
+
+            // 7. Instructions (always included)
+            prompt.push(instructions.value.trim());
+
+            // 8. Reasoning Method
+            const selectedReasoning = document.querySelector('input[name="reasoning"]:checked').value;
+            
+            // Chain-of-Thought
+            if (selectedReasoning === 'chain-of-thought') {
+                const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+                if (cotSteps.length >= MIN_COT_STEPS) {
+                    let cotSection = 'Think through this step-by-step:';
+                    
+                    cotSteps.forEach((step, index) => {
+                        const desc = step.querySelector('textarea').value.trim();
+                        if (desc) {
+                            cotSection += `\nStep ${index + 1}: ${desc}`;
+                        }
+                    });
+                    
+                    if (cotXmlTags.checked) {
+                        cotSection += '\nShow your reasoning in <thinking> tags before providing the final answer.';
+                    }
+                    
+                    prompt.push(cotSection);
+                }
+            }
+            
+            // Few-shot Examples
+            if (selectedReasoning === 'few-shot') {
+                const examples = examplesContainer.querySelectorAll('.example-item');
+                if (examples.length > 0) {
+                    let fewShotSection = 'Here are examples of the desired output:\n';
+                    
+                    examples.forEach((example, index) => {
+                        const inputField = example.querySelector(`textarea[id^="exampleInput"]`);
+                        const outputField = example.querySelector(`textarea[id^="exampleOutput"]`);
+                        
+                        if (inputField.value.trim() || outputField.value.trim()) {
+                            fewShotSection += `\nExample ${index + 1}:\n`;
+                            fewShotSection += `Input: ${inputField.value.trim()}\n`;
+                            fewShotSection += `Output: ${outputField.value.trim()}`;
+                            if (index < examples.length - 1) {
+                                fewShotSection += '\n';
+                            }
+                        }
+                    });
+                    
+                    fewShotSection += '\n\nNow, apply the same pattern to the following:';
+                    prompt.push(fewShotSection);
+                }
+            }
+
+            // 9. Code-Specific Options
             const progLang = programmingLanguage.value.trim();
             const framework = frameworkLibrary.value.trim();
             const tests = includeTests.checked;
@@ -1860,47 +1885,34 @@
                 prompt.push(codeSection);
             }
 
-            // Safety & Ethics Guidelines
-            if (checkBias.checked || accessibilityRequirements.checked || privacyDataProtection.checked || ethicalImplications.checked) {
-                let safetySection = 'Safety & Ethics Considerations:';
+            // 10. Research Instructions
+            if (searchLatestInfo.checked || citeSources.checked || compareMultipleSources.checked || verifyFacts.checked || includeConfidence.checked) {
+                let researchSection = 'Research Guidelines:';
                 
-                if (checkBias.checked) {
-                    safetySection += '\n- Check for and eliminate bias in recommendations';
+                if (searchLatestInfo.checked) {
+                    researchSection += '\n- Search for and incorporate the latest information before answering';
                 }
                 
-                if (accessibilityRequirements.checked) {
-                    safetySection += '\n- Ensure solutions meet accessibility requirements (WCAG 2.1 AA minimum)';
+                if (citeSources.checked) {
+                    researchSection += '\n- Cite specific sources with dates and URLs where applicable';
                 }
                 
-                if (privacyDataProtection.checked) {
-                    safetySection += '\n- Address privacy and data protection concerns (GDPR compliance)';
+                if (compareMultipleSources.checked) {
+                    researchSection += '\n- Compare information from multiple authoritative sources';
                 }
                 
-                if (ethicalImplications.checked) {
-                    safetySection += '\n- Consider and discuss ethical implications of the solution';
+                if (verifyFacts.checked) {
+                    researchSection += '\n- Verify facts before presenting them and flag any uncertain information';
                 }
                 
-                prompt.push(safetySection);
+                if (includeConfidence.checked) {
+                    researchSection += '\n- Include confidence levels for key claims and findings';
+                }
+                
+                prompt.push(researchSection);
             }
 
-            // Multi-Step Workflows
-            if (enableMultiStep.checked) {
-                const steps = stepsContainer.querySelectorAll('.workflow-step');
-                if (steps.length >= MIN_STEPS) {
-                    let workflowSection = 'Step-by-Step Process:';
-                    
-                    steps.forEach((step, index) => {
-                        const desc = step.querySelector('textarea').value.trim();
-                        if (desc) {
-                            workflowSection += `\nStep ${index + 1}: ${desc}`;
-                        }
-                    });
-                    
-                    prompt.push(workflowSection);
-                }
-            }
-
-            // Creative Content Options
+            // 11. Creative Content Options
             const writingStyleValue = writingStyle.value;
             const povValue = pointOfView.value;
             const wordCountValue = wordCountTarget.value.trim();
@@ -1928,34 +1940,44 @@
                 prompt.push(creativeSection);
             }
 
-            // Research Instructions
-            if (searchLatestInfo.checked || citeSources.checked || compareMultipleSources.checked || verifyFacts.checked || includeConfidence.checked) {
-                let researchSection = 'Research Guidelines:';
-                
-                if (searchLatestInfo.checked) {
-                    researchSection += '\n- Search for and incorporate the latest information before answering';
-                }
-                
-                if (citeSources.checked) {
-                    researchSection += '\n- Cite specific sources with dates and URLs where applicable';
-                }
-                
-                if (compareMultipleSources.checked) {
-                    researchSection += '\n- Compare information from multiple authoritative sources';
-                }
-                
-                if (verifyFacts.checked) {
-                    researchSection += '\n- Verify facts before presenting them and flag any uncertain information';
-                }
-                
-                if (includeConfidence.checked) {
-                    researchSection += '\n- Include confidence levels for key claims and findings';
-                }
-                
-                prompt.push(researchSection);
+            // 12. Output Format
+            if (outputFormat.value.trim()) {
+                prompt.push('Output format:\n' + outputFormat.value.trim());
             }
 
-            // Iterative Refinement
+            // 13. Quality Controls
+            if (selfReflection.checked) {
+                prompt.push('After providing your solution, perform a self-review:\n1. Check for logical errors\n2. Verify all requirements are met\n3. Identify any assumptions made\n4. Rate your confidence (1-10)');
+            }
+
+            if (antiHallucination.checked) {
+                prompt.push('Important guidelines:\n- If you don\'t know something, explicitly say "I don\'t know"\n- Cite specific sources when making factual claims\n- Distinguish between facts and opinions\n- State assumptions explicitly\n- Only use well-documented, standard approaches');
+            }
+
+            // 14. Validation/Verification Conditions
+            const validationItems = validationsContainer.querySelectorAll('.validation-item');
+            if (validationItems.length > 0) {
+                let validationSection = 'Success Criteria - Validate that the response meets these conditions:';
+                
+                validationItems.forEach((item, index) => {
+                    const desc = item.querySelector('textarea').value.trim();
+                    const impact = item.querySelector('select').value;
+                    
+                    if (desc) {
+                        const impactLabel = impact === 'blocking' ? '[REQUIRED]' : '[RECOMMENDED]';
+                        validationSection += `\n${index + 1}. ${impactLabel} ${desc}`;
+                    }
+                });
+                
+                prompt.push(validationSection);
+            }
+
+            // 15. Negative Prompting
+            if (negativePrompts.value.trim()) {
+                prompt.push('IMPORTANT - Do NOT:\n' + negativePrompts.value.trim());
+            }
+
+            // 16. Iterative Refinement
             if (askClarifyingQuestions.checked || provideAlternatives.checked || requestFeedback.checked || suggestImprovements.checked || identifyAssumptions.checked) {
                 let iterativeSection = 'Iterative Approach:';
                 
@@ -1980,46 +2002,6 @@
                 }
                 
                 prompt.push(iterativeSection);
-            }
-
-            // Audience
-            const selectedAudience = audienceSelect.value;
-            if (selectedAudience && selectedAudience !== 'General (not specified)') {
-                if (selectedAudience === 'Other (custom)') {
-                    if (audienceCustom.value.trim()) {
-                        prompt.push(audienceCustom.value.trim());
-                    }
-                } else if (audienceTemplates[selectedAudience]) {
-                    prompt.push(audienceTemplates[selectedAudience]);
-                }
-            }
-
-            // Validation/Verification Conditions
-            const validationItems = validationsContainer.querySelectorAll('.validation-item');
-            if (validationItems.length > 0) {
-                let validationSection = 'Success Criteria - Validate that the response meets these conditions:';
-                
-                validationItems.forEach((item, index) => {
-                    const desc = item.querySelector('textarea').value.trim();
-                    const impact = item.querySelector('select').value;
-                    
-                    if (desc) {
-                        const impactLabel = impact === 'blocking' ? '[REQUIRED]' : '[RECOMMENDED]';
-                        validationSection += `\n${index + 1}. ${impactLabel} ${desc}`;
-                    }
-                });
-                
-                prompt.push(validationSection);
-            }
-
-            // Self-reflection
-            if (selfReflection.checked) {
-                prompt.push('After providing your solution, perform a self-review:\n1. Check for logical errors\n2. Verify all requirements are met\n3. Identify any assumptions made\n4. Rate your confidence (1-10)');
-            }
-
-            // Anti-hallucination
-            if (antiHallucination.checked) {
-                prompt.push('Important guidelines:\n- If you don\'t know something, explicitly say "I don\'t know"\n- Cite specific sources when making factual claims\n- Distinguish between facts and opinions\n- State assumptions explicitly\n- Only use well-documented, standard approaches');
             }
 
             // Join with blank lines and display
@@ -2068,7 +2050,12 @@
             totalChars += additionalContext.value.length;
             totalChars += formatPreferences.value.length;
             totalChars += negativePrompts.value.length;
-            totalChars += cotSteps.value.length;
+            
+            // Add CoT steps
+            const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+            cotSteps.forEach(step => {
+                totalChars += step.querySelector('textarea').value.length;
+            });
             
             if (audienceSelect.value && audienceSelect.value !== 'General (not specified)') {
                 if (audienceSelect.value === 'Other (custom)') {
@@ -2114,6 +2101,10 @@
                 examplesContainer.innerHTML = '';
                 exampleCount = 0;
                 initializeExamples();
+                
+                // Reset CoT steps
+                cotStepsContainer.innerHTML = '';
+                cotStepCount = 0;
                 
                 // Reset validation conditions
                 validationsContainer.innerHTML = '';
@@ -2207,6 +2198,10 @@ ${prompt}
             examplesContainer.innerHTML = '';
             exampleCount = 0;
             
+            // Reset CoT steps
+            cotStepsContainer.innerHTML = '';
+            cotStepCount = 0;
+            
             // Reset validation conditions
             validationsContainer.innerHTML = '';
             validationCount = 0;
@@ -2241,11 +2236,20 @@ def get_user(id):
                     additionalContext.value = 'This endpoint handles authentication-related user data. The application uses PostgreSQL database. Performance is critical (10k requests/minute).';
                     document.getElementById('chainOfThought').checked = true;
                     toggleReasoningMethod();
-                    cotSteps.value = `1. Identify potential SQL injection vectors
-2. Check for authentication and authorization issues
-3. Evaluate data exposure risks
-4. Consider input validation and sanitization
-5. Review error handling`;
+                    setTimeout(() => {
+                        // Add 3 more steps to reach 5 total
+                        addCotStep();
+                        addCotStep();
+                        addCotStep();
+                        const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+                        if (cotSteps.length >= 5) {
+                            cotSteps[0].querySelector('textarea').value = 'Identify potential SQL injection vectors';
+                            cotSteps[1].querySelector('textarea').value = 'Check for authentication and authorization issues';
+                            cotSteps[2].querySelector('textarea').value = 'Evaluate data exposure risks';
+                            cotSteps[3].querySelector('textarea').value = 'Consider input validation and sanitization';
+                            cotSteps[4].querySelector('textarea').value = 'Review error handling';
+                        }
+                    }, 100);
                     cotXmlTags.checked = true;
                     audienceSelect.value = 'Technical - Software Developers';
                     selfReflection.checked = true;
@@ -2394,11 +2398,20 @@ Use secure token generation. Implement rate limiting to prevent abuse.`;
                     additionalContext.value = 'Current stack: React frontend, Node.js backend, MongoDB database. Target users: teams of 5-50 people. Performance requirement: <100ms latency for edits.';
                     document.getElementById('chainOfThought').checked = true;
                     toggleReasoningMethod();
-                    cotSteps.value = `1. Analyze user needs and use cases
-2. Identify technical requirements and dependencies
-3. Evaluate existing solutions and technologies
-4. Consider scalability and performance implications
-5. Assess implementation complexity and timeline`;
+                    setTimeout(() => {
+                        // Add 3 more steps to reach 5 total
+                        addCotStep();
+                        addCotStep();
+                        addCotStep();
+                        const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+                        if (cotSteps.length >= 5) {
+                            cotSteps[0].querySelector('textarea').value = 'Analyze user needs and use cases';
+                            cotSteps[1].querySelector('textarea').value = 'Identify technical requirements and dependencies';
+                            cotSteps[2].querySelector('textarea').value = 'Evaluate existing solutions and technologies';
+                            cotSteps[3].querySelector('textarea').value = 'Consider scalability and performance implications';
+                            cotSteps[4].querySelector('textarea').value = 'Assess implementation complexity and timeline';
+                        }
+                    }, 100);
                     cotXmlTags.checked = true;
                     audienceSelect.value = 'Semi-Technical - Product Managers';
                     selfReflection.checked = true;
@@ -2432,11 +2445,20 @@ Uncaught RangeError: Maximum call stack size exceeded
                     additionalContext.value = 'File upload uses Base64 encoding. Current implementation loads entire file into memory. Production handles 1000+ uploads daily. Quick fix needed but should be production-ready.';
                     document.getElementById('chainOfThought').checked = true;
                     toggleReasoningMethod();
-                    cotSteps.value = `1. Analyze error message and stack trace
-2. Identify code location and logic flow
-3. Determine why the issue occurs
-4. Evaluate potential solutions
-5. Recommend fix with minimal risk`;
+                    setTimeout(() => {
+                        // Add 3 more steps to reach 5 total
+                        addCotStep();
+                        addCotStep();
+                        addCotStep();
+                        const cotSteps = cotStepsContainer.querySelectorAll('.workflow-step');
+                        if (cotSteps.length >= 5) {
+                            cotSteps[0].querySelector('textarea').value = 'Analyze error message and stack trace';
+                            cotSteps[1].querySelector('textarea').value = 'Identify code location and logic flow';
+                            cotSteps[2].querySelector('textarea').value = 'Determine why the issue occurs';
+                            cotSteps[3].querySelector('textarea').value = 'Evaluate potential solutions';
+                            cotSteps[4].querySelector('textarea').value = 'Recommend fix with minimal risk';
+                        }
+                    }, 100);
                     cotXmlTags.checked = true;
                     audienceSelect.value = 'Technical - Software Developers';
                     selfReflection.checked = true;
