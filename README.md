@@ -4,7 +4,7 @@ A standalone tool for building well-structured prompts following best practices.
 
 ## Screenshots
 
-![AI Prompt Engineering Wizard - Main Interface](https://github.com/user-attachments/assets/54b5557c-5da5-447a-9403-2d1530ef62b2)
+![AI Prompt Engineering Wizard - Main Interface](doc/screenshot-main-interface.png)
 
 The wizard provides 17 configurable sections to build comprehensive prompts with real-time token counting and multiple export options.
 
