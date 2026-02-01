@@ -50,4 +50,51 @@
         'comprehensive': 'Provide comprehensive coverage (over 1000 words)'
     };
 
+    // ===== XML Tags for Prompt Sections =====
+    window.XML_TAGS = {
+        persona: 'persona',
+        audience: 'audience',
+        constraints: 'constraints',
+        context: 'context',
+        inputData: 'input_data',
+        instructions: 'instructions',
+        outputFormat: 'output_format',
+        reasoning: 'reasoning',
+        code: 'code_requirements',
+        creative: 'creative_guidelines',
+        research: 'research_guidelines',
+        quality: 'quality',
+        selfReview: 'self_review',
+        antiHallucination: 'anti_hallucination',
+        validation: 'validation',
+        iterative: 'iterative_approach',
+        negative: 'constraints_negative',
+        safety: 'safety_ethics'
+    };
+
+    /**
+     * Wrap content in XML tags
+     * @param {string} tagName - The tag name to use
+     * @param {string} content - The content to wrap
+     * @param {Object} [attributes] - Optional attributes for the tag
+     * @returns {string} XML-wrapped content
+     */
+    window.wrapXml = function(tagName, content, attributes) {
+        if (!content || !content.trim()) {
+            return '';
+        }
+        
+        var openTag = '<' + tagName;
+        if (attributes) {
+            for (var key in attributes) {
+                if (attributes.hasOwnProperty(key)) {
+                    openTag += ' ' + key + '="' + attributes[key] + '"';
+                }
+            }
+        }
+        openTag += '>';
+        
+        return openTag + '\n' + content.trim() + '\n</' + tagName + '>';
+    };
+
 })();

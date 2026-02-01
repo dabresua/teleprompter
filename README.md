@@ -161,6 +161,67 @@ Immediately-invoked function expressions provide:
 ### Why Feature-Based CSS?
 Easier to locate styles related to specific UI elements. Each file is self-contained and focused on one area.
 
+## Prompt Output Format
+
+Generated prompts use XML tags to delimit sections, optimized for modern LLMs (Claude, GPT-4, etc.) that understand structured markup.
+
+### Section Order
+
+Sections appear in logical flow matching the UI:
+
+1. Audience → 2. Persona → 3. Constraints → 4. Context → 5. Input Data → 6. Instructions → 7. Output Format → 8. Reasoning → 9. Code → 10. Creative → 11. Research → 12. Quality → 13. Validation → 14. Iterative → 15. Negative → 16. Safety
+
+### XML Tags Reference
+
+| Section | Tag | Description |
+|---------|-----|-------------|
+| Audience | `<audience>` | Target audience definition |
+| Persona | `<persona>` | AI role and expertise |
+| Constraints | `<constraints>` | Length, tone, format |
+| Context | `<context>` | Additional background info |
+| Input Data | `<input_data>` | User-provided data to process |
+| Instructions | `<instructions>` | Main task description |
+| Output Format | `<output_format>` | Expected response structure |
+| Reasoning | `<reasoning type="...">` | Chain-of-thought or few-shot |
+| Code | `<code_requirements>` | Programming constraints |
+| Creative | `<creative_guidelines>` | Writing style options |
+| Research | `<research_guidelines>` | Source/citation requirements |
+| Quality | `<quality>` | Contains `<self_review>` and `<anti_hallucination>` |
+| Validation | `<validation>` | Success criteria |
+| Iterative | `<iterative_approach>` | Refinement instructions |
+| Negative | `<constraints_negative>` | What to avoid |
+| Safety | `<safety_ethics>` | Bias, accessibility, privacy |
+
+### Example Output
+
+```xml
+<audience>
+Target audience: software developers with professional coding experience.
+</audience>
+
+<persona>
+You are a senior software engineer with extensive experience...
+</persona>
+
+<instructions>
+Review this code for security vulnerabilities.
+</instructions>
+
+<input_data>
+<code>
+function authenticate(user, password) { ... }
+</code>
+</input_data>
+
+<quality>
+<self_review>
+After providing your solution, perform a self-review:
+1. Check for logical errors
+2. Verify all requirements are met
+</self_review>
+</quality>
+```
+
 ## Contributing
 
 1. Edit files in `src/` directory

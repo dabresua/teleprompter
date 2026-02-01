@@ -16,15 +16,18 @@ describe('promptGenerator', () => {
       expect(window.buildPersonaSection('None (no persona)', '')).toBeNull();
     });
     
-    test('returns template text for known persona', () => {
+    test('returns XML-wrapped template text for known persona', () => {
       const result = window.buildPersonaSection('Senior Software Engineer', '');
-      expect(result).toBe(window.personaTemplates['Senior Software Engineer']);
+      expect(result).toContain('<persona>');
+      expect(result).toContain('</persona>');
+      expect(result).toContain(window.personaTemplates['Senior Software Engineer']);
     });
     
-    test('returns custom text for "Other (custom)"', () => {
+    test('returns XML-wrapped custom text for "Other (custom)"', () => {
       const customText = 'You are a specialized AI assistant';
       const result = window.buildPersonaSection('Other (custom)', customText);
-      expect(result).toBe(customText);
+      expect(result).toContain('<persona>');
+      expect(result).toContain(customText);
     });
     
     test('returns null for unknown persona not in templates', () => {
@@ -44,15 +47,18 @@ describe('promptGenerator', () => {
       expect(window.buildAudienceSection('General (not specified)', '')).toBeNull();
     });
     
-    test('returns template text for known audience', () => {
+    test('returns XML-wrapped template text for known audience', () => {
       const result = window.buildAudienceSection('Technical - Software Developers', '');
-      expect(result).toBe(window.audienceTemplates['Technical - Software Developers']);
+      expect(result).toContain('<audience>');
+      expect(result).toContain('</audience>');
+      expect(result).toContain(window.audienceTemplates['Technical - Software Developers']);
     });
     
-    test('returns custom text for "Other (custom)"', () => {
+    test('returns XML-wrapped custom text for "Other (custom)"', () => {
       const customText = 'Target audience: medical professionals';
       const result = window.buildAudienceSection('Other (custom)', customText);
-      expect(result).toBe(customText);
+      expect(result).toContain('<audience>');
+      expect(result).toContain(customText);
     });
     
   });
@@ -73,19 +79,20 @@ describe('promptGenerator', () => {
       expect(result).toBeNull();
     });
     
-    test('includes response length when provided', () => {
+    test('includes XML-wrapped response length when provided', () => {
       const result = window.buildConstraintsSection({
         responseLength: 'brief'
       });
+      expect(result).toContain('<constraints>');
       expect(result).toContain('System Constraints:');
       expect(result).toContain(window.responseLengthTexts['brief']);
     });
     
-    test('includes tone style when provided', () => {
+    test('includes XML-wrapped tone style when provided', () => {
       const result = window.buildConstraintsSection({
         toneStyle: 'formal'
       });
-      expect(result).toContain('System Constraints:');
+      expect(result).toContain('<constraints>');
       expect(result).toContain('Formal');
     });
     
@@ -123,8 +130,9 @@ describe('promptGenerator', () => {
       expect(result).toBeNull();
     });
     
-    test('includes bias check when enabled', () => {
+    test('includes XML-wrapped bias check when enabled', () => {
       const result = window.buildSafetySection({ checkBias: true });
+      expect(result).toContain('<safety_ethics>');
       expect(result).toContain('Safety & Ethics');
       expect(result).toContain('bias');
     });
@@ -158,9 +166,10 @@ describe('promptGenerator', () => {
       expect(result).toBeNull();
     });
     
-    test('builds section for valid steps', () => {
+    test('builds XML-wrapped section for valid steps', () => {
       const steps = ['Analyze the input', 'Process the data', 'Generate output'];
       const result = window.buildCoTSection(steps, false);
+      expect(result).toContain('<reasoning type="chain-of-thought">');
       expect(result).toContain('step-by-step');
       expect(result).toContain('Step 1:');
       expect(result).toContain('Step 2:');
@@ -197,12 +206,13 @@ describe('promptGenerator', () => {
       expect(result).toBeNull();
     });
     
-    test('builds section for valid examples', () => {
+    test('builds XML-wrapped section for valid examples', () => {
       const examples = [
         { input: 'Hello', output: 'Hi there!' },
         { input: 'Goodbye', output: 'See you later!' }
       ];
       const result = window.buildFewShotSection(examples);
+      expect(result).toContain('<reasoning type="few-shot">');
       expect(result).toContain('examples');
       expect(result).toContain('Example 1');
       expect(result).toContain('Example 2');
@@ -225,8 +235,9 @@ describe('promptGenerator', () => {
       expect(result).toBeNull();
     });
     
-    test('includes programming language when provided', () => {
+    test('includes XML-wrapped programming language when provided', () => {
       const result = window.buildCodeSection({ language: 'Python' });
+      expect(result).toContain('<code_requirements>');
       expect(result).toContain('Code-Specific');
       expect(result).toContain('Python');
     });
@@ -259,8 +270,9 @@ describe('promptGenerator', () => {
       expect(result).toBeNull();
     });
     
-    test('includes search latest when enabled', () => {
+    test('includes XML-wrapped search latest when enabled', () => {
       const result = window.buildResearchSection({ searchLatest: true });
+      expect(result).toContain('<research_guidelines>');
       expect(result).toContain('Research Guidelines');
     });
     
@@ -283,8 +295,9 @@ describe('promptGenerator', () => {
       expect(result).toBeNull();
     });
     
-    test('includes writing style when provided', () => {
+    test('includes XML-wrapped writing style when provided', () => {
       const result = window.buildCreativeSection({ writingStyle: 'academic' });
+      expect(result).toContain('<creative_guidelines>');
       expect(result).toContain('Creative Content');
       expect(result).toContain('academic');
     });
@@ -320,12 +333,13 @@ describe('promptGenerator', () => {
       expect(result).toBeNull();
     });
     
-    test('builds section for valid validations', () => {
+    test('builds XML-wrapped section for valid validations', () => {
       const validations = [
         { description: 'Must include code examples', impact: 'blocking' },
         { description: 'Should mention performance', impact: 'warning' }
       ];
       const result = window.buildValidationSection(validations);
+      expect(result).toContain('<validation>');
       expect(result).toContain('Success Criteria');
       expect(result).toContain('Must include code examples');
       expect(result).toContain('REQUIRED');
@@ -341,8 +355,9 @@ describe('promptGenerator', () => {
       expect(result).toBeNull();
     });
     
-    test('includes clarifying questions when enabled', () => {
+    test('includes XML-wrapped clarifying questions when enabled', () => {
       const result = window.buildIterativeSection({ askClarifying: true });
+      expect(result).toContain('<iterative_approach>');
       expect(result).toContain('Iterative Approach');
       expect(result).toContain('clarifying');
     });
@@ -356,26 +371,32 @@ describe('promptGenerator', () => {
   
   describe('buildQualityControlSections', () => {
     
-    test('returns empty array when both disabled', () => {
+    test('returns null when both disabled', () => {
       const result = window.buildQualityControlSections(false, false);
-      expect(result).toEqual([]);
+      expect(result).toBeNull();
     });
     
-    test('includes self-reflection section when enabled', () => {
+    test('returns XML-wrapped self-reflection section when enabled', () => {
       const result = window.buildQualityControlSections(true, false);
-      expect(result.length).toBe(1);
-      expect(result[0]).toContain('review');
+      expect(result).toContain('<quality>');
+      expect(result).toContain('<self_review>');
+      expect(result).toContain('review');
+      expect(result).not.toContain('<anti_hallucination>');
     });
     
-    test('includes anti-hallucination section when enabled', () => {
+    test('returns XML-wrapped anti-hallucination section when enabled', () => {
       const result = window.buildQualityControlSections(false, true);
-      expect(result.length).toBe(1);
-      expect(result[0]).toContain("don't know");
+      expect(result).toContain('<quality>');
+      expect(result).toContain('<anti_hallucination>');
+      expect(result).toContain("don't know");
+      expect(result).not.toContain('<self_review>');
     });
     
-    test('includes both sections when both enabled', () => {
+    test('returns XML-wrapped combined section when both enabled', () => {
       const result = window.buildQualityControlSections(true, true);
-      expect(result.length).toBe(2);
+      expect(result).toContain('<quality>');
+      expect(result).toContain('<self_review>');
+      expect(result).toContain('<anti_hallucination>');
     });
     
   });
@@ -436,38 +457,43 @@ describe('promptGenerator', () => {
       expect(result).toBe('');
     });
     
-    test('includes instructions when provided', () => {
+    test('includes XML-wrapped instructions when provided', () => {
       const formData = {
         instructions: 'Write a function to sort an array'
       };
       const result = window.assemblePrompt(formData);
+      expect(result).toContain('<instructions>');
       expect(result).toContain('Write a function to sort an array');
+      expect(result).toContain('</instructions>');
     });
     
-    test('includes persona section', () => {
+    test('includes XML-wrapped persona section', () => {
       const formData = {
         persona: 'Senior Software Engineer',
         instructions: 'Test'
       };
       const result = window.assemblePrompt(formData);
+      expect(result).toContain('<persona>');
       expect(result).toContain(window.personaTemplates['Senior Software Engineer']);
     });
     
-    test('includes input data when provided', () => {
+    test('includes XML-wrapped input data when provided', () => {
       const formData = {
         instructions: 'Analyze this',
         inputData: '<code>function test() {}</code>'
       };
       const result = window.assemblePrompt(formData);
+      expect(result).toContain('<input_data>');
       expect(result).toContain('<code>function test() {}</code>');
     });
     
-    test('includes output format when provided', () => {
+    test('includes XML-wrapped output format when provided', () => {
       const formData = {
         instructions: 'Test',
         outputFormat: '1. Summary\n2. Details'
       };
       const result = window.assemblePrompt(formData);
+      expect(result).toContain('<output_format>');
       expect(result).toContain('1. Summary');
     });
     
@@ -479,6 +505,7 @@ describe('promptGenerator', () => {
         cotXmlTags: true
       };
       const result = window.assemblePrompt(formData);
+      expect(result).toContain('<reasoning type="chain-of-thought">');
       expect(result).toContain('step-by-step');
     });
     
@@ -491,6 +518,7 @@ describe('promptGenerator', () => {
         ]
       };
       const result = window.assemblePrompt(formData);
+      expect(result).toContain('<reasoning type="few-shot">');
       expect(result).toContain('Example 1');
     });
     
@@ -501,19 +529,21 @@ describe('promptGenerator', () => {
         antiHallucination: true
       };
       const result = window.assemblePrompt(formData);
+      expect(result).toContain('<quality>');
       expect(result).toContain('review');
     });
     
-    test('includes negative prompts when provided', () => {
+    test('includes XML-wrapped negative prompts when provided', () => {
       const formData = {
         instructions: 'Test',
         negativePrompts: 'Do not use deprecated APIs'
       };
       const result = window.assemblePrompt(formData);
+      expect(result).toContain('<constraints_negative>');
       expect(result).toContain('Do not use deprecated APIs');
     });
     
-    test('assembles complete prompt with all sections', () => {
+    test('assembles complete prompt with all sections in correct order', () => {
       const formData = {
         persona: 'Security Engineer',
         audience: 'Technical - Software Developers',
@@ -528,13 +558,25 @@ describe('promptGenerator', () => {
       };
       const result = window.assemblePrompt(formData);
       
-      // Check key sections are present
+      // Check key sections are present with XML wrappers
+      expect(result).toContain('<persona>');
       expect(result).toContain(window.personaTemplates['Security Engineer']);
+      expect(result).toContain('<audience>');
       expect(result).toContain(window.audienceTemplates['Technical - Software Developers']);
+      expect(result).toContain('<instructions>');
       expect(result).toContain('Review this code for vulnerabilities');
+      expect(result).toContain('<input_data>');
       expect(result).toContain('<code>user input here</code>');
+      expect(result).toContain('<output_format>');
       expect(result).toContain('1. Vulnerabilities');
+      expect(result).toContain('<context>');
       expect(result).toContain('Production environment');
+      expect(result).toContain('<quality>');
+      
+      // Verify audience comes before persona (matches HTML order)
+      const audiencePos = result.indexOf('<audience>');
+      const personaPos = result.indexOf('<persona>');
+      expect(audiencePos).toBeLessThan(personaPos);
     });
     
   });
