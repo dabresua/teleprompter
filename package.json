@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Unit tests for AI Prompt Engineering Wizard",
+  "license": "MIT",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",

@@ -2,6 +2,12 @@
 
 A standalone tool for building well-structured prompts following best practices. Works entirely offline with no external dependencies.
 
+## Screenshots
+
+![AI Prompt Engineering Wizard - Main Interface](https://github.com/user-attachments/assets/54b5557c-5da5-447a-9403-2d1530ef62b2)
+
+The wizard provides 17 configurable sections to build comprehensive prompts with real-time token counting and multiple export options.
+
 ## Quick Start
 
 ```bash
@@ -232,4 +238,6 @@ After providing your solution, perform a self-review:
 
 ## License
 
-This project is provided as-is for educational and practical use.
+This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
+
+The software is provided "as is", without warranty of any kind, and with no liability or limitations on use.
