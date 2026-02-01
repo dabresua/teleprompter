@@ -17,11 +17,14 @@
             return null;
         }
         
+        var content;
         if (selectedPersona === 'Other (custom)') {
-            return customPersona ? customPersona.trim() : null;
+            content = customPersona ? customPersona.trim() : null;
+        } else {
+            content = window.personaTemplates[selectedPersona] || null;
         }
         
-        return window.personaTemplates[selectedPersona] || null;
+        return content ? window.wrapXml(window.XML_TAGS.persona, content) : null;
     };
 
     /**
@@ -35,11 +38,14 @@
             return null;
         }
         
+        var content;
         if (selectedAudience === 'Other (custom)') {
-            return customAudience ? customAudience.trim() : null;
+            content = customAudience ? customAudience.trim() : null;
+        } else {
+            content = window.audienceTemplates[selectedAudience] || null;
         }
         
-        return window.audienceTemplates[selectedAudience] || null;
+        return content ? window.wrapXml(window.XML_TAGS.audience, content) : null;
     };
 
     /**
@@ -70,7 +76,7 @@
             section += '\n- Format: ' + formatPreferences;
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.constraints, section);
     };
 
     /**
@@ -98,7 +104,7 @@
             section += '\n- Consider and discuss ethical implications of the solution';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.safety, section);
     };
 
     /**
@@ -124,7 +130,7 @@
             section += '\nShow your reasoning in <thinking> tags before providing the final answer.';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.reasoning, section, { type: 'chain-of-thought' });
     };
 
     /**
@@ -159,7 +165,7 @@
         });
         
         section += '\n\nNow, apply the same pattern to the following:';
-        return section;
+        return window.wrapXml(window.XML_TAGS.reasoning, section, { type: 'few-shot' });
     };
 
     /**
@@ -196,7 +202,7 @@
             section += '\n- Include detailed documentation with docstrings and inline comments';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.code, section);
     };
 
     /**
@@ -228,7 +234,7 @@
             section += '\n- Include confidence levels for key claims and findings';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.research, section);
     };
 
     /**
@@ -261,7 +267,7 @@
             section += '\n- Reading Level: ' + readingLevel;
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.creative, section);
     };
 
     /**
@@ -291,7 +297,7 @@
             }
         });
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.validation, section);
     };
 
     /**
@@ -323,27 +329,36 @@
             section += '\n- Clearly identify any assumptions made and ask for confirmation';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.iterative, section);
     };
 
     /**
      * Build quality control sections
      * @param {boolean} selfReflection - Enable self-reflection
      * @param {boolean} antiHallucination - Enable anti-hallucination guidelines
-     * @returns {Array} Array of quality control section strings
+     * @returns {string|null} Quality control section with nested tags or null
      */
     window.buildQualityControlSections = function(selfReflection, antiHallucination) {
-        var sections = [];
+        if (!selfReflection && !antiHallucination) {
+            return null;
+        }
+        
+        var innerContent = '';
         
         if (selfReflection) {
-            sections.push('After providing your solution, perform a self-review:\n1. Check for logical errors\n2. Verify all requirements are met\n3. Identify any assumptions made\n4. Rate your confidence (1-10)');
+            var selfReviewContent = 'After providing your solution, perform a self-review:\n1. Check for logical errors\n2. Verify all requirements are met\n3. Identify any assumptions made\n4. Rate your confidence (1-10)';
+            innerContent += window.wrapXml(window.XML_TAGS.selfReview, selfReviewContent);
         }
         
         if (antiHallucination) {
-            sections.push('Important guidelines:\n- If you don\'t know something, explicitly say "I don\'t know"\n- Cite specific sources when making factual claims\n- Distinguish between facts and opinions\n- State assumptions explicitly\n- Only use well-documented, standard approaches');
+            var antiHallucinationContent = 'Important guidelines:\n- If you don\'t know something, explicitly say "I don\'t know"\n- Cite specific sources when making factual claims\n- Distinguish between facts and opinions\n- State assumptions explicitly\n- Only use well-documented, standard approaches';
+            if (innerContent) {
+                innerContent += '\n';
+            }
+            innerContent += window.wrapXml(window.XML_TAGS.antiHallucination, antiHallucinationContent);
         }
         
-        return sections;
+        return window.wrapXml(window.XML_TAGS.quality, innerContent);
     };
 
     /**
@@ -354,13 +369,13 @@
     window.assemblePrompt = function(formData) {
         var sections = [];
         
-        // 1. Persona
-        var persona = window.buildPersonaSection(formData.persona, formData.personaCustom);
-        if (persona) sections.push(persona);
-        
-        // 2. Audience
+        // 1. Audience
         var audience = window.buildAudienceSection(formData.audience, formData.audienceCustom);
         if (audience) sections.push(audience);
+        
+        // 2. Persona
+        var persona = window.buildPersonaSection(formData.persona, formData.personaCustom);
+        if (persona) sections.push(persona);
         
         // 3. System Constraints
         var constraints = window.buildConstraintsSection({
@@ -370,28 +385,26 @@
         });
         if (constraints) sections.push(constraints);
         
-        // 4. Safety & Ethics
-        var safety = window.buildSafetySection({
-            checkBias: formData.checkBias,
-            accessibility: formData.accessibility,
-            privacy: formData.privacy,
-            ethical: formData.ethical
-        });
-        if (safety) sections.push(safety);
-        
-        // 5. Additional Context
+        // 4. Additional Context
         if (formData.additionalContext && formData.additionalContext.trim()) {
-            sections.push('Additional context:\n' + formData.additionalContext.trim());
+            var contextContent = 'Additional context:\n' + formData.additionalContext.trim();
+            sections.push(window.wrapXml(window.XML_TAGS.context, contextContent));
         }
         
-        // 6. Input Data
+        // 5. Input Data
         if (formData.inputData && formData.inputData.trim()) {
-            sections.push(formData.inputData.trim());
+            sections.push(window.wrapXml(window.XML_TAGS.inputData, formData.inputData.trim()));
         }
         
-        // 7. Instructions (always included)
+        // 6. Instructions
         if (formData.instructions && formData.instructions.trim()) {
-            sections.push(formData.instructions.trim());
+            sections.push(window.wrapXml(window.XML_TAGS.instructions, formData.instructions.trim()));
+        }
+        
+        // 7. Output Format
+        if (formData.outputFormat && formData.outputFormat.trim()) {
+            var outputContent = 'Output format:\n' + formData.outputFormat.trim();
+            sections.push(window.wrapXml(window.XML_TAGS.outputFormat, outputContent));
         }
         
         // 8. Reasoning Method
@@ -413,7 +426,16 @@
         });
         if (code) sections.push(code);
         
-        // 10. Research Instructions
+        // 10. Creative Content Options
+        var creative = window.buildCreativeSection({
+            writingStyle: formData.writingStyle,
+            pointOfView: formData.pointOfView,
+            wordCount: formData.wordCount,
+            readingLevel: formData.readingLevel
+        });
+        if (creative) sections.push(creative);
+        
+        // 11. Research Instructions
         var research = window.buildResearchSection({
             searchLatest: formData.searchLatest,
             citeSources: formData.citeSources,
@@ -423,36 +445,15 @@
         });
         if (research) sections.push(research);
         
-        // 11. Creative Content Options
-        var creative = window.buildCreativeSection({
-            writingStyle: formData.writingStyle,
-            pointOfView: formData.pointOfView,
-            wordCount: formData.wordCount,
-            readingLevel: formData.readingLevel
-        });
-        if (creative) sections.push(creative);
-        
-        // 12. Output Format
-        if (formData.outputFormat && formData.outputFormat.trim()) {
-            sections.push('Output format:\n' + formData.outputFormat.trim());
-        }
-        
-        // 13. Quality Controls
+        // 12. Quality Controls
         var qualityControls = window.buildQualityControlSections(formData.selfReflection, formData.antiHallucination);
-        qualityControls.forEach(function(section) {
-            sections.push(section);
-        });
+        if (qualityControls) sections.push(qualityControls);
         
-        // 14. Validation Conditions
+        // 13. Validation Conditions
         var validation = window.buildValidationSection(formData.validations);
         if (validation) sections.push(validation);
         
-        // 15. Negative Prompting
-        if (formData.negativePrompts && formData.negativePrompts.trim()) {
-            sections.push('IMPORTANT - Do NOT:\n' + formData.negativePrompts.trim());
-        }
-        
-        // 16. Iterative Refinement
+        // 14. Iterative Refinement
         var iterative = window.buildIterativeSection({
             askClarifying: formData.askClarifying,
             provideAlternatives: formData.provideAlternatives,
@@ -461,6 +462,21 @@
             identifyAssumptions: formData.identifyAssumptions
         });
         if (iterative) sections.push(iterative);
+        
+        // 15. Negative Prompting
+        if (formData.negativePrompts && formData.negativePrompts.trim()) {
+            var negativeContent = 'IMPORTANT - Do NOT:\n' + formData.negativePrompts.trim();
+            sections.push(window.wrapXml(window.XML_TAGS.negative, negativeContent));
+        }
+        
+        // 16. Safety & Ethics
+        var safety = window.buildSafetySection({
+            checkBias: formData.checkBias,
+            accessibility: formData.accessibility,
+            privacy: formData.privacy,
+            ethical: formData.ethical
+        });
+        if (safety) sections.push(safety);
         
         return sections.join('\n\n');
     };

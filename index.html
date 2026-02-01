@@ -560,12 +560,55 @@ button:disabled:hover {
 
     <main>
         <form id="promptForm">
-            <!-- Section 1: Persona Definition -->
+            <!--- Block 1: Fundamentals (Who and for who)-->
+            <br>
+            <h2>Fundamentals</h2>
+            <!-- Section 1: Audience -->
+            <section class="form-section">
+                <div class="collapsible-header" id="audienceHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">1</span>
+                            Audience
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Define who will read the output</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="audienceContent">
+                <label for="audience">Target Audience:</label>
+                <select id="audience" aria-label="Target audience selection">
+                    <option value="">General (not specified)</option>
+                    <option value="Technical - Software Developers">Technical - Software Developers</option>
+                    <option value="Technical - System Architects">Technical - System Architects</option>
+                    <option value="Technical - Data Engineers">Technical - Data Engineers</option>
+                    <option value="Technical - DevOps/SRE">Technical - DevOps/SRE</option>
+                    <option value="Semi-Technical - Product Managers">Semi-Technical - Product Managers</option>
+                    <option value="Semi-Technical - Technical Project Managers">Semi-Technical - Technical Project Managers</option>
+                    <option value="Non-Technical - Business Stakeholders">Non-Technical - Business Stakeholders</option>
+                    <option value="Non-Technical - C-Level Executives">Non-Technical - C-Level Executives</option>
+                    <option value="Non-Technical - Marketing/Sales Teams">Non-Technical - Marketing/Sales Teams</option>
+                    <option value="Students/Learners - Beginners">Students/Learners - Beginners</option>
+                    <option value="Students/Learners - Intermediate">Students/Learners - Intermediate</option>
+                    <option value="Students/Learners - Advanced">Students/Learners - Advanced</option>
+                    <option value="General Public">General Public</option>
+                    <option value="Other (custom)">Other (custom)</option>
+                </select>
+                
+                <div id="audienceCustomContainer" class="hidden">
+                    <label for="audienceCustom" style="margin-top: 16px;">Custom Audience:</label>
+                    <textarea id="audienceCustom" placeholder="e.g., Medical professionals with basic technical knowledge..." aria-label="Custom audience description"></textarea>
+                </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Persona Definition -->
             <section class="form-section">
                 <div class="collapsible-header" id="personaHeader">
                     <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">1</span>
+                            <span class="section-number">2</span>
                             Persona Definition
                         </h2>
                         <p class="section-description" style="margin: 0;">Define the AI's role and expertise</p>
@@ -593,93 +636,17 @@ button:disabled:hover {
                 
                 <div id="personaCustomContainer" class="hidden">
                     <label for="personaCustom" style="margin-top: 16px;">Custom Persona:</label>
-                    <textarea id="personaCustom" placeholder="e.g., You are an experienced Python developer with 10 years of experience..." aria-label="Custom persona description"></textarea>
+                    <textarea id="personaCustom" aria-label="Custom persona description">You are </textarea>
                 </div>
                 </div>
             </section>
 
-            <!-- Section 2: Instructions -->
-            <section class="form-section">
-                <div class="collapsible-header" id="instructionsHeader">
-                    <div class="collapsible-title">
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">2</span>
-                            Instructions
-                </h2>
-                <p class="section-description">Main task description</p>
-                
-                <label for="instructions" class="required">Task Instructions:</label>
-                <textarea id="instructions" placeholder="Describe what you want the AI to do. E.g., 'Analyze the provided code for security vulnerabilities. Focus on...'" required aria-label="Task instructions" aria-required="true"></textarea>
-                <small class="helper-text">Be clear and specific about the task</small>
-                <span class="error-message" id="instructionsError">Instructions are required</span>
-            </section>
-
-            <!-- Section 3: Input Data -->
-            <section class="form-section">
-                <div class="collapsible-header" id="inputDataHeader">
-                    <div class="collapsible-title">
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">3</span>
-                            Input Data
-                        </h2>
-                        <p class="section-description" style="margin: 0;">Provide data/content to be processed</p>
-                    </div>
-                    <span class="collapsible-toggle">▶</span>
-                </div>
-                
-                <div class="collapsible-content" id="inputDataContent">
-                <label for="inputData">Input Data:</label>
-                <textarea id="inputData" placeholder="Paste your code, data, or content here. Use XML tags to structure:&#10;<code>your code</code>&#10;<document>your text</document>" aria-label="Input data"></textarea>
-                <small class="helper-text">Use XML tags like &lt;code&gt;, &lt;document&gt;, &lt;data&gt; to delimit different types of input</small>
-                </div>
-            </section>
-
-            <!-- Section 4: Output Format -->
-            <section class="form-section">
-                <div class="collapsible-header" id="outputFormatHeader">
-                    <div class="collapsible-title">
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">4</span>
-                            Output Format
-                        </h2>
-                        <p class="section-description" style="margin: 0;">Specify desired response structure</p>
-                    </div>
-                    <span class="collapsible-toggle">▶</span>
-                </div>
-                
-                <div class="collapsible-content" id="outputFormatContent">
-                <label for="outputFormat">Output Format:</label>
-                <textarea id="outputFormat" placeholder="Specify how you want the response structured:&#10;1. Summary&#10;2. Detailed analysis&#10;3. Code example&#10;4. Recommendations" aria-label="Output format"></textarea>
-                <small class="helper-text">Define the structure and format you want</small>
-                </div>
-            </section>
-
-            <!-- Section 5: Additional Context -->
-            <section class="form-section">
-                <div class="collapsible-header" id="additionalContextHeader">
-                    <div class="collapsible-title">
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">5</span>
-                            Additional Context
-                        </h2>
-                        <p class="section-description" style="margin: 0;">Provide constraints, requirements, or background</p>
-                    </div>
-                    <span class="collapsible-toggle">▶</span>
-                </div>
-                
-                <div class="collapsible-content" id="additionalContextContent">
-                <label for="additionalContext">Additional Context:</label>
-                <textarea id="additionalContext" placeholder="E.g., Using React 18, Performance critical, Must support mobile browsers, Target Python 3.9+..." aria-label="Additional context"></textarea>
-                <small class="helper-text">Any constraints, requirements, or background information</small>
-                </div>
-            </section>
-
-            <!-- Section 6: System Constraints -->
+            <!-- Section 3: System Constraints -->
             <section class="form-section">
                 <div class="collapsible-header" id="systemConstraintsHeader">
                     <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">6</span>
+                            <span class="section-number">3</span>
                             System Constraints
                         </h2>
                         <p class="section-description" style="margin: 0;">Define response parameters and style preferences</p>
@@ -714,122 +681,94 @@ button:disabled:hover {
                 </div>
             </section>
 
-            <!-- Section 7: Negative Prompting -->
+            <!--- Block 2: Context (base info)-->
+            <br>
+            <h2>Context</h2>
+            <!-- Section 4: Additional Context -->
             <section class="form-section">
-                <div class="collapsible-header" id="negativePromptingHeader">
+                <div class="collapsible-header" id="additionalContextHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">4</span>
+                            Additional Context
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Provide constraints, requirements, or background</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="additionalContextContent">
+                <label for="additionalContext">Additional Context:</label>
+                <textarea id="additionalContext" placeholder="E.g., Using React 18, Performance critical, Must support mobile browsers, Target Python 3.9+..." aria-label="Additional context"></textarea>
+                <small class="helper-text">Any constraints, requirements, or background information</small>
+                </div>
+            </section>
+
+            <!-- Section 5: Input Data -->
+            <section class="form-section">
+                <div class="collapsible-header" id="inputDataHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">5</span>
+                            Input Data
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Provide data/content to be processed</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="inputDataContent">
+                <label for="inputData">Input Data:</label>
+                <textarea id="inputData" placeholder="Paste your code, data, or content here. Use XML tags to structure:&#10;<code>your code</code>&#10;<document>your text</document>" aria-label="Input data"></textarea>
+                <small class="helper-text">Use XML tags like &lt;code&gt;, &lt;document&gt;, &lt;data&gt; to delimit different types of input</small>
+                </div>
+            </section>
+
+            <!--- Block 3: Task (what to do)-->
+            <br>
+            <h2>Task</h2>
+            <!-- Section 6: Instructions -->
+            <section class="form-section">
+                <div class="collapsible-header" id="instructionsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">6</span>
+                            Instructions
+                </h2>
+                <p class="section-description">Main task description</p>
+                
+                <label for="instructions" class="required">Task Instructions:</label>
+                <textarea id="instructions" placeholder="Describe what you want the AI to do. E.g., 'Analyze the provided code for security vulnerabilities. Focus on...'" required aria-label="Task instructions" aria-required="true"></textarea>
+                <small class="helper-text">Be clear and specific about the task</small>
+                <span class="error-message" id="instructionsError">Instructions are required</span>
+            </section>
+
+            <!-- Section 7: Output Format -->
+            <section class="form-section">
+                <div class="collapsible-header" id="outputFormatHeader">
                     <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
                             <span class="section-number">7</span>
-                            Negative Prompting
+                            Output Format
                         </h2>
-                        <p class="section-description" style="margin: 0;">Specify what the AI should NOT do (optional)</p>
+                        <p class="section-description" style="margin: 0;">Specify desired response structure</p>
                     </div>
                     <span class="collapsible-toggle">▶</span>
                 </div>
                 
-                <div class="collapsible-content" id="negativePromptingContent">
-                <label for="negativePrompts">Do NOT:</label>
-                <textarea id="negativePrompts" placeholder="E.g.,&#10;- Include code without explanation&#10;- Use deprecated methods&#10;- Make assumptions about user's environment&#10;- Provide solutions without testing" aria-label="Negative prompts"></textarea>
-                <small class="helper-text">List specific things to avoid in the response</small>
+                <div class="collapsible-content" id="outputFormatContent">
+                <label for="outputFormat">Output Format:</label>
+                <textarea id="outputFormat" placeholder="Specify how you want the response structured:&#10;1. Summary&#10;2. Detailed analysis&#10;3. Code example&#10;4. Recommendations" aria-label="Output format"></textarea>
+                <small class="helper-text">Define the structure and format you want</small>
                 </div>
             </section>
 
-            <!-- Section 8: Code-Specific Options -->
-            <section class="form-section">
-                <div class="collapsible-header" id="codeOptionsHeader">
-                    <div class="collapsible-title">
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">8</span>
-                            Code-Specific Options
-                        </h2>
-                        <p class="section-description" style="margin: 0;">Configure code generation preferences (optional)</p>
-                    </div>
-                    <span class="collapsible-toggle">▶</span>
-                </div>
-                
-                <div class="collapsible-content" id="codeOptionsContent">
-                    <label for="programmingLanguage">Programming Language:</label>
-                    <input type="text" id="programmingLanguage" placeholder="E.g., Python, JavaScript, Java, Go, Rust" aria-label="Programming language">
-
-                    <label for="frameworkLibrary" style="margin-top: 16px;">Framework/Library:</label>
-                    <input type="text" id="frameworkLibrary" placeholder="E.g., React, Django, Spring Boot, .NET Core" aria-label="Framework or library">
-                    <small class="helper-text">Specify the tech stack or framework to use</small>
-
-                    <div class="checkbox-option" style="margin-top: 16px;">
-                        <input type="checkbox" id="includeTests">
-                        <label for="includeTests">
-                            <strong>Include unit tests</strong>
-                            <small class="helper-text">Generate test cases for the code</small>
-                        </label>
-                    </div>
-
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="includeDocumentation">
-                        <label for="includeDocumentation">
-                            <strong>Include documentation</strong>
-                            <small class="helper-text">Add docstrings, comments, and inline documentation</small>
-                        </label>
-                    </div>
-
-                    <label for="testFramework" style="margin-top: 16px;">Test Framework (if tests enabled):</label>
-                    <input type="text" id="testFramework" placeholder="E.g., pytest, Jest, JUnit, xUnit" aria-label="Test framework">
-                </div>
-            </section>
-
-            <!-- Section 9: Safety & Ethics Guidelines -->
-            <section class="form-section">
-                <div class="collapsible-header" id="safetyEthicsHeader">
-                    <div class="collapsible-title">
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">9</span>
-                            Safety & Ethics Guidelines
-                        </h2>
-                        <p class="section-description" style="margin: 0;">Enable ethical and safety considerations (optional)</p>
-                    </div>
-                    <span class="collapsible-toggle">▶</span>
-                </div>
-                
-                <div class="collapsible-content" id="safetyEthicsContent">
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="checkBias">
-                        <label for="checkBias">
-                            <strong>Check for bias in recommendations</strong>
-                            <small class="helper-text">Ensure fair and unbiased output</small>
-                        </label>
-                    </div>
-
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="accessibilityRequirements">
-                        <label for="accessibilityRequirements">
-                            <strong>Consider accessibility requirements</strong>
-                            <small class="helper-text">Ensure solutions are accessible to all users</small>
-                        </label>
-                    </div>
-
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="privacyDataProtection">
-                        <label for="privacyDataProtection">
-                            <strong>Privacy and data protection concerns</strong>
-                            <small class="helper-text">Address GDPR, data privacy, and security</small>
-                        </label>
-                    </div>
-
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="ethicalImplications">
-                        <label for="ethicalImplications">
-                            <strong>Evaluate ethical implications</strong>
-                            <small class="helper-text">Consider broader societal and ethical impacts</small>
-                        </label>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section 10: Reasoning Method -->
+            <!-- Section 8: Reasoning Method -->
             <section class="form-section">
                 <div class="collapsible-header" id="reasoningMethodHeader">
                     <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">10</span>
+                            <span class="section-number">8</span>
                             Reasoning Method
                         </h2>
                         <p class="section-description" style="margin: 0;">Choose how the AI should approach the problem</p>
@@ -884,46 +823,161 @@ button:disabled:hover {
                 </div>
             </section>
 
-            <!-- Section 11: Audience -->
+            <!--- Block 4: Options for specialized prompts-->
+            <br>
+            <h2>Options for specialized prompts</h2>
+            <!-- Section 9: Code-Specific Options -->
             <section class="form-section">
-                <div class="collapsible-header" id="audienceHeader">
+                <div class="collapsible-header" id="codeOptionsHeader">
                     <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">11</span>
-                            Audience
+                            <span class="section-number">9</span>
+                            Code-Specific Options
                         </h2>
-                        <p class="section-description" style="margin: 0;">Define who will read the output</p>
+                        <p class="section-description" style="margin: 0;">Configure code generation preferences (optional)</p>
                     </div>
                     <span class="collapsible-toggle">▶</span>
                 </div>
                 
-                <div class="collapsible-content" id="audienceContent">
-                <label for="audience">Target Audience:</label>
-                <select id="audience" aria-label="Target audience selection">
-                    <option value="">General (not specified)</option>
-                    <option value="Technical - Software Developers">Technical - Software Developers</option>
-                    <option value="Technical - System Architects">Technical - System Architects</option>
-                    <option value="Technical - Data Engineers">Technical - Data Engineers</option>
-                    <option value="Technical - DevOps/SRE">Technical - DevOps/SRE</option>
-                    <option value="Semi-Technical - Product Managers">Semi-Technical - Product Managers</option>
-                    <option value="Semi-Technical - Technical Project Managers">Semi-Technical - Technical Project Managers</option>
-                    <option value="Non-Technical - Business Stakeholders">Non-Technical - Business Stakeholders</option>
-                    <option value="Non-Technical - C-Level Executives">Non-Technical - C-Level Executives</option>
-                    <option value="Non-Technical - Marketing/Sales Teams">Non-Technical - Marketing/Sales Teams</option>
-                    <option value="Students/Learners - Beginners">Students/Learners - Beginners</option>
-                    <option value="Students/Learners - Intermediate">Students/Learners - Intermediate</option>
-                    <option value="Students/Learners - Advanced">Students/Learners - Advanced</option>
-                    <option value="General Public">General Public</option>
-                    <option value="Other (custom)">Other (custom)</option>
-                </select>
-                
-                <div id="audienceCustomContainer" class="hidden">
-                    <label for="audienceCustom" style="margin-top: 16px;">Custom Audience:</label>
-                    <textarea id="audienceCustom" placeholder="e.g., Medical professionals with basic technical knowledge..." aria-label="Custom audience description"></textarea>
-                </div>
+                <div class="collapsible-content" id="codeOptionsContent">
+                    <label for="programmingLanguage">Programming Language:</label>
+                    <input type="text" id="programmingLanguage" placeholder="E.g., Python, JavaScript, Java, Go, Rust" aria-label="Programming language">
+
+                    <label for="frameworkLibrary" style="margin-top: 16px;">Framework/Library:</label>
+                    <input type="text" id="frameworkLibrary" placeholder="E.g., React, Django, Spring Boot, .NET Core" aria-label="Framework or library">
+                    <small class="helper-text">Specify the tech stack or framework to use</small>
+
+                    <div class="checkbox-option" style="margin-top: 16px;">
+                        <input type="checkbox" id="includeTests">
+                        <label for="includeTests">
+                            <strong>Include unit tests</strong>
+                            <small class="helper-text">Generate test cases for the code</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="includeDocumentation">
+                        <label for="includeDocumentation">
+                            <strong>Include documentation</strong>
+                            <small class="helper-text">Add docstrings, comments, and inline documentation</small>
+                        </label>
+                    </div>
+
+                    <label for="testFramework" style="margin-top: 16px;">Test Framework (if tests enabled):</label>
+                    <input type="text" id="testFramework" placeholder="E.g., pytest, Jest, JUnit, xUnit" aria-label="Test framework">
                 </div>
             </section>
 
+            <!-- Section 10: Creative Content Options -->
+            <section class="form-section">
+                <div class="collapsible-header" id="creativeContentHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">10</span>
+                            Creative Content Options
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Customize writing style and content preferences (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="creativeContentContent">
+                    <label for="writingStyle">Writing Style:</label>
+                    <select id="writingStyle" aria-label="Writing style">
+                        <option value="">Default</option>
+                        <option value="academic">Academic</option>
+                        <option value="blog">Blog Post</option>
+                        <option value="technical">Technical Documentation</option>
+                        <option value="narrative">Narrative</option>
+                        <option value="persuasive">Persuasive</option>
+                        <option value="descriptive">Descriptive</option>
+                        <option value="journalistic">Journalistic</option>
+                    </select>
+
+                    <label for="pointOfView" style="margin-top: 16px;">Point of View:</label>
+                    <select id="pointOfView" aria-label="Point of view">
+                        <option value="">Default</option>
+                        <option value="first-person">First Person (I/we)</option>
+                        <option value="second-person">Second Person (you)</option>
+                        <option value="third-person-limited">Third Person Limited (he/she)</option>
+                        <option value="third-person-omniscient">Third Person Omniscient</option>
+                    </select>
+
+                    <label for="wordCountTarget" style="margin-top: 16px;">Word Count Target:</label>
+                    <input type="text" id="wordCountTarget" placeholder="E.g., 500-1000 words" aria-label="Word count target">
+                    <small class="helper-text">Specify desired word count or range</small>
+
+                    <label for="readingLevel" style="margin-top: 16px;">Reading Level:</label>
+                    <select id="readingLevel" aria-label="Reading level">
+                        <option value="">Default</option>
+                        <option value="elementary">Elementary (Grade 1-5)</option>
+                        <option value="middle-school">Middle School (Grade 6-8)</option>
+                        <option value="high-school">High School (Grade 9-12)</option>
+                        <option value="college">College</option>
+                        <option value="professional">Professional</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Section 11: Research Instructions -->
+            <section class="form-section">
+                <div class="collapsible-header" id="researchInstructionsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">11</span>
+                            Research Instructions
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Guide AI research and fact-checking behavior (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="researchInstructionsContent">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="searchLatestInfo">
+                        <label for="searchLatestInfo">
+                            <strong>Search for latest information before answering</strong>
+                            <small class="helper-text">Ensure response includes current information</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="citeSources">
+                        <label for="citeSources">
+                            <strong>Cite specific sources with dates and URLs</strong>
+                            <small class="helper-text">Include citations and references</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="compareMultipleSources">
+                        <label for="compareMultipleSources">
+                            <strong>Compare multiple authoritative sources</strong>
+                            <small class="helper-text">Cross-reference different sources</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="verifyFacts">
+                        <label for="verifyFacts">
+                            <strong>Verify facts and flag uncertain information</strong>
+                            <small class="helper-text">Explicitly note confidence levels</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="includeConfidence">
+                        <label for="includeConfidence">
+                            <strong>Include confidence levels for key claims</strong>
+                            <small class="helper-text">Rate certainty of statements</small>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!--- Block 5: Quality and restrictions-->
+            <br>
+            <h2>Quality and Restriction</h2>
             <!-- Section 12: Quality Controls -->
             <section class="form-section">
                 <div class="collapsible-header" id="qualityControlsHeader">
@@ -977,119 +1031,12 @@ button:disabled:hover {
                 </div>
             </section>
 
-            <!-- Section 14: Creative Content Options -->
-            <section class="form-section">
-                <div class="collapsible-header" id="creativeContentHeader">
-                    <div class="collapsible-title">
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">14</span>
-                            Creative Content Options
-                        </h2>
-                        <p class="section-description" style="margin: 0;">Customize writing style and content preferences (optional)</p>
-                    </div>
-                    <span class="collapsible-toggle">▶</span>
-                </div>
-                
-                <div class="collapsible-content" id="creativeContentContent">
-                    <label for="writingStyle">Writing Style:</label>
-                    <select id="writingStyle" aria-label="Writing style">
-                        <option value="">Default</option>
-                        <option value="academic">Academic</option>
-                        <option value="blog">Blog Post</option>
-                        <option value="technical">Technical Documentation</option>
-                        <option value="narrative">Narrative</option>
-                        <option value="persuasive">Persuasive</option>
-                        <option value="descriptive">Descriptive</option>
-                        <option value="journalistic">Journalistic</option>
-                    </select>
-
-                    <label for="pointOfView" style="margin-top: 16px;">Point of View:</label>
-                    <select id="pointOfView" aria-label="Point of view">
-                        <option value="">Default</option>
-                        <option value="first-person">First Person (I/we)</option>
-                        <option value="second-person">Second Person (you)</option>
-                        <option value="third-person-limited">Third Person Limited (he/she)</option>
-                        <option value="third-person-omniscient">Third Person Omniscient</option>
-                    </select>
-
-                    <label for="wordCountTarget" style="margin-top: 16px;">Word Count Target:</label>
-                    <input type="text" id="wordCountTarget" placeholder="E.g., 500-1000 words" aria-label="Word count target">
-                    <small class="helper-text">Specify desired word count or range</small>
-
-                    <label for="readingLevel" style="margin-top: 16px;">Reading Level:</label>
-                    <select id="readingLevel" aria-label="Reading level">
-                        <option value="">Default</option>
-                        <option value="elementary">Elementary (Grade 1-5)</option>
-                        <option value="middle-school">Middle School (Grade 6-8)</option>
-                        <option value="high-school">High School (Grade 9-12)</option>
-                        <option value="college">College</option>
-                        <option value="professional">Professional</option>
-                    </select>
-                </div>
-            </section>
-
-            <!-- Section 16: Research Instructions -->
-            <section class="form-section">
-                <div class="collapsible-header" id="researchInstructionsHeader">
-                    <div class="collapsible-title">
-                        <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">15</span>
-                            Research Instructions
-                        </h2>
-                        <p class="section-description" style="margin: 0;">Guide AI research and fact-checking behavior (optional)</p>
-                    </div>
-                    <span class="collapsible-toggle">▶</span>
-                </div>
-                
-                <div class="collapsible-content" id="researchInstructionsContent">
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="searchLatestInfo">
-                        <label for="searchLatestInfo">
-                            <strong>Search for latest information before answering</strong>
-                            <small class="helper-text">Ensure response includes current information</small>
-                        </label>
-                    </div>
-
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="citeSources">
-                        <label for="citeSources">
-                            <strong>Cite specific sources with dates and URLs</strong>
-                            <small class="helper-text">Include citations and references</small>
-                        </label>
-                    </div>
-
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="compareMultipleSources">
-                        <label for="compareMultipleSources">
-                            <strong>Compare multiple authoritative sources</strong>
-                            <small class="helper-text">Cross-reference different sources</small>
-                        </label>
-                    </div>
-
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="verifyFacts">
-                        <label for="verifyFacts">
-                            <strong>Verify facts and flag uncertain information</strong>
-                            <small class="helper-text">Explicitly note confidence levels</small>
-                        </label>
-                    </div>
-
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="includeConfidence">
-                        <label for="includeConfidence">
-                            <strong>Include confidence levels for key claims</strong>
-                            <small class="helper-text">Rate certainty of statements</small>
-                        </label>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Section 17: Iterative Refinement -->
+            <!-- Section 14: Iterative Refinement -->
             <section class="form-section">
                 <div class="collapsible-header" id="iterativeRefinementHeader">
                     <div class="collapsible-title">
                         <h2 class="section-header" style="margin: 0;">
-                            <span class="section-number">16</span>
+                            <span class="section-number">14</span>
                             Iterative Refinement
                         </h2>
                         <p class="section-description" style="margin: 0;">Enable collaborative refinement and iteration (optional)</p>
@@ -1140,6 +1087,80 @@ button:disabled:hover {
                 </div>
             </section>
 
+            <!-- Section 15: Negative Prompting -->
+            <section class="form-section">
+                <div class="collapsible-header" id="negativePromptingHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">15</span>
+                            Negative Prompting
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Specify what the AI should NOT do (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="negativePromptingContent">
+                <label for="negativePrompts">Do NOT:</label>
+                <textarea id="negativePrompts" placeholder="E.g.,&#10;- Include code without explanation&#10;- Use deprecated methods&#10;- Make assumptions about user's environment&#10;- Provide solutions without testing" aria-label="Negative prompts"></textarea>
+                <small class="helper-text">List specific things to avoid in the response</small>
+                </div>
+            </section>
+
+            <!--- Block 6: Ethics and security (limits)-->
+            <br>
+            <h2>Ethics and Security</h2>
+            <!-- Section 16: Safety & Ethics Guidelines -->
+            <section class="form-section">
+                <div class="collapsible-header" id="safetyEthicsHeader">
+                    <div class="collapsible-title">
+                        <h2 class="section-header" style="margin: 0;">
+                            <span class="section-number">16</span>
+                            Safety & Ethics Guidelines
+                        </h2>
+                        <p class="section-description" style="margin: 0;">Enable ethical and safety considerations (optional)</p>
+                    </div>
+                    <span class="collapsible-toggle">▶</span>
+                </div>
+                
+                <div class="collapsible-content" id="safetyEthicsContent">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="checkBias">
+                        <label for="checkBias">
+                            <strong>Check for bias in recommendations</strong>
+                            <small class="helper-text">Ensure fair and unbiased output</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="accessibilityRequirements">
+                        <label for="accessibilityRequirements">
+                            <strong>Consider accessibility requirements</strong>
+                            <small class="helper-text">Ensure solutions are accessible to all users</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="privacyDataProtection">
+                        <label for="privacyDataProtection">
+                            <strong>Privacy and data protection concerns</strong>
+                            <small class="helper-text">Address GDPR, data privacy, and security</small>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="ethicalImplications">
+                        <label for="ethicalImplications">
+                            <strong>Evaluate ethical implications</strong>
+                            <small class="helper-text">Consider broader societal and ethical impacts</small>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!--- Block 7: Generate Prompt-->
+            <br>
+            <h2>Prompt Generation</h2>
             <!-- Section 17: Generate Prompt -->
             <section class="form-section">
                 <h2 class="section-header">
@@ -1244,6 +1265,53 @@ button:disabled:hover {
         'moderate': 'Provide moderate detail (200-500 words)',
         'detailed': 'Provide detailed analysis (500-1000 words)',
         'comprehensive': 'Provide comprehensive coverage (over 1000 words)'
+    };
+
+    // ===== XML Tags for Prompt Sections =====
+    window.XML_TAGS = {
+        persona: 'persona',
+        audience: 'audience',
+        constraints: 'constraints',
+        context: 'context',
+        inputData: 'input_data',
+        instructions: 'instructions',
+        outputFormat: 'output_format',
+        reasoning: 'reasoning',
+        code: 'code_requirements',
+        creative: 'creative_guidelines',
+        research: 'research_guidelines',
+        quality: 'quality',
+        selfReview: 'self_review',
+        antiHallucination: 'anti_hallucination',
+        validation: 'validation',
+        iterative: 'iterative_approach',
+        negative: 'constraints_negative',
+        safety: 'safety_ethics'
+    };
+
+    /**
+     * Wrap content in XML tags
+     * @param {string} tagName - The tag name to use
+     * @param {string} content - The content to wrap
+     * @param {Object} [attributes] - Optional attributes for the tag
+     * @returns {string} XML-wrapped content
+     */
+    window.wrapXml = function(tagName, content, attributes) {
+        if (!content || !content.trim()) {
+            return '';
+        }
+        
+        var openTag = '<' + tagName;
+        if (attributes) {
+            for (var key in attributes) {
+                if (attributes.hasOwnProperty(key)) {
+                    openTag += ' ' + key + '="' + attributes[key] + '"';
+                }
+            }
+        }
+        openTag += '>';
+        
+        return openTag + '\n' + content.trim() + '\n</' + tagName + '>';
     };
 
 })();
@@ -1512,11 +1580,14 @@ button:disabled:hover {
             return null;
         }
         
+        var content;
         if (selectedPersona === 'Other (custom)') {
-            return customPersona ? customPersona.trim() : null;
+            content = customPersona ? customPersona.trim() : null;
+        } else {
+            content = window.personaTemplates[selectedPersona] || null;
         }
         
-        return window.personaTemplates[selectedPersona] || null;
+        return content ? window.wrapXml(window.XML_TAGS.persona, content) : null;
     };
 
     /**
@@ -1530,11 +1601,14 @@ button:disabled:hover {
             return null;
         }
         
+        var content;
         if (selectedAudience === 'Other (custom)') {
-            return customAudience ? customAudience.trim() : null;
+            content = customAudience ? customAudience.trim() : null;
+        } else {
+            content = window.audienceTemplates[selectedAudience] || null;
         }
         
-        return window.audienceTemplates[selectedAudience] || null;
+        return content ? window.wrapXml(window.XML_TAGS.audience, content) : null;
     };
 
     /**
@@ -1565,7 +1639,7 @@ button:disabled:hover {
             section += '\n- Format: ' + formatPreferences;
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.constraints, section);
     };
 
     /**
@@ -1593,7 +1667,7 @@ button:disabled:hover {
             section += '\n- Consider and discuss ethical implications of the solution';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.safety, section);
     };
 
     /**
@@ -1619,7 +1693,7 @@ button:disabled:hover {
             section += '\nShow your reasoning in <thinking> tags before providing the final answer.';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.reasoning, section, { type: 'chain-of-thought' });
     };
 
     /**
@@ -1654,7 +1728,7 @@ button:disabled:hover {
         });
         
         section += '\n\nNow, apply the same pattern to the following:';
-        return section;
+        return window.wrapXml(window.XML_TAGS.reasoning, section, { type: 'few-shot' });
     };
 
     /**
@@ -1691,7 +1765,7 @@ button:disabled:hover {
             section += '\n- Include detailed documentation with docstrings and inline comments';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.code, section);
     };
 
     /**
@@ -1723,7 +1797,7 @@ button:disabled:hover {
             section += '\n- Include confidence levels for key claims and findings';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.research, section);
     };
 
     /**
@@ -1756,7 +1830,7 @@ button:disabled:hover {
             section += '\n- Reading Level: ' + readingLevel;
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.creative, section);
     };
 
     /**
@@ -1786,7 +1860,7 @@ button:disabled:hover {
             }
         });
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.validation, section);
     };
 
     /**
@@ -1818,27 +1892,36 @@ button:disabled:hover {
             section += '\n- Clearly identify any assumptions made and ask for confirmation';
         }
         
-        return section;
+        return window.wrapXml(window.XML_TAGS.iterative, section);
     };
 
     /**
      * Build quality control sections
      * @param {boolean} selfReflection - Enable self-reflection
      * @param {boolean} antiHallucination - Enable anti-hallucination guidelines
-     * @returns {Array} Array of quality control section strings
+     * @returns {string|null} Quality control section with nested tags or null
      */
     window.buildQualityControlSections = function(selfReflection, antiHallucination) {
-        var sections = [];
+        if (!selfReflection && !antiHallucination) {
+            return null;
+        }
+        
+        var innerContent = '';
         
         if (selfReflection) {
-            sections.push('After providing your solution, perform a self-review:\n1. Check for logical errors\n2. Verify all requirements are met\n3. Identify any assumptions made\n4. Rate your confidence (1-10)');
+            var selfReviewContent = 'After providing your solution, perform a self-review:\n1. Check for logical errors\n2. Verify all requirements are met\n3. Identify any assumptions made\n4. Rate your confidence (1-10)';
+            innerContent += window.wrapXml(window.XML_TAGS.selfReview, selfReviewContent);
         }
         
         if (antiHallucination) {
-            sections.push('Important guidelines:\n- If you don\'t know something, explicitly say "I don\'t know"\n- Cite specific sources when making factual claims\n- Distinguish between facts and opinions\n- State assumptions explicitly\n- Only use well-documented, standard approaches');
+            var antiHallucinationContent = 'Important guidelines:\n- If you don\'t know something, explicitly say "I don\'t know"\n- Cite specific sources when making factual claims\n- Distinguish between facts and opinions\n- State assumptions explicitly\n- Only use well-documented, standard approaches';
+            if (innerContent) {
+                innerContent += '\n';
+            }
+            innerContent += window.wrapXml(window.XML_TAGS.antiHallucination, antiHallucinationContent);
         }
         
-        return sections;
+        return window.wrapXml(window.XML_TAGS.quality, innerContent);
     };
 
     /**
@@ -1849,13 +1932,13 @@ button:disabled:hover {
     window.assemblePrompt = function(formData) {
         var sections = [];
         
-        // 1. Persona
-        var persona = window.buildPersonaSection(formData.persona, formData.personaCustom);
-        if (persona) sections.push(persona);
-        
-        // 2. Audience
+        // 1. Audience
         var audience = window.buildAudienceSection(formData.audience, formData.audienceCustom);
         if (audience) sections.push(audience);
+        
+        // 2. Persona
+        var persona = window.buildPersonaSection(formData.persona, formData.personaCustom);
+        if (persona) sections.push(persona);
         
         // 3. System Constraints
         var constraints = window.buildConstraintsSection({
@@ -1865,28 +1948,26 @@ button:disabled:hover {
         });
         if (constraints) sections.push(constraints);
         
-        // 4. Safety & Ethics
-        var safety = window.buildSafetySection({
-            checkBias: formData.checkBias,
-            accessibility: formData.accessibility,
-            privacy: formData.privacy,
-            ethical: formData.ethical
-        });
-        if (safety) sections.push(safety);
-        
-        // 5. Additional Context
+        // 4. Additional Context
         if (formData.additionalContext && formData.additionalContext.trim()) {
-            sections.push('Additional context:\n' + formData.additionalContext.trim());
+            var contextContent = 'Additional context:\n' + formData.additionalContext.trim();
+            sections.push(window.wrapXml(window.XML_TAGS.context, contextContent));
         }
         
-        // 6. Input Data
+        // 5. Input Data
         if (formData.inputData && formData.inputData.trim()) {
-            sections.push(formData.inputData.trim());
+            sections.push(window.wrapXml(window.XML_TAGS.inputData, formData.inputData.trim()));
         }
         
-        // 7. Instructions (always included)
+        // 6. Instructions
         if (formData.instructions && formData.instructions.trim()) {
-            sections.push(formData.instructions.trim());
+            sections.push(window.wrapXml(window.XML_TAGS.instructions, formData.instructions.trim()));
+        }
+        
+        // 7. Output Format
+        if (formData.outputFormat && formData.outputFormat.trim()) {
+            var outputContent = 'Output format:\n' + formData.outputFormat.trim();
+            sections.push(window.wrapXml(window.XML_TAGS.outputFormat, outputContent));
         }
         
         // 8. Reasoning Method
@@ -1908,7 +1989,16 @@ button:disabled:hover {
         });
         if (code) sections.push(code);
         
-        // 10. Research Instructions
+        // 10. Creative Content Options
+        var creative = window.buildCreativeSection({
+            writingStyle: formData.writingStyle,
+            pointOfView: formData.pointOfView,
+            wordCount: formData.wordCount,
+            readingLevel: formData.readingLevel
+        });
+        if (creative) sections.push(creative);
+        
+        // 11. Research Instructions
         var research = window.buildResearchSection({
             searchLatest: formData.searchLatest,
             citeSources: formData.citeSources,
@@ -1918,36 +2008,15 @@ button:disabled:hover {
         });
         if (research) sections.push(research);
         
-        // 11. Creative Content Options
-        var creative = window.buildCreativeSection({
-            writingStyle: formData.writingStyle,
-            pointOfView: formData.pointOfView,
-            wordCount: formData.wordCount,
-            readingLevel: formData.readingLevel
-        });
-        if (creative) sections.push(creative);
-        
-        // 12. Output Format
-        if (formData.outputFormat && formData.outputFormat.trim()) {
-            sections.push('Output format:\n' + formData.outputFormat.trim());
-        }
-        
-        // 13. Quality Controls
+        // 12. Quality Controls
         var qualityControls = window.buildQualityControlSections(formData.selfReflection, formData.antiHallucination);
-        qualityControls.forEach(function(section) {
-            sections.push(section);
-        });
+        if (qualityControls) sections.push(qualityControls);
         
-        // 14. Validation Conditions
+        // 13. Validation Conditions
         var validation = window.buildValidationSection(formData.validations);
         if (validation) sections.push(validation);
         
-        // 15. Negative Prompting
-        if (formData.negativePrompts && formData.negativePrompts.trim()) {
-            sections.push('IMPORTANT - Do NOT:\n' + formData.negativePrompts.trim());
-        }
-        
-        // 16. Iterative Refinement
+        // 14. Iterative Refinement
         var iterative = window.buildIterativeSection({
             askClarifying: formData.askClarifying,
             provideAlternatives: formData.provideAlternatives,
@@ -1956,6 +2025,21 @@ button:disabled:hover {
             identifyAssumptions: formData.identifyAssumptions
         });
         if (iterative) sections.push(iterative);
+        
+        // 15. Negative Prompting
+        if (formData.negativePrompts && formData.negativePrompts.trim()) {
+            var negativeContent = 'IMPORTANT - Do NOT:\n' + formData.negativePrompts.trim();
+            sections.push(window.wrapXml(window.XML_TAGS.negative, negativeContent));
+        }
+        
+        // 16. Safety & Ethics
+        var safety = window.buildSafetySection({
+            checkBias: formData.checkBias,
+            accessibility: formData.accessibility,
+            privacy: formData.privacy,
+            ethical: formData.ethical
+        });
+        if (safety) sections.push(safety);
         
         return sections.join('\n\n');
     };
